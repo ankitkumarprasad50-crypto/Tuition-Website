@@ -83,7 +83,7 @@ function buildFooter() {
           <p>${SITE.address}</p>
         </div>
       </div>
-      <p class="footer__copy">© <span id="yr"></span> ${SITE.name}. Made with care. ❤️</p>
+      <p class="footer__copy">© <span id="yr"></span> ${SITE.name}. Made with care. ❤️ · <a href="/admin/" style="color:rgba(255,255,255,.6)">Teacher login</a></p>
     </footer>`;
 }
 

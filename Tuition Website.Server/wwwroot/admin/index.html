@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Dashboard — Vidya Vriksh Portal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/admin.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-head">
+      <div><h1>Dashboard</h1><p id="welcome" class="muted"></p></div>
+      <a class="btn btn--primary" href="/admin/students.html">+ Manage Students</a>
+    </div>
+
+    <div class="cards" id="stats"></div>
+
+    <div class="page-head mt"><h1 style="font-size:1.3rem">Your students</h1>
+      <a class="btn btn--ghost btn--sm" href="/admin/students.html">View all</a></div>
+    <div class="table-card">
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Name</th><th>Class</th><th>Tests</th><th>Average</th><th></th></tr></thead>
+          <tbody id="rows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/assets/admin.js"></script>
+  <script>
+    (async () => {
+      const me = await initShell("/admin/");
+      if (!me) return;
+      document.getElementById("welcome").textContent = "Welcome back, " + me.name + ".";
+
+      const [students, tests, teachers] = await Promise.all([
+        api("/api/students"), api("/api/tests"), api("/api/teachers"),
+      ]);
+      const avg = students.filter(s => s.tests > 0);
+      const overall = avg.length ? Math.round(avg.reduce((a, s) => a + s.average, 0) / avg.length) : 0;
+
+      document.getElementById("stats").innerHTML = `
+        <div class="card stat"><span class="stat__num">${students.length}</span><span class="stat__label">Students</span></div>
+        <div class="card stat"><span class="stat__num">${tests.length}</span><span class="stat__label">Tests created</span></div>
+        <div class="card stat"><span class="stat__num">${overall}%</span><span class="stat__label">Class average</span></div>
+        <div class="card stat"><span class="stat__num">${teachers.length}</span><span class="stat__label">Teachers</span></div>`;
+
+      const rows = document.getElementById("rows");
+      if (!students.length) { rows.innerHTML = `<tr><td colspan="5" class="empty">No students yet. <a href="/admin/students.html">Add your first student</a>.</td></tr>`; return; }
+      rows.innerHTML = students.slice(0, 8).map(s => `
+        <tr>
+          <td><strong>${escapeHtml(s.name)}</strong></td>
+          <td>${escapeHtml(s.className) || "—"}</td>
+          <td>${s.tests}</td>
+          <td><span class="pill ${pillClass(s.average)}">${s.tests ? s.average + "%" : "—"}</span></td>
+          <td><a class="btn btn--sage btn--sm" href="/admin/student.html?id=${s.id}">Open</a></td>
+        </tr>`).join("");
+    })().catch(e => toast(e.error || "Something went wrong", true));
+  </script>
+</body>
+</html>

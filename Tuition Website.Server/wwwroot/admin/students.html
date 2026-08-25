@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Students — Vidya Vriksh Portal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/admin.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-head">
+      <div><h1>Students</h1><p>Add and manage the students in your batch.</p></div>
+      <button class="btn btn--primary" id="addBtn">+ Add Student</button>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Name</th><th>Class</th><th>Parent</th><th>Phone</th><th>Tests</th><th>Average</th><th></th></tr></thead>
+          <tbody id="rows"><tr><td colspan="7" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit modal -->
+  <div class="modal" id="modal">
+    <div class="modal__box">
+      <h2 id="modalTitle">Add Student</h2>
+      <form id="studentForm">
+        <input type="hidden" id="sid" />
+        <div class="form-grid">
+          <div class="field"><label for="name">Student's name *</label><input id="name" required /></div>
+          <div class="field"><label for="className">Class</label>
+            <select id="className"><option value="">—</option><option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option><option>Class 5</option></select></div>
+          <div class="field"><label for="parentName">Parent's name</label><input id="parentName" /></div>
+          <div class="field"><label for="parentPhone">Parent's phone</label><input id="parentPhone" /></div>
+          <div class="field field--full"><label for="parentEmail">Parent's email (for reports)</label><input id="parentEmail" type="email" placeholder="parent@example.com" /></div>
+          <div class="field field--full"><label for="notes">Notes</label><textarea id="notes" rows="2"></textarea></div>
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" onclick="closeModal('modal')">Cancel</button>
+          <button type="submit" class="btn btn--primary" id="saveBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/admin/assets/admin.js"></script>
+  <script>
+    let students = [];
+    async function load() {
+      students = await api("/api/students");
+      const rows = document.getElementById("rows");
+      if (!students.length) { rows.innerHTML = `<tr><td colspan="7" class="empty">No students yet. Click “Add Student”.</td></tr>`; return; }
+      rows.innerHTML = students.map(s => `
+        <tr>
+          <td><a href="/admin/student.html?id=${s.id}"><strong>${escapeHtml(s.name)}</strong></a></td>
+          <td>${escapeHtml(s.className) || "—"}</td>
+          <td>${escapeHtml(s.parentName) || "—"}</td>
+          <td>${escapeHtml(s.parentPhone) || "—"}</td>
+          <td>${s.tests}</td>
+          <td><span class="pill ${pillClass(s.average)}">${s.tests ? s.average + "%" : "—"}</span></td>
+          <td class="actions">
+            <a class="btn btn--sage btn--sm" href="/admin/student.html?id=${s.id}">Open</a>
+            <button class="btn btn--ghost btn--sm" onclick="edit(${s.id})">Edit</button>
+            <button class="btn btn--danger btn--sm" onclick="del(${s.id},'${escapeHtml(s.name).replace(/'/g,"\\'")}')">✕</button>
+          </td>
+        </tr>`).join("");
+    }
+    function openForm(s) {
+      document.getElementById("modalTitle").textContent = s ? "Edit Student" : "Add Student";
+      document.getElementById("sid").value = s ? s.id : "";
+      document.getElementById("name").value = s ? s.name : "";
+      document.getElementById("className").value = s ? s.className : "";
+      document.getElementById("parentName").value = s ? s.parentName : "";
+      document.getElementById("parentPhone").value = s ? s.parentPhone : "";
+      document.getElementById("parentEmail").value = s ? s.parentEmail : "";
+      document.getElementById("notes").value = s ? s.notes : "";
+      openModal("modal");
+    }
+    window.edit = (id) => openForm(students.find(s => s.id === id));
+    window.del = async (id, name) => {
+      if (!confirm(`Remove ${name}? This also deletes their marks.`)) return;
+      await api(`/api/students/${id}`, { method: "DELETE" });
+      toast("Student removed"); load();
+    };
+    document.getElementById("addBtn").addEventListener("click", () => openForm(null));
+    document.getElementById("studentForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("sid").value;
+      const body = {
+        name: document.getElementById("name").value, className: document.getElementById("className").value,
+        parentName: document.getElementById("parentName").value, parentPhone: document.getElementById("parentPhone").value,
+        parentEmail: document.getElementById("parentEmail").value, notes: document.getElementById("notes").value,
+      };
+      try {
+        if (id) await api(`/api/students/${id}`, { method: "PUT", body });
+        else await api("/api/students", { method: "POST", body });
+        closeModal("modal"); toast("Saved"); load();
+      } catch (ex) { toast(ex.error || "Could not save", true); }
+    });
+    (async () => { if (await initShell("/admin/students.html")) load(); })();
+  </script>
+</body>
+</html>

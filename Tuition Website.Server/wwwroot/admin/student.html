@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Student — Vidya Vriksh Portal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/admin.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="crumb"><a href="/admin/students.html">← Students</a></div>
+    <div class="page-head">
+      <div><h1 id="sname">Student</h1><p id="sinfo" class="muted"></p></div>
+      <button class="btn btn--primary" id="emailBtn">✉️ Email report to parent</button>
+    </div>
+
+    <!-- Report summary -->
+    <div class="report-hero">
+      <div><div class="stat__label">Overall average</div><div class="big" id="avg">—</div></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts">
+      <div class="chart-card"><h3>Marks by test</h3><div class="sub">Percentage scored in each test</div><div id="barChart"></div></div>
+      <div class="chart-card"><h3>Progress trend</h3><div class="sub">How results are changing over time</div><div id="lineChart"></div></div>
+    </div>
+
+    <!-- Marks entry -->
+    <div class="page-head mt"><h1 style="font-size:1.3rem">Record marks</h1>
+      <a class="btn btn--ghost btn--sm" href="/admin/tests.html">Manage tests</a></div>
+    <div class="table-card">
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Test</th><th>Subject</th><th>Date</th><th>Score</th><th>Remark</th></tr></thead>
+          <tbody id="marks"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <p class="muted mt">💡 Type a score and click away — it saves automatically. Clear a box to remove that mark.</p>
+  </div>
+
+  <script src="/admin/assets/admin.js"></script>
+  <script>
+    const id = qs("id");
+
+    async function loadReport() {
+      const r = await api(`/api/students/${id}/report`);
+      document.getElementById("sname").textContent = r.studentName;
+      document.getElementById("sinfo").textContent =
+        [r.className, r.parentName ? "Parent: " + r.parentName : "", r.parentEmail || "no parent email"].filter(Boolean).join("  ·  ");
+      document.getElementById("avg").textContent = r.rows.length ? r.averagePercent + "%" : "—";
+      document.getElementById("verdict").textContent = r.verdict;
+
+      const chartData = r.rows.map(x => ({ label: x.test, value: x.percent }));
+      document.getElementById("barChart").innerHTML = barChart(chartData);
+      document.getElementById("lineChart").innerHTML = lineChart(chartData);
+
+      // enable/disable email button based on parent email
+      const btn = document.getElementById("emailBtn");
+      if (!r.parentEmail) { btn.disabled = true; btn.title = "Add a parent email on the student's Edit form first."; }
+      else { btn.disabled = false; btn.title = "Send this report to " + r.parentEmail; }
+    }
+
+    async function loadMarks() {
+      const rows = await api(`/api/students/${id}/marks`);
+      const body = document.getElementById("marks");
+      if (!rows.length) { body.innerHTML = `<tr><td colspan="5" class="empty">No tests yet. <a href="/admin/tests.html">Create a test</a> first.</td></tr>`; return; }
+      body.innerHTML = rows.map(m => `
+        <tr>
+          <td><strong>${escapeHtml(m.test)}</strong></td>
+          <td>${escapeHtml(m.subject) || "—"}</td>
+          <td>${m.date}</td>
+          <td><input class="score" type="number" min="0" max="${m.maxMarks}" step="0.5" data-test="${m.testId}" data-max="${m.maxMarks}" value="${m.score ?? ""}" /> <span class="muted">/ ${m.maxMarks}</span></td>
+          <td><input data-remark="${m.testId}" value="${escapeHtml(m.remark)}" placeholder="optional" style="min-width:160px" /></td>
+        </tr>`).join("");
+
+      body.querySelectorAll("input.score, input[data-remark]").forEach(inp => {
+        inp.addEventListener("change", () => saveMark(inp.closest("tr")));
+      });
+    }
+
+    async function saveMark(tr) {
+      const scoreInp = tr.querySelector("input.score");
+      const remarkInp = tr.querySelector("input[data-remark]");
+      const testId = parseInt(scoreInp.dataset.test);
+      const max = parseFloat(scoreInp.dataset.max);
+      let score = scoreInp.value === "" ? null : parseFloat(scoreInp.value);
+      if (score !== null && (isNaN(score) || score < 0)) { toast("Enter a valid score", true); return; }
+      if (score !== null && score > max) { toast(`Score can't exceed ${max}`, true); scoreInp.value = ""; return; }
+      try {
+        await api("/api/marks", { method: "PUT", body: { studentId: parseInt(id), testId, score, remark: remarkInp.value } });
+        toast("Saved");
+        loadReport();
+      } catch (ex) { toast(ex.error || "Could not save", true); }
+    }
+
+    document.getElementById("emailBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("emailBtn");
+      btn.disabled = true; btn.textContent = "Sending…";
+      try {
+        const r = await api(`/api/students/${id}/report/email`, { method: "POST" });
+        toast("Report emailed to " + r.to);
+      } catch (ex) { toast(ex.error || "Could not send email", true); }
+      finally { btn.disabled = false; btn.textContent = "✉️ Email report to parent"; }
+    });
+
+    (async () => {
+      if (!(await initShell("/admin/students.html"))) return;
+      if (!id) { toast("No student selected", true); return; }
+      await loadReport();
+      await loadMarks();
+    })().catch(e => toast(e.error || "Something went wrong", true));
+  </script>
+</body>
+</html>
