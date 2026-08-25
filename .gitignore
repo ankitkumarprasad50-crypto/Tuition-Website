@@ -1,0 +1,21 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.user
+
+# Visual Studio
+.vs/
+*.suo
+
+# Runtime data written by the enrollment API
+enrollments.json
+
+# Node (in case a frontend is added back)
+node_modules/
+dist/
+
+# OS
+Thumbs.db
+.DS_Store

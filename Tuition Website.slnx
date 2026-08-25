@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Tuition Website.AppHost/Tuition Website.AppHost.csproj" />
+  <Project Path="Tuition Website.Server/Tuition Website.Server.csproj" />
+</Solution>
