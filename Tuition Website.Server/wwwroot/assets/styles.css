@@ -259,6 +259,50 @@ a.contact__card:hover { transform: translateY(-3px); }
   .enquiry__form { grid-template-columns: 1fr; }
   .footer__inner { grid-template-columns: 1fr; }
 }
+/* ---- Mobile polish (most visitors are on phones) ------------------------ */
+@media (max-width: 640px) {
+  .nav { padding: .55rem 1rem; }
+  .nav__brand { gap: .45rem; }
+  .nav__name { font-size: 1.02rem; }
+  .nav__logo { width: 34px; height: 34px; }
+
+  /* Hero: text-focused, no decorative card, full-width buttons */
+  .hero__inner { padding: 1.8rem 1rem 2.2rem; gap: 1rem; }
+  .hero__art { display: none; }
+  .hero__text .pill { margin-bottom: .9rem; }
+  .hero__tagline { font-size: 1.08rem; margin: .8rem 0 1.3rem; max-width: none; }
+  .hero__actions { flex-direction: column; gap: .6rem; }
+  .hero__actions .btn { width: 100%; }
+
+  /* Comfortable spacing + tap targets */
+  .section { padding: 2.4rem 1rem; }
+  .section__head { margin-bottom: 1.6rem; }
+  .section__head p { font-size: 1rem; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.55rem; }
+  .btn { padding: .8rem 1.2rem; }
+
+  .highlight { padding: 1.2rem; }
+  .about { gap: 1.3rem; }
+  .about__bio { font-size: 1rem; }
+  .subject, .card-item { padding: 1.3rem; }
+  .fee--featured { transform: none; }
+  .timing-card { padding: 2rem 1.4rem; }
+
+  .cta-band__inner { padding: 2.2rem 1rem; }
+  .cta-band .btn { width: 100%; max-width: 340px; }
+
+  .contact__card { padding: 1.1rem 1.2rem; }
+  .contact__map iframe { height: 260px; }
+  .enquiry__form { padding: 1.4rem; }
+
+  /* Footer centred and tidy */
+  .footer { padding: 2.2rem 1rem 1.3rem; }
+  .footer__inner { text-align: center; gap: 1.4rem; }
+  .footer__name { justify-content: center; }
+  .footer__inner p { margin-left: auto; margin-right: auto; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
