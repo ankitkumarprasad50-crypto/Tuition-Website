@@ -129,6 +129,17 @@ a { color: inherit; }
 .about__creds { color: var(--terracotta-dark); font-weight: 800; margin: .5rem 0 1rem; }
 .about__bio { color: var(--muted); font-size: 1.08rem; line-height: 1.7; margin-bottom: 1.6rem; }
 
+/* ---- Teachers (team) ---------------------------------------------------- */
+.teachers { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 900px; margin: 0 auto; }
+.teacher { background: #fff; border: 1px solid var(--peach); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: 1.9rem 1.6rem; text-align: center; display: flex; flex-direction: column; align-items: center; }
+.teacher__photo { width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; font-size: 3.2rem; background: linear-gradient(160deg, var(--honey), var(--peach-deep)); box-shadow: var(--shadow-sm); margin-bottom: 1rem; overflow: hidden; }
+.teacher__photo img { width: 100%; height: 100%; object-fit: cover; }
+.teacher__tag { display: inline-block; background: var(--sage); color: #fff; font-weight: 800; font-size: .72rem; padding: .22rem .7rem; border-radius: 999px; margin-bottom: .5rem; text-transform: uppercase; letter-spacing: .05em; }
+.teacher h3 { font-size: 1.3rem; }
+.teacher__creds { color: var(--terracotta-dark); font-weight: 800; font-size: .92rem; margin: .35rem 0 .7rem; }
+.teacher__bio { color: var(--muted); line-height: 1.65; }
+@media (max-width: 640px) { .teachers { grid-template-columns: 1fr; } }
+
 /* ---- Cards grid (subjects / generic) ------------------------------------ */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
 .card-item { background: #fff; border-radius: var(--radius); padding: 1.6rem; border: 1px solid var(--peach); box-shadow: var(--shadow-sm); transition: transform .18s ease, box-shadow .2s ease; }

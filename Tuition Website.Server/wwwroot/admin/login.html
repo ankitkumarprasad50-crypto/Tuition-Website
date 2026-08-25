@@ -7,42 +7,108 @@
   <title>Teacher Login — Vidya Vriksh</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/assets/admin.css" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--ink:#3D342A;--muted:#7D6E5E;--terracotta:#E07A5F;--terracotta-dark:#C65B42}
+    html,body{height:100%}
+    body{
+      margin:0;font-family:'Nunito',system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink);
+      display:grid;place-items:center;overflow:hidden;position:relative;
+      background:linear-gradient(135deg,#FBEADF 0%,#F6D9C6 45%,#F2CC8F 100%);
+    }
+    /* floating soft blobs */
+    .blob{position:fixed;border-radius:50%;filter:blur(46px);opacity:.55;z-index:0;animation:float 16s ease-in-out infinite}
+    .b1{width:360px;height:360px;background:#81B29A;top:-90px;left:-70px}
+    .b2{width:320px;height:320px;background:#E07A5F;bottom:-110px;right:-80px;animation-delay:-5s}
+    .b3{width:280px;height:280px;background:#F2CC8F;top:38%;right:8%;animation-delay:-9s}
+    .b4{width:220px;height:220px;background:#FCEFDF;bottom:12%;left:8%;animation-delay:-7s}
+    @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(22px,-30px) scale(1.06)}66%{transform:translate(-16px,20px) scale(.96)}}
+
+    .card{
+      position:relative;z-index:1;width:min(92vw,400px);padding:2.6rem 2.2rem;border-radius:26px;text-align:center;
+      background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.65);
+      backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);
+      box-shadow:0 20px 55px rgba(80,55,35,.20);animation:rise .6s cubic-bezier(.2,.8,.2,1)}
+    @keyframes rise{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:none}}
+
+    .logo{width:66px;height:66px;border-radius:20px;display:grid;place-items:center;margin:0 auto .7rem;
+      background:linear-gradient(160deg,#F2CC8F,#E07A5F);font-size:2rem;box-shadow:0 8px 22px rgba(224,122,95,.4)}
+    h1{font-size:1.5rem;margin:.1rem 0}
+    .sub{color:var(--muted);font-weight:600;margin-bottom:1.6rem}
+
+    .field{text-align:left;margin-bottom:1rem}
+    .field label{display:block;font-weight:800;font-size:.8rem;margin-bottom:.35rem;color:#5E5243;letter-spacing:.02em}
+    .inp{position:relative}
+    .field input{width:100%;padding:.8rem .95rem;border-radius:12px;border:1.5px solid rgba(255,255,255,.75);
+      background:rgba(255,255,255,.55);font-family:inherit;font-size:1rem;color:var(--ink);transition:.15s}
+    .field input::placeholder{color:#b0a495}
+    .field input:focus{outline:none;border-color:var(--terracotta);background:rgba(255,255,255,.85);
+      box-shadow:0 0 0 4px rgba(224,122,95,.16)}
+    .toggle{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:none;border:none;
+      cursor:pointer;font-size:1.05rem;opacity:.6;padding:.3rem}
+    .toggle:hover{opacity:1}
+
+    .btn{width:100%;margin-top:.5rem;padding:.85rem;border:none;border-radius:12px;font-family:inherit;
+      font-weight:800;font-size:1rem;cursor:pointer;color:#fff;background:var(--terracotta);
+      box-shadow:0 10px 24px rgba(224,122,95,.42);transition:.15s}
+    .btn:hover{background:var(--terracotta-dark);transform:translateY(-1px)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .err{color:#b3402b;font-weight:700;margin-top:.8rem;min-height:1.2em;font-size:.9rem}
+    .back{display:inline-block;margin-top:1.1rem;color:var(--muted);text-decoration:none;font-weight:700;font-size:.9rem}
+    .back:hover{color:var(--terracotta-dark)}
+
+    @media (prefers-reduced-motion:reduce){.blob{animation:none}.card{animation:none}}
+  </style>
 </head>
 <body>
-  <div class="login">
-    <form class="login__box" id="loginForm">
-      <div class="login__logo">🌳</div>
-      <h1>Teacher Portal</h1>
-      <p>Sign in to manage students, tests and reports.</p>
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" required autocomplete="username" placeholder="you@vidyavriksh.local" />
-      </div>
-      <div class="field">
-        <label for="password">Password</label>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+
+  <form class="card" id="loginForm">
+    <div class="logo" aria-hidden="true">🌳</div>
+    <h1>Teacher Portal</h1>
+    <p class="sub">Welcome back — please sign in</p>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <div class="inp"><input id="email" name="email" type="email" required autocomplete="username" placeholder="you@vidyavriksh.local" /></div>
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <div class="inp">
         <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Your password" />
+        <button type="button" class="toggle" id="toggle" aria-label="Show password">👁️</button>
       </div>
-      <button class="btn btn--primary" type="submit" id="loginBtn" style="width:100%;margin-top:.4rem">Sign in</button>
-      <div class="login__err" id="err"></div>
-    </form>
-  </div>
+    </div>
+
+    <button class="btn" type="submit" id="loginBtn">Sign in</button>
+    <div class="err" id="err" role="alert" aria-live="polite"></div>
+    <a class="back" href="/">← Back to website</a>
+  </form>
 
   <script src="/admin/assets/admin.js"></script>
   <script>
     const form = document.getElementById("loginForm");
     const err = document.getElementById("err");
     const btn = document.getElementById("loginBtn");
+    const pw = document.getElementById("password");
+    const toggle = document.getElementById("toggle");
+
+    toggle.addEventListener("click", () => {
+      const show = pw.type === "password";
+      pw.type = show ? "text" : "password";
+      toggle.textContent = show ? "🙈" : "👁️";
+      toggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       err.textContent = "";
       btn.disabled = true; btn.textContent = "Signing in…";
       try {
-        await api("/api/auth/login", {
-          method: "POST", noRedirect: true,
-          body: { email: document.getElementById("email").value, password: document.getElementById("password").value },
-        });
+        await api("/api/auth/login", { method: "POST", noRedirect: true,
+          body: { email: document.getElementById("email").value, password: pw.value } });
         location.href = "/admin/";
       } catch (ex) {
         err.textContent = ex.error || "Sign in failed.";
