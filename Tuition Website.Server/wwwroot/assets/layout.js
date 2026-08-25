@@ -9,7 +9,7 @@ const SITE = {
   phoneDisplay: "+91 83400 77114",
   phoneLink: "+918340077114",
   whatsapp: "918340077114",            // country code + number, digits only
-  email: "",                            // TODO: add Jyoti's email when available
+  email: "ankit.kumar.prasad.50@gmail.com",  // main contact email (temporary)
   address: "D.No 15-10-27, Bapuji Nagar, Near Railway Station, Kovvur, East Godavari, Andhra Pradesh",
   mapQuery: "Bapuji Nagar, Near Railway Station, Kovvur, East Godavari, Andhra Pradesh",
   timings: "6:00 PM – 8:00 PM · Monday to Saturday",
