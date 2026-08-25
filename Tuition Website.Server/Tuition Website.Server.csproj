@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UserSecretsId>a3f1c9d4-7b6e-4c2a-9f10-vidyavriksh01</UserSecretsId>
+    <AssemblyName>VidyaVriksh.Server</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

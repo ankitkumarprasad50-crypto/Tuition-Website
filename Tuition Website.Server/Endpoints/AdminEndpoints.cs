@@ -50,6 +50,20 @@ public static class AdminEndpoints
             email = http.User.FindFirstValue(ClaimTypes.Email),
         })).RequireAuthorization();
 
+        auth.MapPost("change-password", async (ChangePasswordRequest req, HttpContext http, AppDbContext db) =>
+        {
+            var tid = CurrentTeacherId(http);
+            var teacher = tid is null ? null : await db.Teachers.FindAsync(tid.Value);
+            if (teacher is null) return Results.Unauthorized();
+            if (!PasswordHasher.Verify(req.CurrentPassword ?? "", teacher.PasswordHash))
+                return Results.BadRequest(new { error = "Current password is incorrect." });
+            if ((req.NewPassword ?? "").Length < 6)
+                return Results.BadRequest(new { error = "New password must be at least 6 characters." });
+            teacher.PasswordHash = PasswordHasher.Hash(req.NewPassword!);
+            await db.SaveChangesAsync();
+            return Results.Ok();
+        }).RequireAuthorization();
+
         // ---- Authenticated API --------------------------------------------
         var api = app.MapGroup("/api").RequireAuthorization();
 
@@ -253,6 +267,7 @@ public static class AdminEndpoints
 
 // ---- Request DTOs ----------------------------------------------------------
 public record LoginRequest(string? Email, string? Password);
+public record ChangePasswordRequest(string? CurrentPassword, string? NewPassword);
 public record TeacherRequest(string? Name, string? Email, string? Password);
 public record StudentRequest(string? Name, string? ClassName, string? ParentName, string? ParentEmail, string? ParentPhone, string? Notes);
 public record TestRequest(string? Name, string? Subject, DateOnly? Date, int MaxMarks);

@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using TuitionServer.Data;
 using TuitionServer.Endpoints;
@@ -20,12 +22,22 @@ builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite($"Data Source={dbPa
 // --- Email sender -----------------------------------------------------------
 builder.Services.AddSingleton<EmailSender>();
 
+// Persist data-protection keys (for auth cookies) so restarts/redeploys don't
+// invalidate everyone's session.
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, "keys")));
+
 // --- Cookie authentication for the teacher portal ---------------------------
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(o =>
     {
         o.Cookie.Name = "vv_auth";
         o.Cookie.HttpOnly = true;
+        o.Cookie.SameSite = SameSiteMode.Lax;
+        // Require HTTPS for the auth cookie in production (behind nginx TLS),
+        // but allow http in local development.
+        o.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
         o.LoginPath = "/admin/login.html";
         o.ExpireTimeSpan = TimeSpan.FromDays(7);
         o.SlidingExpiration = true;
@@ -52,6 +64,13 @@ using (var scope = app.Services.CreateScope())
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     AppDbContext.EnsureSeeded(db, logger);
 }
+
+// Behind the nginx reverse proxy: honour X-Forwarded-Proto/For so the app
+// knows requests arrived over HTTPS (needed for secure cookies).
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())

@@ -17,6 +17,10 @@ enrollments.json
 *.db-shm
 *.db-wal
 
+# Deployment publish output
+publish-linux/
+*.tgz
+
 # Node (in case a frontend is added back)
 node_modules/
 dist/

@@ -24,6 +24,15 @@
     <div class="page-head"><div><h1>Settings</h1><p>Configure how parent report emails are sent.</p></div></div>
 
     <div class="card" style="margin-bottom:1.4rem">
+      <div class="stat__label" style="margin-bottom:.7rem">Your account — change password</div>
+      <form id="pwForm" class="form-grid" style="max-width:520px">
+        <div class="field field--full"><label for="cur">Current password</label><input id="cur" type="password" required autocomplete="current-password" /></div>
+        <div class="field field--full"><label for="nw">New password (min 6 chars)</label><input id="nw" type="password" required minlength="6" autocomplete="new-password" /></div>
+        <div class="field field--full"><button class="btn btn--primary" type="submit">Update password</button></div>
+      </form>
+    </div>
+
+    <div class="card" style="margin-bottom:1.4rem">
       <div class="stat__label" style="margin-bottom:.5rem">Email status</div>
       <div id="status" class="status no">Checking…</div>
       <p class="muted" id="sender" style="margin-top:.6rem"></p>
@@ -62,6 +71,15 @@ dotnet user-secrets set "Email:FromName" "Vidya Vriksh Tuition"</pre>
       if (s.configured) { el.className = "status ok"; el.textContent = "✅ Email is configured and ready"; }
       else { el.className = "status no"; el.textContent = "⚠️ Email not configured yet"; }
       document.getElementById("sender").textContent = s.sender ? "Sender: " + s.sender : "";
+
+      document.getElementById("pwForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await api("/api/auth/change-password", { method: "POST",
+            body: { currentPassword: document.getElementById("cur").value, newPassword: document.getElementById("nw").value } });
+          e.target.reset(); toast("Password updated");
+        } catch (ex) { toast(ex.error || "Could not update password", true); }
+      });
     })().catch(e => toast(e.error || "Error", true));
   </script>
 </body>
