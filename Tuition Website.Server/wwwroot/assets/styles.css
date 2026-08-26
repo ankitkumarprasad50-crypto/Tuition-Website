@@ -140,6 +140,21 @@ a { color: inherit; }
 .teacher__bio { color: var(--muted); line-height: 1.65; }
 @media (max-width: 640px) { .teachers { grid-template-columns: 1fr; } }
 
+/* ---- Teachers carousel (home) ------------------------------------------- */
+.tcar { position: relative; max-width: 680px; margin: 0 auto; overflow: hidden; }
+.tcar__track { display: flex; transition: transform .5s ease; }
+.tcar__slide { min-width: 100%; padding: .3rem .3rem 0; }
+.tcar__slide .teacher { width: 100%; }
+.tcar__arrow { position: absolute; top: 42%; transform: translateY(-50%); width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.92); box-shadow: var(--shadow-sm); color: var(--terracotta-dark);
+  font-size: 1.5rem; line-height: 1; cursor: pointer; z-index: 2; }
+.tcar__arrow:hover { background: #fff; }
+.tcar__prev { left: .3rem; } .tcar__next { right: .3rem; }
+.tcar__dots { display: flex; justify-content: center; gap: .5rem; margin-top: 1rem; }
+.tcar__dot { width: 10px; height: 10px; border-radius: 50%; border: none; background: var(--peach-deep); cursor: pointer; padding: 0; transition: .2s; }
+.tcar__dot.is-active { background: var(--terracotta); width: 26px; border-radius: 6px; }
+@media (max-width: 640px) { .tcar__arrow { width: 34px; height: 34px; font-size: 1.3rem; } }
+
 /* ---- Cards grid (subjects / generic) ------------------------------------ */
 .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
 .card-item { background: #fff; border-radius: var(--radius); padding: 1.6rem; border: 1px solid var(--peach); box-shadow: var(--shadow-sm); transition: transform .18s ease, box-shadow .2s ease; }

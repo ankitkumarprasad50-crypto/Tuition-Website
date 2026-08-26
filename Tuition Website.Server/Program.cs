@@ -148,7 +148,26 @@ publicApi.MapPost("enroll", (EnrollmentRequest request, ILogger<Program> logger)
 app.MapAdminApi();
 
 app.MapDefaultEndpoints();
-app.UseFileServer();
+
+// Serve static files with cache headers that make updates appear immediately:
+// HTML/CSS/JS always revalidate (ETag -> 304 if unchanged, fresh copy if changed),
+// while images/fonts cache for a day. No browser hard-refresh / incognito needed.
+app.UseFileServer(new FileServerOptions
+{
+    StaticFileOptions =
+    {
+        OnPrepareResponse = ctx =>
+        {
+            var name = ctx.File.Name.ToLowerInvariant();
+            var headers = ctx.Context.Response.Headers;
+            if (name.EndsWith(".html") || name.EndsWith(".css") || name.EndsWith(".js"))
+                headers.CacheControl = "no-cache";
+            else
+                headers.CacheControl = "public, max-age=86400";
+        }
+    }
+});
+
 app.Run();
 
 record EnrollmentRequest(string ParentName, string StudentName, string? StudentClass, string? Subjects, string Phone, string? Message);

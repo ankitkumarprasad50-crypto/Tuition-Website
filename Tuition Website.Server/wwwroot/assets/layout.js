@@ -5,7 +5,7 @@
 
 const SITE = {
   name: "Vidya Vriksh Tuition",
-  tagline: "Caring, all-subject tuition for primary school children in Kovvur",
+  tagline: "Caring, all-subject tuition for school students up to Class 9 in Kovvur",
   phoneDisplay: "+91 83400 77114",
   phoneLink: "+918340077114",
   whatsapp: "918340077114",            // country code + number, digits only
@@ -21,7 +21,8 @@ const NAV = [
   { href: "/about.html",   label: "About" },
   { href: "/courses.html", label: "Courses" },
   { href: "/fees.html",    label: "Fees" },
-  { href: "/gallery.html", label: "Gallery" },
+  // Gallery hidden until real photos are ready:
+  // { href: "/gallery.html", label: "Gallery" },
   { href: "/faq.html",     label: "FAQ" },
   { href: "/contact.html", label: "Contact" },
 ];
@@ -83,7 +84,7 @@ function buildFooter() {
           <p>${SITE.address}</p>
         </div>
       </div>
-      <p class="footer__copy">© <span id="yr"></span> ${SITE.name}. Made with care. ❤️ · <a href="/admin/" style="color:rgba(255,255,255,.6)">Teacher login</a></p>
+      <p class="footer__copy">© <span id="yr"></span> ${SITE.name} · Website by <strong>Ankit Kumar</strong> · <a href="/admin/" style="color:rgba(255,255,255,.6)">Teacher login</a></p>
     </footer>`;
 }
 
