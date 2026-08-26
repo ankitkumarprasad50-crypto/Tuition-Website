@@ -84,7 +84,7 @@ function buildFooter() {
           <p>${SITE.address}</p>
         </div>
       </div>
-      <p class="footer__copy">© <span id="yr"></span> ${SITE.name} · Website by <strong>Ankit Kumar</strong> · <a href="/admin/" style="color:rgba(255,255,255,.6)">Teacher login</a></p>
+      <p class="footer__copy">© <span id="yr"></span> ${SITE.name} · Website by <strong>Ankit Kumar</strong> · <a href="/parent/" style="color:rgba(255,255,255,.6)">Parent login</a> · <a href="/admin/" style="color:rgba(255,255,255,.6)">Teacher login</a></p>
     </footer>`;
 }
 

@@ -13,10 +13,12 @@ public class AppDbContext : DbContext
     public DbSet<Test> Tests => Set<Test>();
     public DbSet<Mark> Marks => Set<Mark>();
     public DbSet<EmailConfig> EmailConfigs => Set<EmailConfig>();
+    public DbSet<Parent> Parents => Set<Parent>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
         b.Entity<Teacher>().HasIndex(t => t.Email).IsUnique();
+        b.Entity<Parent>().HasIndex(p => p.Email).IsUnique();
         b.Entity<Mark>().HasIndex(m => new { m.StudentId, m.TestId }).IsUnique();
 
         // Keep data tidy when a teacher/test/student is removed.
@@ -44,6 +46,13 @@ public class AppDbContext : DbContext
                 ""ProtectedAppPassword"" TEXT NOT NULL,
                 ""FromName"" TEXT NOT NULL,
                 ""UpdatedAt"" TEXT NOT NULL);");
+        db.Database.ExecuteSqlRaw(
+            @"CREATE TABLE IF NOT EXISTS ""Parents"" (
+                ""Id"" INTEGER NOT NULL CONSTRAINT ""PK_Parents"" PRIMARY KEY AUTOINCREMENT,
+                ""Email"" TEXT NOT NULL,
+                ""PasswordHash"" TEXT NOT NULL,
+                ""CreatedAt"" TEXT NOT NULL);
+              CREATE UNIQUE INDEX IF NOT EXISTS ""IX_Parents_Email"" ON ""Parents"" (""Email"");");
         if (!db.Teachers.Any())
         {
             db.Teachers.Add(

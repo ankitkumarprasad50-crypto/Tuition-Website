@@ -30,6 +30,17 @@
       <div class="chart-card"><h3>Progress trend</h3><div class="sub">How results are changing over time</div><div id="lineChart"></div></div>
     </div>
 
+    <!-- Parent login access -->
+    <div class="card mt">
+      <div class="stat__label" style="margin-bottom:.5rem">Parent login access</div>
+      <p class="muted" id="paInfo" style="margin-bottom:.7rem">Loading…</p>
+      <form id="paForm" class="row" style="max-width:520px;display:none">
+        <input id="paPw" type="text" placeholder="Set a parent password (min 6 chars)" minlength="6" required
+          style="flex:1;min-width:180px;padding:.6rem .75rem;border-radius:10px;border:2px solid var(--peach-deep);background:var(--cream);font-family:inherit;font-size:1rem" />
+        <button class="btn btn--sage btn--sm" type="submit">Save</button>
+      </form>
+    </div>
+
     <!-- Marks entry -->
     <div class="page-head mt"><h1 style="font-size:1.3rem">Record marks</h1>
       <a class="btn btn--ghost btn--sm" href="/admin/tests">Manage tests</a></div>
@@ -109,11 +120,38 @@
       finally { btn.disabled = false; btn.textContent = "✉️ Email report to parent"; }
     });
 
+    async function loadParentAccess() {
+      const info = document.getElementById("paInfo");
+      const form = document.getElementById("paForm");
+      try {
+        const pa = await api(`/api/students/${id}/parent-access`);
+        if (!pa.parentEmail) {
+          info.textContent = "Add a parent email (Edit the student) to enable parent login.";
+          form.style.display = "none";
+          return;
+        }
+        info.innerHTML = pa.hasAccess
+          ? `✅ The parent can sign in at <strong>/parent/</strong> with <strong>${escapeHtml(pa.parentEmail)}</strong>. Set a new password below to reset it.`
+          : `Set a password so <strong>${escapeHtml(pa.parentEmail)}</strong> can sign in at <strong>/parent/</strong> and view this child's report.`;
+        form.style.display = "flex";
+      } catch { info.textContent = "Could not load parent access."; }
+    }
+    document.getElementById("paForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        const pa = await api(`/api/students/${id}/parent-access`, { method: "POST", body: { password: document.getElementById("paPw").value } });
+        document.getElementById("paPw").value = "";
+        toast("Parent login ready — share the email + password with " + (pa.parentEmail || "the parent"));
+        loadParentAccess();
+      } catch (ex) { toast(ex.error || "Could not save", true); }
+    });
+
     (async () => {
       if (!(await initShell("/admin/students"))) return;
       if (!id) { toast("No student selected", true); return; }
       await loadReport();
       await loadMarks();
+      await loadParentAccess();
     })().catch(e => toast(e.error || "Something went wrong", true));
   </script>
 </body>

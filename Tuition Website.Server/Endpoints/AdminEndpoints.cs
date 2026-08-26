@@ -31,6 +31,7 @@ public static class AdminEndpoints
                 new(ClaimTypes.NameIdentifier, teacher.Id.ToString()),
                 new(ClaimTypes.Name, teacher.Name),
                 new(ClaimTypes.Email, teacher.Email),
+                new(ClaimTypes.Role, "Teacher"),
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
@@ -41,7 +42,7 @@ public static class AdminEndpoints
         {
             await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Results.Ok();
-        }).RequireAuthorization();
+        }).RequireAuthorization("Teacher");
 
         auth.MapGet("me", (HttpContext http) => Results.Ok(new
         {
@@ -62,7 +63,7 @@ public static class AdminEndpoints
             teacher.PasswordHash = PasswordHasher.Hash(req.NewPassword!);
             await db.SaveChangesAsync();
             return Results.Ok();
-        }).RequireAuthorization();
+        }).RequireAuthorization("Teacher");
 
         auth.MapPost("change-email", async (ChangeEmailRequest req, HttpContext http, AppDbContext db) =>
         {
@@ -77,10 +78,10 @@ public static class AdminEndpoints
             teacher.Email = email;
             await db.SaveChangesAsync();
             return Results.Ok(new { teacher.Email });
-        }).RequireAuthorization();
+        }).RequireAuthorization("Teacher");
 
-        // ---- Authenticated API --------------------------------------------
-        var api = app.MapGroup("/api").RequireAuthorization();
+        // ---- Authenticated API (teachers) ---------------------------------
+        var api = app.MapGroup("/api").RequireAuthorization("Teacher");
 
         // Teachers (any teacher can add another)
         api.MapGet("teachers", async (AppDbContext db) =>
@@ -274,6 +275,34 @@ public static class AdminEndpoints
             }
         });
 
+        // Parent login access for a student (keyed on the student's parent email)
+        api.MapGet("students/{id:int}/parent-access", async (int id, HttpContext http, AppDbContext db) =>
+        {
+            var tid = CurrentTeacherId(http)!.Value;
+            var s = await db.Students.FirstOrDefaultAsync(x => x.Id == id && x.TeacherId == tid);
+            if (s is null) return Results.NotFound();
+            var email = (s.ParentEmail ?? "").Trim().ToLowerInvariant();
+            var hasAccess = !string.IsNullOrWhiteSpace(email) && await db.Parents.AnyAsync(p => p.Email.ToLower() == email);
+            return Results.Ok(new { parentEmail = s.ParentEmail, hasAccess });
+        });
+
+        api.MapPost("students/{id:int}/parent-access", async (int id, ParentAccessRequest req, HttpContext http, AppDbContext db) =>
+        {
+            var tid = CurrentTeacherId(http)!.Value;
+            var s = await db.Students.FirstOrDefaultAsync(x => x.Id == id && x.TeacherId == tid);
+            if (s is null) return Results.NotFound();
+            var email = (s.ParentEmail ?? "").Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+                return Results.BadRequest(new { error = "Add a parent email on the student's Edit form first." });
+            if ((req.Password ?? "").Length < 6)
+                return Results.BadRequest(new { error = "Password must be at least 6 characters." });
+            var parent = await db.Parents.FirstOrDefaultAsync(p => p.Email.ToLower() == email);
+            if (parent is null) { parent = new Parent { Email = email }; db.Parents.Add(parent); }
+            parent.PasswordHash = PasswordHasher.Hash(req.Password!);
+            await db.SaveChangesAsync();
+            return Results.Ok(new { parentEmail = s.ParentEmail });
+        });
+
         // Email configuration status (no secrets exposed)
         api.MapGet("settings/email", (EmailSender email) =>
             Results.Ok(new { configured = email.IsConfigured, sender = email.Sender ?? "" }));
@@ -309,6 +338,7 @@ public record LoginRequest(string? Email, string? Password);
 public record ChangePasswordRequest(string? CurrentPassword, string? NewPassword);
 public record ChangeEmailRequest(string? Email);
 public record EmailConfigRequest(string? Sender, string? AppPassword, string? FromName);
+public record ParentAccessRequest(string? Password);
 public record TeacherRequest(string? Name, string? Email, string? Password);
 public record StudentRequest(string? Name, string? ClassName, string? ParentName, string? ParentEmail, string? ParentPhone, string? Notes);
 public record TestRequest(string? Name, string? Subject, DateOnly? Date, int MaxMarks);

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Parent Portal — Vidya Vriksh</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/admin.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-head"><div><h1>My children</h1><p id="welcome" class="muted"></p></div></div>
+    <div id="children"><div class="card"><div class="empty">Loading…</div></div></div>
+  </div>
+
+  <script src="/parent/assets/parent.js"></script>
+  <script>
+    (async () => {
+      const me = await initParentShell();
+      if (!me) return;
+      document.getElementById("welcome").textContent = "Signed in as " + me.email;
+
+      const children = await api("/api/parent/children");
+      const wrap = document.getElementById("children");
+      if (!children.length) {
+        wrap.innerHTML = `<div class="card"><div class="empty">No student records are linked to your email yet. Please ask the tuition to set this up.</div></div>`;
+        return;
+      }
+      wrap.innerHTML = "";
+      for (const c of children) {
+        const r = await api(`/api/parent/children/${c.id}/report`);
+        const chartData = r.rows.map(x => ({ label: x.test, value: x.percent }));
+        const rowsHtml = r.rows.length ? r.rows.map(x => `
+          <tr>
+            <td><strong>${escapeHtml(x.test)}</strong></td>
+            <td>${escapeHtml(x.subject) || "—"}</td>
+            <td>${x.date}</td>
+            <td>${x.score}/${x.maxMarks}</td>
+            <td><span class="pill ${pillClass(x.percent)}">${x.percent}%</span></td>
+          </tr>`).join("") : `<tr><td colspan="5" class="empty">No tests recorded yet.</td></tr>`;
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.marginBottom = "1.6rem";
+        card.innerHTML = `
+          <div class="page-head" style="margin-bottom:1rem">
+            <div><h2 style="font-size:1.35rem">${escapeHtml(r.studentName)}</h2>
+              <p class="muted">${escapeHtml(r.className) || ""}${r.teacherName ? " · Teacher: " + escapeHtml(r.teacherName) : ""}</p></div>
+          </div>
+          <div class="report-hero">
+            <div><div class="stat__label">Overall average</div><div class="big">${r.rows.length ? r.averagePercent + "%" : "—"}</div></div>
+            <div class="verdict">${escapeHtml(r.verdict)}</div>
+          </div>
+          <div class="charts">
+            <div class="chart-card"><h3>Marks by test</h3><div class="sub">Percentage scored in each test</div>${barChart(chartData)}</div>
+            <div class="chart-card"><h3>Progress trend</h3><div class="sub">How results are changing over time</div>${lineChart(chartData)}</div>
+          </div>
+          <div class="table-card mt">
+            <div class="table-wrap"><table class="data">
+              <thead><tr><th>Test</th><th>Subject</th><th>Date</th><th>Score</th><th>Result</th></tr></thead>
+              <tbody>${rowsHtml}</tbody>
+            </table></div>
+          </div>`;
+        wrap.appendChild(card);
+      }
+    })().catch(e => { document.getElementById("children").innerHTML = `<div class="card"><div class="empty">Something went wrong loading your reports.</div></div>`; });
+  </script>
+</body>
+</html>

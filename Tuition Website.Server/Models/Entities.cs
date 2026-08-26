@@ -16,6 +16,16 @@ public class Teacher
     public List<Test> Tests { get; set; } = new();
 }
 
+// A parent login. Linked to students by matching email (Student.ParentEmail).
+// A parent can therefore see all of their children in one login.
+public class Parent
+{
+    public int Id { get; set; }
+    [MaxLength(200)] public string Email { get; set; } = "";
+    public string PasswordHash { get; set; } = "";
+    public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
+}
+
 // A student, assigned to the teacher who added them.
 public class Student
 {

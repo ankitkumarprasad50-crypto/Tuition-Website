@@ -53,7 +53,11 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
             return Task.CompletedTask;
         };
     });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(o =>
+{
+    o.AddPolicy("Teacher", p => p.RequireAuthenticatedUser().RequireRole("Teacher"));
+    o.AddPolicy("Parent", p => p.RequireAuthenticatedUser().RequireRole("Parent"));
+});
 
 var app = builder.Build();
 
@@ -108,19 +112,28 @@ app.Use(async (ctx, next) =>
     await next();
 });
 
-// Protect the admin pages (login page + admin assets stay public).
+// Protect the portal pages. Teachers -> /admin, parents -> /parent. Login pages
+// and assets stay public. Wrong-role users are bounced to the right login.
+static bool IsProtectedPage(string path, string area) =>
+    path.StartsWith(area, StringComparison.OrdinalIgnoreCase)
+    && !path.StartsWith(area + "/assets", StringComparison.OrdinalIgnoreCase)
+    && !path.Equals(area + "/login.html", StringComparison.OrdinalIgnoreCase)
+    && (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
+        || path.Equals(area, StringComparison.OrdinalIgnoreCase)
+        || path.Equals(area + "/", StringComparison.OrdinalIgnoreCase));
+
 app.Use(async (ctx, next) =>
 {
     var path = ctx.Request.Path.Value ?? "";
-    var isAdminPage = path.StartsWith("/admin", StringComparison.OrdinalIgnoreCase)
-        && !path.StartsWith("/admin/assets", StringComparison.OrdinalIgnoreCase)
-        && !path.Equals("/admin/login.html", StringComparison.OrdinalIgnoreCase)
-        && (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase)
-            || path.Equals("/admin", StringComparison.OrdinalIgnoreCase)
-            || path.Equals("/admin/", StringComparison.OrdinalIgnoreCase));
-    if (isAdminPage && !(ctx.User.Identity?.IsAuthenticated ?? false))
+    var authed = ctx.User.Identity?.IsAuthenticated ?? false;
+    if (IsProtectedPage(path, "/admin") && !(authed && ctx.User.IsInRole("Teacher")))
     {
         ctx.Response.Redirect("/admin/login");
+        return;
+    }
+    if (IsProtectedPage(path, "/parent") && !(authed && ctx.User.IsInRole("Parent")))
+    {
+        ctx.Response.Redirect("/parent/login");
         return;
     }
     await next();
@@ -221,6 +234,7 @@ publicApi.MapPost("enroll", async (EnrollmentRequest request, ILogger<Program> l
 // Teacher portal API (auth, teachers, students, tests, marks, reports, email).
 // ---------------------------------------------------------------------------
 app.MapAdminApi();
+app.MapParentApi();
 
 app.MapDefaultEndpoints();
 
