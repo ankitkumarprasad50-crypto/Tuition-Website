@@ -71,7 +71,7 @@
       try { await api("/api/teachers", { method: "POST", body }); closeModal("modal"); e.target.reset(); toast("Teacher added"); load(); }
       catch (ex) { toast(ex.error || "Could not add", true); }
     });
-    (async () => { me = await initShell("/admin/teachers.html"); if (me) load(); })();
+    (async () => { me = await initShell("/admin/teachers"); if (me) load(); })();
   </script>
 </body>
 </html>

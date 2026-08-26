@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `Student: ${d.get("studentName") || ""}\n` +
       `Class: ${d.get("studentClass") || ""}\n` +
       `Subjects: ${d.get("subjects") || ""}\n` +
-      `Phone: ${d.get("phone") || ""}`;
+      `Phone: ${(d.get("countryCode") || "")} ${d.get("phone") || ""}`;
     if (whatsappBtn) whatsappBtn.href = `https://wa.me/${wa}?text=${encodeURIComponent(text)}`;
   }
   form.addEventListener("input", updateWhatsappLink);
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
       studentName: d.get("studentName"),
       studentClass: d.get("studentClass"),
       subjects: d.get("subjects"),
-      phone: d.get("phone"),
+      phone: ((d.get("countryCode") || "") + " " + (d.get("phone") || "")).trim(),
       message: d.get("message"),
     };
 

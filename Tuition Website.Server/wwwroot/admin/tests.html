@@ -79,7 +79,7 @@
       try { await api("/api/tests", { method: "POST", body }); closeModal("modal"); e.target.reset(); toast("Test added"); load(); }
       catch (ex) { toast(ex.error || "Could not save", true); }
     });
-    (async () => { if (await initShell("/admin/tests.html")) load(); })();
+    (async () => { if (await initShell("/admin/tests")) load(); })();
   </script>
 </body>
 </html>

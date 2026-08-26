@@ -14,13 +14,13 @@
   <div class="wrap">
     <div class="page-head">
       <div><h1>Dashboard</h1><p id="welcome" class="muted"></p></div>
-      <a class="btn btn--primary" href="/admin/students.html">+ Manage Students</a>
+      <a class="btn btn--primary" href="/admin/students">+ Manage Students</a>
     </div>
 
     <div class="cards" id="stats"></div>
 
     <div class="page-head mt"><h1 style="font-size:1.3rem">Your students</h1>
-      <a class="btn btn--ghost btn--sm" href="/admin/students.html">View all</a></div>
+      <a class="btn btn--ghost btn--sm" href="/admin/students">View all</a></div>
     <div class="table-card">
       <div class="table-wrap">
         <table class="data">
@@ -51,14 +51,14 @@
         <div class="card stat"><span class="stat__num">${teachers.length}</span><span class="stat__label">Teachers</span></div>`;
 
       const rows = document.getElementById("rows");
-      if (!students.length) { rows.innerHTML = `<tr><td colspan="5" class="empty">No students yet. <a href="/admin/students.html">Add your first student</a>.</td></tr>`; return; }
+      if (!students.length) { rows.innerHTML = `<tr><td colspan="5" class="empty">No students yet. <a href="/admin/students">Add your first student</a>.</td></tr>`; return; }
       rows.innerHTML = students.slice(0, 8).map(s => `
         <tr>
           <td><strong>${escapeHtml(s.name)}</strong></td>
           <td>${escapeHtml(s.className) || "—"}</td>
           <td>${s.tests}</td>
           <td><span class="pill ${pillClass(s.average)}">${s.tests ? s.average + "%" : "—"}</span></td>
-          <td><a class="btn btn--sage btn--sm" href="/admin/student.html?id=${s.id}">Open</a></td>
+          <td><a class="btn btn--sage btn--sm" href="/admin/student?id=${s.id}">Open</a></td>
         </tr>`).join("");
     })().catch(e => toast(e.error || "Something went wrong", true));
   </script>

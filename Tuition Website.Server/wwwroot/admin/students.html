@@ -59,14 +59,14 @@
       if (!students.length) { rows.innerHTML = `<tr><td colspan="7" class="empty">No students yet. Click “Add Student”.</td></tr>`; return; }
       rows.innerHTML = students.map(s => `
         <tr>
-          <td><a href="/admin/student.html?id=${s.id}"><strong>${escapeHtml(s.name)}</strong></a></td>
+          <td><a href="/admin/student?id=${s.id}"><strong>${escapeHtml(s.name)}</strong></a></td>
           <td>${escapeHtml(s.className) || "—"}</td>
           <td>${escapeHtml(s.parentName) || "—"}</td>
           <td>${escapeHtml(s.parentPhone) || "—"}</td>
           <td>${s.tests}</td>
           <td><span class="pill ${pillClass(s.average)}">${s.tests ? s.average + "%" : "—"}</span></td>
           <td class="actions">
-            <a class="btn btn--sage btn--sm" href="/admin/student.html?id=${s.id}">Open</a>
+            <a class="btn btn--sage btn--sm" href="/admin/student?id=${s.id}">Open</a>
             <button class="btn btn--ghost btn--sm" onclick="edit(${s.id})">Edit</button>
             <button class="btn btn--danger btn--sm" onclick="del(${s.id},'${escapeHtml(s.name).replace(/'/g,"\\'")}')">✕</button>
           </td>
@@ -104,7 +104,7 @@
         closeModal("modal"); toast("Saved"); load();
       } catch (ex) { toast(ex.error || "Could not save", true); }
     });
-    (async () => { if (await initShell("/admin/students.html")) load(); })();
+    (async () => { if (await initShell("/admin/students")) load(); })();
   </script>
 </body>
 </html>

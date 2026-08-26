@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="crumb"><a href="/admin/students.html">← Students</a></div>
+    <div class="crumb"><a href="/admin/students">← Students</a></div>
     <div class="page-head">
       <div><h1 id="sname">Student</h1><p id="sinfo" class="muted"></p></div>
       <button class="btn btn--primary" id="emailBtn">✉️ Email report to parent</button>
@@ -32,7 +32,7 @@
 
     <!-- Marks entry -->
     <div class="page-head mt"><h1 style="font-size:1.3rem">Record marks</h1>
-      <a class="btn btn--ghost btn--sm" href="/admin/tests.html">Manage tests</a></div>
+      <a class="btn btn--ghost btn--sm" href="/admin/tests">Manage tests</a></div>
     <div class="table-card">
       <div class="table-wrap">
         <table class="data">
@@ -69,7 +69,7 @@
     async function loadMarks() {
       const rows = await api(`/api/students/${id}/marks`);
       const body = document.getElementById("marks");
-      if (!rows.length) { body.innerHTML = `<tr><td colspan="5" class="empty">No tests yet. <a href="/admin/tests.html">Create a test</a> first.</td></tr>`; return; }
+      if (!rows.length) { body.innerHTML = `<tr><td colspan="5" class="empty">No tests yet. <a href="/admin/tests">Create a test</a> first.</td></tr>`; return; }
       body.innerHTML = rows.map(m => `
         <tr>
           <td><strong>${escapeHtml(m.test)}</strong></td>
@@ -110,7 +110,7 @@
     });
 
     (async () => {
-      if (!(await initShell("/admin/students.html"))) return;
+      if (!(await initShell("/admin/students"))) return;
       if (!id) { toast("No student selected", true); return; }
       await loadReport();
       await loadMarks();

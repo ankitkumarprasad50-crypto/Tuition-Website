@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         // but allow http in local development.
         o.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
             ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
-        o.LoginPath = "/admin/login.html";
+        o.LoginPath = "/admin/login";
         o.ExpireTimeSpan = TimeSpan.FromDays(7);
         o.SlidingExpiration = true;
         // API calls should get 401 (not an HTML redirect) when unauthenticated.
@@ -79,7 +79,36 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Protect the admin HTML pages (login page + admin assets stay public).
+// Clean URLs: 301 any "*.html" to its extensionless URL, and internally serve
+// "/about" from "about.html" so the site looks like a proper website.
+var webRoot = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+app.Use(async (ctx, next) =>
+{
+    var req = ctx.Request;
+    var path = req.Path.Value ?? "/";
+    if (!path.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
+    {
+        if (path.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+        {
+            var clean = path[..^5];                          // strip ".html"
+            if (clean.EndsWith("/index")) clean = clean[..^5]; // ".../index" -> ".../"
+            if (clean.Length == 0) clean = "/";
+            ctx.Response.StatusCode = StatusCodes.Status301MovedPermanently;
+            ctx.Response.Headers.Location = clean + req.QueryString;
+            return;
+        }
+        // Extensionless -> serve the matching .html file if it exists
+        if (!Path.HasExtension(path) && path != "/" && !path.EndsWith("/"))
+        {
+            var rel = path.TrimStart('/').Replace('/', Path.DirectorySeparatorChar) + ".html";
+            if (File.Exists(Path.Combine(webRoot, rel)))
+                req.Path = path + ".html";
+        }
+    }
+    await next();
+});
+
+// Protect the admin pages (login page + admin assets stay public).
 app.Use(async (ctx, next) =>
 {
     var path = ctx.Request.Path.Value ?? "";
@@ -91,7 +120,7 @@ app.Use(async (ctx, next) =>
             || path.Equals("/admin/", StringComparison.OrdinalIgnoreCase));
     if (isAdminPage && !(ctx.User.Identity?.IsAuthenticated ?? false))
     {
-        ctx.Response.Redirect("/admin/login.html");
+        ctx.Response.Redirect("/admin/login");
         return;
     }
     await next();
@@ -104,7 +133,7 @@ var enrollmentsFile = Path.Combine(app.Environment.ContentRootPath, "enrollments
 var fileLock = new object();
 var publicApi = app.MapGroup("/api");
 
-publicApi.MapPost("enroll", (EnrollmentRequest request, ILogger<Program> logger) =>
+publicApi.MapPost("enroll", async (EnrollmentRequest request, ILogger<Program> logger, AppDbContext db, EmailSender email) =>
 {
     if (string.IsNullOrWhiteSpace(request.ParentName)
         || string.IsNullOrWhiteSpace(request.StudentName)
@@ -139,7 +168,53 @@ publicApi.MapPost("enroll", (EnrollmentRequest request, ILogger<Program> logger)
         logger.LogError(ex, "Could not persist enrollment to {File}", enrollmentsFile);
     }
 
+    // Email every teacher the full enquiry details (sent from the configured Gmail).
+    try
+    {
+        if (email.IsConfigured)
+        {
+            var html = BuildEnquiryEmail(record);
+            var subject = $"New tuition enquiry — {record.StudentName} ({record.StudentClass})";
+            var teachers = await db.Teachers.Select(t => new { t.Name, t.Email }).ToListAsync();
+            foreach (var t in teachers)
+                if (!string.IsNullOrWhiteSpace(t.Email) && t.Email.Contains('@'))
+                    await email.SendAsync(t.Email, t.Name, subject, html);
+        }
+        else
+        {
+            logger.LogWarning("Enquiry received but email is not configured; teachers not notified.");
+        }
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Could not email enquiry to teachers.");
+    }
+
     return Results.Ok(new { ok = true, id = record.Id });
+
+    static string BuildEnquiryEmail(EnrollmentRecord r)
+    {
+        static string E(string s) => System.Net.WebUtility.HtmlEncode(s ?? "");
+        var ist = r.ReceivedAt.ToOffset(TimeSpan.FromHours(5.5)).ToString("dd MMM yyyy, h:mm tt") + " IST";
+        return $@"<div style=""font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#3D342A"">
+  <div style=""background:#E07A5F;color:#fff;padding:18px 22px;border-radius:12px 12px 0 0"">
+    <div style=""font-size:18px;font-weight:bold"">🌳 Vidya Vriksh Tuition</div>
+    <div style=""opacity:.9;font-size:13px"">New enquiry from the website</div>
+  </div>
+  <div style=""border:1px solid #F6D9C6;border-top:none;border-radius:0 0 12px 12px;padding:20px"">
+    <table style=""width:100%;border-collapse:collapse;font-size:14px"">
+      <tr><td style=""padding:6px 0;color:#7D7264;width:120px"">Parent</td><td style=""padding:6px 0;font-weight:bold"">{E(r.ParentName)}</td></tr>
+      <tr><td style=""padding:6px 0;color:#7D7264"">Student</td><td style=""padding:6px 0;font-weight:bold"">{E(r.StudentName)}</td></tr>
+      <tr><td style=""padding:6px 0;color:#7D7264"">Class</td><td style=""padding:6px 0"">{E(r.StudentClass)}</td></tr>
+      <tr><td style=""padding:6px 0;color:#7D7264"">Subjects</td><td style=""padding:6px 0"">{E(r.Subjects)}</td></tr>
+      <tr><td style=""padding:6px 0;color:#7D7264"">Phone</td><td style=""padding:6px 0""><a href=""tel:{E(r.Phone)}"">{E(r.Phone)}</a></td></tr>
+      <tr><td style=""padding:6px 0;color:#7D7264"">Message</td><td style=""padding:6px 0"">{E(r.Message)}</td></tr>
+      <tr><td style=""padding:6px 0;color:#7D7264"">Received</td><td style=""padding:6px 0"">{ist}</td></tr>
+    </table>
+    <p style=""margin-top:16px;color:#7D7264;font-size:13px"">Please reach out to the parent soon.</p>
+  </div>
+</div>";
+    }
 });
 
 // ---------------------------------------------------------------------------

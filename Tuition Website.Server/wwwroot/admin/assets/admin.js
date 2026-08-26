@@ -4,10 +4,10 @@
 
 const ADMIN_NAV = [
   { href: "/admin/", label: "Dashboard" },
-  { href: "/admin/students.html", label: "Students" },
-  { href: "/admin/tests.html", label: "Tests" },
-  { href: "/admin/teachers.html", label: "Teachers" },
-  { href: "/admin/settings.html", label: "Settings" },
+  { href: "/admin/students", label: "Students" },
+  { href: "/admin/tests", label: "Tests" },
+  { href: "/admin/teachers", label: "Teachers" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 // ---- API helper ------------------------------------------------------------
@@ -18,7 +18,7 @@ async function api(path, opts = {}) {
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
   if (res.status === 401 && !opts.noRedirect) {
-    location.href = "/admin/login.html";
+    location.href = "/admin/login";
     throw { status: 401, error: "Not signed in" };
   }
   let data = null;
@@ -49,7 +49,7 @@ async function initShell(activeHref) {
 
   document.getElementById("logoutBtn").addEventListener("click", async () => {
     await api("/api/auth/logout", { method: "POST" });
-    location.href = "/admin/login.html";
+    location.href = "/admin/login";
   });
   const menuBtn = document.getElementById("menuBtn");
   menuBtn && menuBtn.addEventListener("click", () => document.getElementById("topnav").classList.toggle("show"));
@@ -57,7 +57,7 @@ async function initShell(activeHref) {
 }
 
 function samePath(a, b) {
-  const norm = (p) => (p.endsWith("/index.html") ? p.slice(0, -10) : p).toLowerCase();
+  const norm = (p) => (p.endsWith("/index") ? p.slice(0, -10) : p).toLowerCase();
   return norm(a) === norm(b || location.pathname);
 }
 

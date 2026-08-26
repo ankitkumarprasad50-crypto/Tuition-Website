@@ -226,6 +226,9 @@ a.contact__card:hover { transform: translateY(-3px); }
 .field input, .field textarea, .field select { font-family: inherit; font-size: 1rem; padding: .75rem .9rem; border-radius: 12px; border: 2px solid var(--peach-deep); background: var(--cream); color: var(--ink); transition: border .15s; }
 .field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: var(--terracotta); }
 .field textarea { resize: vertical; }
+.phone-row { display: flex; gap: .5rem; }
+.phone-row select { flex: 0 0 auto; width: auto; }
+.phone-row input { flex: 1 1 auto; min-width: 0; }
 .enquiry__actions { display: flex; gap: .8rem; flex-wrap: wrap; margin-top: .4rem; }
 .enquiry__error { color: var(--terracotta-dark); font-weight: 700; }
 .enquiry__success { text-align: center; background: #fff; border-radius: var(--radius); padding: 2.5rem 2rem; box-shadow: var(--shadow); border: 1px solid var(--peach-deep); }

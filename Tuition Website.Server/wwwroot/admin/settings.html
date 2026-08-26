@@ -70,7 +70,7 @@ dotnet user-secrets set "Email:FromName" "Vidya Vriksh Tuition"</pre>
   <script src="/admin/assets/admin.js"></script>
   <script>
     (async () => {
-      const me = await initShell("/admin/settings.html");
+      const me = await initShell("/admin/settings");
       if (!me) return;
 
       const emInput = document.getElementById("em");

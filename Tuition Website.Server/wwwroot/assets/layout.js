@@ -17,14 +17,14 @@ const SITE = {
 window.SITE = SITE;
 
 const NAV = [
-  { href: "/",             label: "Home" },
-  { href: "/about.html",   label: "About" },
-  { href: "/courses.html", label: "Courses" },
-  { href: "/fees.html",    label: "Fees" },
+  { href: "/",         label: "Home" },
+  { href: "/about",    label: "About" },
+  { href: "/courses",  label: "Courses" },
+  { href: "/fees",     label: "Fees" },
   // Gallery hidden until real photos are ready:
-  // { href: "/gallery.html", label: "Gallery" },
-  { href: "/faq.html",     label: "FAQ" },
-  { href: "/contact.html", label: "Contact" },
+  // { href: "/gallery", label: "Gallery" },
+  { href: "/faq",      label: "FAQ" },
+  { href: "/contact",  label: "Contact" },
 ];
 
 // Which nav item is the current page?
@@ -55,7 +55,7 @@ function buildHeader() {
       </button>
       <nav class="nav__links" id="navLinks">
         ${links}
-        <a class="nav__cta" href="/contact.html#enquiry">Enrol Now</a>
+        <a class="nav__cta" href="/contact#enquiry">Enrol Now</a>
       </nav>
     </header>`;
 }

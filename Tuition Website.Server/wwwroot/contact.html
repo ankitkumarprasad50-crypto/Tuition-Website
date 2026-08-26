@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contact &amp; Enrol — Vidya Vriksh Tuition</title>
   <meta name="description" content="Contact Vidya Vriksh Tuition in Kovvur — call, WhatsApp, or send an enrolment enquiry for your child. Located near Kovvur railway station." />
-  <link rel="canonical" href="https://hrm99.com/contact.html" />
+  <link rel="canonical" href="https://hrm99.com/contact" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Vidya Vriksh Tuition" />
   <meta property="og:title" content="Contact &amp; Enrol — Vidya Vriksh Tuition" />
   <meta property="og:description" content="Call, WhatsApp or send an enquiry to enrol your child at Vidya Vriksh Tuition, Kovvur." />
-  <meta property="og:url" content="https://hrm99.com/contact.html" />
+  <meta property="og:url" content="https://hrm99.com/contact" />
   <meta property="og:image" content="https://hrm99.com/assets/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
@@ -100,7 +100,21 @@
           </div>
           <div class="field">
             <label for="phone">Phone number</label>
-            <input id="phone" name="phone" type="tel" required placeholder="Your contact number" />
+            <div class="phone-row">
+              <select id="countryCode" name="countryCode" aria-label="Country code">
+                <option value="+91" selected>🇮🇳 +91</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+65">🇸🇬 +65</option>
+                <option value="+60">🇲🇾 +60</option>
+                <option value="+64">🇳🇿 +64</option>
+                <option value="+974">🇶🇦 +974</option>
+                <option value="+966">🇸🇦 +966</option>
+              </select>
+              <input id="phone" name="phone" type="tel" required placeholder="Your contact number" />
+            </div>
           </div>
           <div class="field field--full">
             <label for="message">Anything else? (optional)</label>
