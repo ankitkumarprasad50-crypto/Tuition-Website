@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Student> Students => Set<Student>();
     public DbSet<Test> Tests => Set<Test>();
     public DbSet<Mark> Marks => Set<Mark>();
+    public DbSet<EmailConfig> EmailConfigs => Set<EmailConfig>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -33,6 +34,16 @@ public class AppDbContext : DbContext
     public static void EnsureSeeded(AppDbContext db, ILogger logger)
     {
         db.Database.EnsureCreated();
+
+        // EnsureCreated() doesn't add new tables to an already-created database,
+        // so create the EmailConfigs table if it's missing (idempotent).
+        db.Database.ExecuteSqlRaw(
+            @"CREATE TABLE IF NOT EXISTS ""EmailConfigs"" (
+                ""Id"" INTEGER NOT NULL CONSTRAINT ""PK_EmailConfigs"" PRIMARY KEY AUTOINCREMENT,
+                ""Sender"" TEXT NOT NULL,
+                ""ProtectedAppPassword"" TEXT NOT NULL,
+                ""FromName"" TEXT NOT NULL,
+                ""UpdatedAt"" TEXT NOT NULL);");
         if (!db.Teachers.Any())
         {
             db.Teachers.Add(

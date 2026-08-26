@@ -275,8 +275,32 @@ public static class AdminEndpoints
         });
 
         // Email configuration status (no secrets exposed)
-        api.MapGet("settings/email", (EmailSender email, IConfiguration cfg) =>
-            Results.Ok(new { configured = email.IsConfigured, sender = cfg["Email:Sender"] ?? "" }));
+        api.MapGet("settings/email", (EmailSender email) =>
+            Results.Ok(new { configured = email.IsConfigured, sender = email.Sender ?? "" }));
+
+        // Configure the sending email: verify the Gmail App Password (by sending a
+        // test to the sender), and only save it (encrypted) if verification succeeds.
+        api.MapPost("settings/email", async (EmailConfigRequest req, EmailSender email) =>
+        {
+            var sender = (req.Sender ?? "").Trim();
+            if (string.IsNullOrWhiteSpace(sender) || !sender.Contains('@'))
+                return Results.BadRequest(new { error = "Please enter a valid email address." });
+            if (string.IsNullOrWhiteSpace(req.AppPassword))
+                return Results.BadRequest(new { error = "Please paste the 16-character Google App Password." });
+            try
+            {
+                await email.VerifyAndSaveAsync(sender, req.AppPassword, req.FromName);
+                return Results.Ok(new { ok = true, sender });
+            }
+            catch (System.Net.Mail.SmtpException)
+            {
+                return Results.Json(new { error = "Couldn't sign in to Gmail. Make sure 2-Step Verification is ON and you pasted the 16-character App Password (not your normal Gmail password)." }, statusCode: 400);
+            }
+            catch (Exception ex)
+            {
+                return Results.Json(new { error = "Could not verify the email: " + ex.Message }, statusCode: 400);
+            }
+        });
     }
 }
 
@@ -284,6 +308,7 @@ public static class AdminEndpoints
 public record LoginRequest(string? Email, string? Password);
 public record ChangePasswordRequest(string? CurrentPassword, string? NewPassword);
 public record ChangeEmailRequest(string? Email);
+public record EmailConfigRequest(string? Sender, string? AppPassword, string? FromName);
 public record TeacherRequest(string? Name, string? Email, string? Password);
 public record StudentRequest(string? Name, string? ClassName, string? ParentName, string? ParentEmail, string? ParentPhone, string? Notes);
 public record TestRequest(string? Name, string? Subject, DateOnly? Date, int MaxMarks);

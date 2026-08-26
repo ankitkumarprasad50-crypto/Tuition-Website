@@ -10,24 +10,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/assets/admin.css" />
   <style>
-    .step{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:1.2rem 1.4rem;box-shadow:var(--shadow-sm);margin-bottom:1rem}
-    .step h3{margin-bottom:.4rem}
-    code,pre{font-family:ui-monospace,Consolas,monospace}
-    pre{background:#2b2620;color:#f3e8dc;padding:.9rem 1rem;border-radius:10px;overflow-x:auto;font-size:.86rem;line-height:1.6}
     .status{display:inline-flex;align-items:center;gap:.5rem;font-weight:800;padding:.4rem .9rem;border-radius:999px}
     .status.ok{background:#e4f0ea;color:var(--sage-dark)}
     .status.no{background:#fbe4dd;color:#b3402b}
+    details.help{margin-top:1rem;background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:.4rem .9rem}
+    details.help summary{cursor:pointer;font-weight:800;padding:.5rem 0}
+    details.help ol{margin:.3rem 0 .8rem 1.1rem;color:var(--muted);line-height:1.7}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="page-head"><div><h1>Settings</h1><p>Configure how parent report emails are sent.</p></div></div>
+    <div class="page-head"><div><h1>Settings</h1><p>Manage your account and how emails are sent.</p></div></div>
 
+    <!-- Account -->
     <div class="card" style="margin-bottom:1.4rem">
       <div class="stat__label" style="margin-bottom:.7rem">Your account</div>
       <form id="emailForm" class="form-grid" style="max-width:520px;margin-bottom:1.4rem">
         <div class="field field--full"><label for="em">Login email</label><input id="em" type="email" required autocomplete="email" placeholder="you@example.com" /></div>
-        <div class="field field--full"><button class="btn btn--ghost" type="submit">Update email</button></div>
+        <div class="field field--full"><button class="btn btn--ghost" type="submit">Update login email</button></div>
       </form>
       <div class="stat__label" style="margin-bottom:.5rem">Change password</div>
       <form id="pwForm" class="form-grid" style="max-width:520px">
@@ -37,33 +37,27 @@
       </form>
     </div>
 
-    <div class="card" style="margin-bottom:1.4rem">
-      <div class="stat__label" style="margin-bottom:.5rem">Email status</div>
-      <div id="status" class="status no">Checking…</div>
-      <p class="muted" id="sender" style="margin-top:.6rem"></p>
-    </div>
+    <!-- Sending email -->
+    <div class="card">
+      <div class="stat__label" style="margin-bottom:.6rem">Sending email</div>
+      <p class="muted" style="margin-bottom:.9rem">Parent enquiry alerts and student report emails are sent from this Gmail account. Connect your own Gmail using a Google <strong>App Password</strong> (a one-off 16-character code — never your normal Gmail password).</p>
+      <div id="status" class="status no" style="margin-bottom:1rem">Checking…</div>
 
-    <h2 style="font-size:1.2rem;margin-bottom:.8rem">How to enable email sending</h2>
-    <p class="muted" style="margin-bottom:1rem">Emails are sent from <strong>ankit.kumar.prasad.50@gmail.com</strong> using a Google <em>App Password</em> (a special 16-character password just for this app — never your real Gmail password).</p>
+      <form id="sendForm" class="form-grid" style="max-width:520px">
+        <div class="field field--full"><label for="sendSender">Gmail address</label><input id="sendSender" type="email" required autocomplete="email" placeholder="yourname@gmail.com" /></div>
+        <div class="field field--full"><label for="sendPw">App Password (16 characters)</label><input id="sendPw" type="password" required placeholder="xxxx xxxx xxxx xxxx" /></div>
+        <div class="field field--full"><label for="sendName">Sender name (shown to parents)</label><input id="sendName" placeholder="Vidya Vriksh Tuition" /></div>
+        <div class="field field--full"><button class="btn btn--primary" id="sendBtn" type="submit">Connect &amp; verify</button></div>
+      </form>
 
-    <div class="step">
-      <h3>1 · Turn on 2-Step Verification</h3>
-      <p class="muted">Sign in to that Google account and enable 2-Step Verification at <a href="https://myaccount.google.com/security" target="_blank" rel="noopener">myaccount.google.com/security</a>. (App Passwords require it.)</p>
-    </div>
-    <div class="step">
-      <h3>2 · Create an App Password</h3>
-      <p class="muted">Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a>, name it “Vidya Vriksh”, and copy the 16-character password it gives you.</p>
-    </div>
-    <div class="step">
-      <h3>3 · Save it securely on the server</h3>
-      <p class="muted">In a terminal, in the <code>Tuition Website.Server</code> folder, run these (the App Password stays only on this machine, never in the code):</p>
-      <pre>dotnet user-secrets set "Email:Sender" "ankit.kumar.prasad.50@gmail.com"
-dotnet user-secrets set "Email:AppPassword" "your16charapppassword"
-dotnet user-secrets set "Email:FromName" "Vidya Vriksh Tuition"</pre>
-    </div>
-    <div class="step">
-      <h3>4 · Restart the app (in Development mode)</h3>
-      <p class="muted">Run the server with <code>dotnet run</code> (the default Development environment loads these secrets), then refresh this page — the status above should turn green. Now the “Email report to parent” buttons will work.</p>
+      <details class="help">
+        <summary>How do I get an App Password?</summary>
+        <ol>
+          <li>Turn on <strong>2-Step Verification</strong> for your Gmail at <a href="https://myaccount.google.com/security" target="_blank" rel="noopener">myaccount.google.com/security</a>.</li>
+          <li>Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a>, name it “Vidya Vriksh”, and copy the 16-character code.</li>
+          <li>Paste it above and click <strong>Connect &amp; verify</strong> — we'll send a quick test to your inbox and switch sending over automatically.</li>
+        </ol>
+      </details>
     </div>
   </div>
 
@@ -73,22 +67,18 @@ dotnet user-secrets set "Email:FromName" "Vidya Vriksh Tuition"</pre>
       const me = await initShell("/admin/settings");
       if (!me) return;
 
+      // --- Login email ---
       const emInput = document.getElementById("em");
-      if (emInput) emInput.value = me.email || "";
+      emInput.value = me.email || "";
       document.getElementById("emailForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         try {
           await api("/api/auth/change-email", { method: "POST", body: { email: emInput.value } });
-          toast("Email updated — use it next time you sign in");
+          toast("Login email updated — use it next time you sign in");
         } catch (ex) { toast(ex.error || "Could not update email", true); }
       });
 
-      const s = await api("/api/settings/email");
-      const el = document.getElementById("status");
-      if (s.configured) { el.className = "status ok"; el.textContent = "✅ Email is configured and ready"; }
-      else { el.className = "status no"; el.textContent = "⚠️ Email not configured yet"; }
-      document.getElementById("sender").textContent = s.sender ? "Sender: " + s.sender : "";
-
+      // --- Password ---
       document.getElementById("pwForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         try {
@@ -96,6 +86,41 @@ dotnet user-secrets set "Email:FromName" "Vidya Vriksh Tuition"</pre>
             body: { currentPassword: document.getElementById("cur").value, newPassword: document.getElementById("nw").value } });
           e.target.reset(); toast("Password updated");
         } catch (ex) { toast(ex.error || "Could not update password", true); }
+      });
+
+      // --- Sending email status ---
+      async function refreshStatus() {
+        const s = await api("/api/settings/email");
+        const el = document.getElementById("status");
+        if (s.configured) {
+          el.className = "status ok";
+          el.textContent = "✅ Sending from " + s.sender;
+          document.getElementById("sendSender").value = s.sender;
+        } else {
+          el.className = "status no";
+          el.textContent = "⚠️ Not set up yet — connect a Gmail below";
+        }
+      }
+      await refreshStatus();
+
+      document.getElementById("sendForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById("sendBtn");
+        btn.disabled = true; btn.textContent = "Verifying…";
+        try {
+          const r = await api("/api/settings/email", { method: "POST", body: {
+            sender: document.getElementById("sendSender").value,
+            appPassword: document.getElementById("sendPw").value,
+            fromName: document.getElementById("sendName").value,
+          }});
+          document.getElementById("sendPw").value = "";
+          toast("Connected! Emails now send from " + r.sender);
+          await refreshStatus();
+        } catch (ex) {
+          toast(ex.error || "Could not verify the email", true);
+        } finally {
+          btn.disabled = false; btn.textContent = "Connect & verify";
+        }
       });
     })().catch(e => toast(e.error || "Error", true));
   </script>

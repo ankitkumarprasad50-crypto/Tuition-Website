@@ -47,6 +47,17 @@ public class Test
     public List<Mark> Marks { get; set; } = new();
 }
 
+// The sending-email configuration set by a teacher through the portal.
+// The App Password is stored ENCRYPTED (via ASP.NET Data Protection), never plain.
+public class EmailConfig
+{
+    public int Id { get; set; }
+    public string Sender { get; set; } = "";
+    public string ProtectedAppPassword { get; set; } = "";
+    public string FromName { get; set; } = "Vidya Vriksh Tuition";
+    public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
+}
+
 // A student's score on a test.
 public class Mark
 {
