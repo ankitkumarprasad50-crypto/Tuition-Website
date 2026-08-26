@@ -333,6 +333,28 @@ a.contact__card:hover { transform: translateY(-3px); }
   .footer__inner p { margin-left: auto; margin-right: auto; }
 }
 
+/* Extra-small phones (≤400px) */
+@media (max-width: 400px) {
+  h1 { font-size: 1.85rem; }
+  .nav { padding: .5rem .8rem; }
+  .nav__name { font-size: .95rem; }
+  .nav__logo { width: 30px; height: 30px; }
+  .hero__inner { padding: 1.5rem .9rem 2rem; }
+  .pill { font-size: .78rem; padding: .3rem .7rem; }
+  .chip { font-size: .78rem; }
+  .section { padding: 2.1rem .9rem; }
+  .section__head { margin-bottom: 1.3rem; }
+  .fee, .subject, .card-item, .testimonial, .highlight { padding: 1.1rem; }
+  .contact__card { padding: 1rem; gap: .8rem; }
+  .contact__card > span { font-size: 1.5rem; }
+  .contact__card span:last-child { font-size: .86rem; word-break: break-word; }
+  .timing-card__time { font-size: 1.7rem; }
+  .modal-card { padding: 2rem 1.4rem; }
+}
+
+/* General safety: nothing overflows the viewport width */
+img, iframe, svg, video, table { max-width: 100%; }
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }

@@ -10,7 +10,8 @@
   font-family:'Nunito',system-ui,-apple-system,Segoe UI,Arial,sans-serif; color:var(--ink);
 }
 *,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);min-height:100vh}
+body{margin:0;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden}
+img{max-width:100%}
 a{color:var(--terracotta-dark)}
 h1,h2,h3{margin:0;line-height:1.2}
 
@@ -123,9 +124,23 @@ table.data td.actions{display:flex;gap:.4rem}
 @media (max-width:720px){
   .form-grid{grid-template-columns:1fr}
   .charts{grid-template-columns:1fr}
+  .topbar{position:relative}
   .topbar__nav{display:none}
   .topbar__nav.show{display:flex;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;
-    padding:.6rem;border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
-  .menu-btn{display:inline-flex}
+    padding:.6rem;border-bottom:1px solid var(--line);box-shadow:var(--shadow);z-index:50}
+  .topbar__nav.show a{padding:.7rem .8rem;border-radius:8px}
+  .menu-btn{display:inline-flex;order:2;margin-left:auto}
+  .topbar__user{order:3;gap:.4rem}
+  .page-head h1{font-size:1.4rem}
+  .report-hero .big{font-size:2rem}
+}
+@media (max-width:480px){
+  .wrap{padding:1rem .8rem}
+  .topbar{padding:.6rem .8rem}
+  .topbar__user .who{display:none}
+  .modal__box{padding:1.2rem}
+  .card{padding:1.1rem}
+  .btn{padding:.55rem .9rem}
+  table.data th,table.data td{padding:.6rem .7rem}
 }
 .menu-btn{display:none;background:none;border:none;font-size:1.4rem;cursor:pointer}
