@@ -24,7 +24,12 @@
     <div class="page-head"><div><h1>Settings</h1><p>Configure how parent report emails are sent.</p></div></div>
 
     <div class="card" style="margin-bottom:1.4rem">
-      <div class="stat__label" style="margin-bottom:.7rem">Your account — change password</div>
+      <div class="stat__label" style="margin-bottom:.7rem">Your account</div>
+      <form id="emailForm" class="form-grid" style="max-width:520px;margin-bottom:1.4rem">
+        <div class="field field--full"><label for="em">Login email</label><input id="em" type="email" required autocomplete="email" placeholder="you@example.com" /></div>
+        <div class="field field--full"><button class="btn btn--ghost" type="submit">Update email</button></div>
+      </form>
+      <div class="stat__label" style="margin-bottom:.5rem">Change password</div>
       <form id="pwForm" class="form-grid" style="max-width:520px">
         <div class="field field--full"><label for="cur">Current password</label><input id="cur" type="password" required autocomplete="current-password" /></div>
         <div class="field field--full"><label for="nw">New password (min 6 chars)</label><input id="nw" type="password" required minlength="6" autocomplete="new-password" /></div>
@@ -65,7 +70,19 @@ dotnet user-secrets set "Email:FromName" "Vidya Vriksh Tuition"</pre>
   <script src="/admin/assets/admin.js"></script>
   <script>
     (async () => {
-      if (!(await initShell("/admin/settings.html"))) return;
+      const me = await initShell("/admin/settings.html");
+      if (!me) return;
+
+      const emInput = document.getElementById("em");
+      if (emInput) emInput.value = me.email || "";
+      document.getElementById("emailForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        try {
+          await api("/api/auth/change-email", { method: "POST", body: { email: emInput.value } });
+          toast("Email updated — use it next time you sign in");
+        } catch (ex) { toast(ex.error || "Could not update email", true); }
+      });
+
       const s = await api("/api/settings/email");
       const el = document.getElementById("status");
       if (s.configured) { el.className = "status ok"; el.textContent = "✅ Email is configured and ready"; }

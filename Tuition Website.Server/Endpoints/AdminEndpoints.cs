@@ -64,6 +64,21 @@ public static class AdminEndpoints
             return Results.Ok();
         }).RequireAuthorization();
 
+        auth.MapPost("change-email", async (ChangeEmailRequest req, HttpContext http, AppDbContext db) =>
+        {
+            var tid = CurrentTeacherId(http);
+            var teacher = tid is null ? null : await db.Teachers.FindAsync(tid.Value);
+            if (teacher is null) return Results.Unauthorized();
+            var email = (req.Email ?? "").Trim().ToLowerInvariant();
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains('@'))
+                return Results.BadRequest(new { error = "Please enter a valid email address." });
+            if (await db.Teachers.AnyAsync(t => t.Id != teacher.Id && t.Email.ToLower() == email))
+                return Results.BadRequest(new { error = "That email is already used by another teacher." });
+            teacher.Email = email;
+            await db.SaveChangesAsync();
+            return Results.Ok(new { teacher.Email });
+        }).RequireAuthorization();
+
         // ---- Authenticated API --------------------------------------------
         var api = app.MapGroup("/api").RequireAuthorization();
 
@@ -268,6 +283,7 @@ public static class AdminEndpoints
 // ---- Request DTOs ----------------------------------------------------------
 public record LoginRequest(string? Email, string? Password);
 public record ChangePasswordRequest(string? CurrentPassword, string? NewPassword);
+public record ChangeEmailRequest(string? Email);
 public record TeacherRequest(string? Name, string? Email, string? Password);
 public record StudentRequest(string? Name, string? ClassName, string? ParentName, string? ParentEmail, string? ParentPhone, string? Notes);
 public record TestRequest(string? Name, string? Subject, DateOnly? Date, int MaxMarks);

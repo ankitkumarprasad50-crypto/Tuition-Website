@@ -115,14 +115,18 @@
           </p>
         </form>
 
-        <div class="enquiry__success" id="enquirySuccess" hidden role="status">
-          <span aria-hidden="true">🎉</span>
-          <h3>Thank you!</h3>
-          <p>We've received your enquiry and will contact you very soon.</p>
-          <button class="btn btn--ghost" id="enquiryAgain" type="button">Send another</button>
-        </div>
       </div>
     </section>
+
+    <!-- Success popup -->
+    <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="emTitle" hidden>
+      <div class="modal-card">
+        <div class="modal-card__emoji" aria-hidden="true">🎉</div>
+        <h3 id="emTitle">Thank you!</h3>
+        <p>We've received your enquiry and will contact you very soon.</p>
+        <button class="btn btn--primary" id="enquiryClose" type="button">Done</button>
+      </div>
+    </div>
   </main>
 
   <div id="site-footer"></div>
