@@ -43,6 +43,9 @@
     .err{color:#b3402b;font-weight:700;margin-top:.8rem;min-height:1.2em;font-size:.9rem}
     .back{display:inline-block;margin-top:1.1rem;color:var(--muted);text-decoration:none;font-weight:700;font-size:.9rem}
     .back:hover{color:var(--terracotta-dark)}
+    .divider{display:none;align-items:center;gap:.6rem;color:var(--muted);font-weight:700;font-size:.85rem;margin:1.1rem 0 .5rem}
+    .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(129,178,154,.4)}
+    #gbtn{display:flex;justify-content:center}
     @media (prefers-reduced-motion:reduce){.blob{animation:none}.card{animation:none}}
   </style>
 </head>
@@ -65,9 +68,12 @@
     </div>
     <button class="btn" type="submit" id="loginBtn">Sign in</button>
     <div class="err" id="err" role="alert" aria-live="polite"></div>
+    <div class="divider" id="gdivider">or</div>
+    <div id="gbtn"></div>
     <a class="back" href="/">← Back to website</a>
   </form>
 
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="/parent/assets/parent.js"></script>
   <script>
     const form = document.getElementById("loginForm"), err = document.getElementById("err"),
@@ -84,6 +90,29 @@
         location.href = "/parent/";
       } catch (ex) { err.textContent = ex.error || "Sign in failed."; btn.disabled = false; btn.textContent = "Sign in"; }
     });
+
+    // --- Sign in with Google (shown only if configured on the server) ---
+    (async () => {
+      let cfg;
+      try { cfg = await api("/api/auth/google-config", { noRedirect: true }); } catch { return; }
+      if (!cfg || !cfg.clientId) return;
+      for (let i = 0; i < 50 && !(window.google && google.accounts && google.accounts.id); i++)
+        await new Promise(r => setTimeout(r, 100));
+      if (!(window.google && google.accounts && google.accounts.id)) return;
+      google.accounts.id.initialize({
+        client_id: cfg.clientId,
+        callback: async (resp) => {
+          err.textContent = "";
+          try {
+            await api("/api/parent/google", { method: "POST", noRedirect: true, body: { credential: resp.credential } });
+            location.href = "/parent/";
+          } catch (ex) { err.textContent = ex.error || "Google sign-in failed."; }
+        },
+      });
+      document.getElementById("gdivider").style.display = "flex";
+      google.accounts.id.renderButton(document.getElementById("gbtn"),
+        { theme: "outline", size: "large", text: "signin_with", width: 300 });
+    })();
   </script>
 </body>
 </html>

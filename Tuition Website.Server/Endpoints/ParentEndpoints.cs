@@ -34,6 +34,25 @@ public static class ParentEndpoints
             return Results.Ok(new { parent.Email });
         });
 
+        // Sign in a parent with a verified Google account (any email a teacher has
+        // linked to a student — no password needed).
+        open.MapPost("google", async (GoogleLoginRequest req, HttpContext http, AppDbContext db, IConfiguration cfg) =>
+        {
+            var email = await GoogleAuth.VerifyEmailAsync(req.Credential, cfg["Google:ClientId"]);
+            if (email is null) return Results.Json(new { error = "Google sign-in could not be verified." }, statusCode: 401);
+            var has = await db.Students.AnyAsync(s => s.ParentEmail.ToLower() == email);
+            if (!has) return Results.Json(new { error = $"No student is linked to {email}. Ask the tuition to add your email." }, statusCode: 403);
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.Email, email),
+                new(ClaimTypes.Role, "Parent"),
+            };
+            await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)));
+            return Results.Ok(new { email });
+        });
+
         open.MapPost("logout", async (HttpContext http) =>
         {
             await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

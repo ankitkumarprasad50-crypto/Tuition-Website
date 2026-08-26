@@ -38,6 +38,30 @@ public static class AdminEndpoints
             return Results.Ok(new { teacher.Id, teacher.Name, teacher.Email });
         });
 
+        // Public: the Google client id (so the login page can render the button)
+        auth.MapGet("google-config", (IConfiguration cfg) =>
+            Results.Ok(new { clientId = cfg["Google:ClientId"] ?? "" }));
+
+        // Sign in a teacher with a verified Google account (must already exist).
+        auth.MapPost("google", async (GoogleLoginRequest req, HttpContext http, AppDbContext db, IConfiguration cfg) =>
+        {
+            var email = await GoogleAuth.VerifyEmailAsync(req.Credential, cfg["Google:ClientId"]);
+            if (email is null) return Results.Json(new { error = "Google sign-in could not be verified." }, statusCode: 401);
+            var teacher = await db.Teachers.FirstOrDefaultAsync(t => t.Email.ToLower() == email);
+            if (teacher is null) return Results.Json(new { error = $"No teacher account for {email}. Ask the tuition to add you." }, statusCode: 403);
+
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, teacher.Id.ToString()),
+                new(ClaimTypes.Name, teacher.Name),
+                new(ClaimTypes.Email, teacher.Email),
+                new(ClaimTypes.Role, "Teacher"),
+            };
+            await http.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme)));
+            return Results.Ok(new { teacher.Id, teacher.Name, teacher.Email });
+        });
+
         auth.MapPost("logout", async (HttpContext http) =>
         {
             await http.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -339,6 +363,7 @@ public record ChangePasswordRequest(string? CurrentPassword, string? NewPassword
 public record ChangeEmailRequest(string? Email);
 public record EmailConfigRequest(string? Sender, string? AppPassword, string? FromName);
 public record ParentAccessRequest(string? Password);
+public record GoogleLoginRequest(string? Credential);
 public record TeacherRequest(string? Name, string? Email, string? Password);
 public record StudentRequest(string? Name, string? ClassName, string? ParentName, string? ParentEmail, string? ParentPhone, string? Notes);
 public record TestRequest(string? Name, string? Subject, DateOnly? Date, int MaxMarks);
