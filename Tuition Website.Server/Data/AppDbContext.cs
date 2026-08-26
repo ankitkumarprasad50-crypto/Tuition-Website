@@ -35,12 +35,11 @@ public class AppDbContext : DbContext
         db.Database.EnsureCreated();
         if (!db.Teachers.Any())
         {
-            db.Teachers.AddRange(
-                new Teacher { Name = "Jyoti Prasad", Email = "jyoti@vidyavriksh.local", PasswordHash = PasswordHasher.Hash("changeme123") },
-                new Teacher { Name = "Priya",        Email = "priya@vidyavriksh.local", PasswordHash = PasswordHasher.Hash("changeme123") }
+            db.Teachers.Add(
+                new Teacher { Name = "Jyoti Prasad", Email = "jyoti@vidyavriksh.local", PasswordHash = PasswordHasher.Hash("changeme123") }
             );
             db.SaveChanges();
-            logger.LogInformation("Seeded starter teachers Jyoti and Priya (temporary password: changeme123).");
+            logger.LogInformation("Seeded starter teacher Jyoti (temporary password: changeme123).");
         }
     }
 }

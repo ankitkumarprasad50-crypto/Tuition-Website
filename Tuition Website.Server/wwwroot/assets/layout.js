@@ -5,7 +5,7 @@
 
 const SITE = {
   name: "Vidya Vriksh Tuition",
-  tagline: "Caring, all-subject tuition for school students up to Class 9 in Kovvur",
+  tagline: "Caring, all-subject tuition from Pre-KG to Intermediate in Kovvur",
   phoneDisplay: "+91 83400 77114",
   phoneLink: "+918340077114",
   whatsapp: "918340077114",            // country code + number, digits only
