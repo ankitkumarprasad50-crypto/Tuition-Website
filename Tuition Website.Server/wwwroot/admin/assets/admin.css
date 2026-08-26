@@ -144,3 +144,23 @@ table.data td.actions{display:flex;gap:.4rem}
   table.data th,table.data td{padding:.6rem .7rem}
 }
 .menu-btn{display:none;background:none;border:none;font-size:1.4rem;cursor:pointer}
+
+/* First-login tutorial */
+.tour-overlay{position:fixed;inset:0;background:rgba(61,52,42,.55);display:grid;place-items:center;padding:1rem;z-index:300;animation:tour-fade .2s ease}
+@keyframes tour-fade{from{opacity:0}to{opacity:1}}
+.tour-card{background:#fff;border-radius:18px;box-shadow:0 20px 55px rgba(80,55,35,.25);max-width:440px;width:100%;padding:1.8rem 1.6rem;text-align:center;position:relative;animation:tour-pop .3s cubic-bezier(.2,.8,.2,1);max-height:90vh;overflow:auto}
+@keyframes tour-pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.tour-skip{position:absolute;top:.7rem;right:.8rem;background:none;border:none;color:var(--muted);font-weight:800;cursor:pointer;font-size:.82rem}
+.tour-skip:hover{color:var(--terracotta-dark)}
+.tour-emoji{font-size:2.6rem;line-height:1}
+.tour-title{font-size:1.3rem;margin:.5rem 0}
+.tour-body{color:var(--muted);line-height:1.65;text-align:left}
+.tour-body strong{color:var(--ink)}
+.tour-dots{display:flex;justify-content:center;gap:.4rem;margin:1.2rem 0}
+.tour-dot{width:8px;height:8px;border-radius:50%;background:var(--peach-deep)}
+.tour-dot.is-active{background:var(--terracotta);width:22px;border-radius:5px;transition:.2s}
+.tour-actions{display:flex;justify-content:space-between;gap:.6rem}
+.tour-actions .btn{flex:1}
+.help-btn{background:none;border:2px solid var(--peach-deep);color:var(--terracotta-dark);border-radius:999px;
+  font-weight:800;font-size:.85rem;padding:.35rem .8rem;cursor:pointer}
+.help-btn:hover{background:var(--peach)}

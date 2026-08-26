@@ -14,7 +14,8 @@
   <div class="wrap">
     <div class="page-head">
       <div><h1>Dashboard</h1><p id="welcome" class="muted"></p></div>
-      <a class="btn btn--primary" href="/admin/students">+ Manage Students</a>
+      <div class="row"><button class="help-btn" id="helpBtn" type="button">❔ How to use</button>
+        <a class="btn btn--primary" href="/admin/students">+ Manage Students</a></div>
     </div>
 
     <div class="cards" id="stats"></div>
@@ -31,12 +32,29 @@
     </div>
   </div>
 
+  <script src="/admin/assets/tour.js"></script>
   <script src="/admin/assets/admin.js"></script>
   <script>
     (async () => {
       const me = await initShell("/admin/");
       if (!me) return;
       document.getElementById("welcome").textContent = "Welcome back, " + me.name + ".";
+
+      const navTip = isMobile()
+        ? "Tap the <strong>☰ menu</strong> (top-right) to move between pages."
+        : "Use the <strong>menu at the top</strong> to move between pages.";
+      const teacherSteps = [
+        { emoji: "👋", title: "Welcome to your portal", body: "This is where you manage students, record test marks, and share progress with parents. Here's a quick tour — you can tap <strong>Skip</strong> anytime." },
+        { emoji: "🧭", title: "Getting around", body: navTip + " The pages are <strong>Dashboard, Students, Tests, Teachers</strong> and <strong>Settings</strong>." },
+        { emoji: "🧑‍🎓", title: "1 · Add your students", body: "Open <strong>Students → + Add Student</strong>. Add the child's name, class, and the <strong>parent's email</strong> (needed for reports and the parent login)." },
+        { emoji: "📝", title: "2 · Create tests", body: "Open <strong>Tests → + Add Test</strong> and enter each test's name, subject, date and maximum marks." },
+        { emoji: "✍️", title: "3 · Record marks", body: "Open a student and scroll to <strong>Record marks</strong>. Type a score and click away — it <strong>saves automatically</strong>." },
+        { emoji: "📊", title: "4 · See progress", body: "Each student page shows their <strong>average, charts and trend</strong>. Tap <strong>✉️ Email report to parent</strong> to send it by email." },
+        { emoji: "👪", title: "5 · Give parents a login", body: "On a student's page, set a password under <strong>Parent login access</strong> and share it — parents sign in at <strong>hrm99.com/parent</strong> to view progress." },
+        { emoji: "⚙️", title: "Settings & help", body: "In <strong>Settings</strong> you can change your password and connect the sending email. Tap <strong>❔ How to use</strong> anytime to replay this, or open the <a href='/guide' target='_blank'>full guide</a>." },
+      ];
+      startTour("teacher_v1", teacherSteps);
+      document.getElementById("helpBtn").addEventListener("click", () => startTour("teacher_v1", teacherSteps, { force: true }));
 
       const [students, tests, teachers] = await Promise.all([
         api("/api/students"), api("/api/tests"), api("/api/teachers"),
