@@ -26,15 +26,15 @@
       document.getElementById("welcome").textContent = "Signed in as " + me.email;
 
       const parentSteps = [
-        { emoji: "👋", title: "Welcome!", body: "This is your parent portal — see your child's marks and progress anytime, on any device. Tap <strong>Skip</strong> to close this." },
-        { emoji: "🧑‍🎓", title: "Your children", body: "You'll see a card for <strong>each of your children</strong> at the tuition, with their latest results." },
-        { emoji: "📊", title: "Average & verdict", body: "At the top of each card is the <strong>overall average</strong> and a short note on how they're doing." },
-        { emoji: "📈", title: "The charts", body: "<strong>Marks by test</strong> shows each test's score; <strong>Progress trend</strong> shows if they're improving. Green = strong, amber = okay, red = needs support." },
-        { emoji: "📋", title: "Every test", body: "Below the charts is a <strong>table of every test</strong> with the exact marks. This view is read-only." },
-        { emoji: "🔒", title: "That's it!", body: "Tap <strong>Log out</strong> (top-right) when done. Questions about the marks? Contact the tuition. You can open the <a href='/guide' target='_blank'>full guide</a> anytime." },
+        { emoji: "👋", title: "Welcome!", body: "A quick tour of your child's progress. Tap <strong>Skip</strong> anytime." },
+        { emoji: "🧑‍🎓", title: "Your child", body: "Each of your children appears in a card like this.", target: () => document.querySelector("#children .card") },
+        { emoji: "📊", title: "Overall average", body: "The average across all tests, with a short note on how they're doing.", target: () => document.querySelector("#children .report-hero") },
+        { emoji: "📈", title: "The charts", body: "<strong>Marks by test</strong> and <strong>Progress trend</strong>. Green = strong, amber = okay, red = needs support.", target: () => document.querySelector("#children .charts") },
+        { emoji: "📋", title: "Every test", body: "The full list of tests with exact marks — read-only.", target: () => document.querySelector("#children .table-card") },
+        { emoji: "❔", title: "Need help?", body: "Tap <strong>How to use</strong> to replay this, or open the <a href='/guide' target='_blank'>full guide</a>.", target: () => document.getElementById("helpBtn") },
+        { emoji: "🔒", title: "Log out", body: "Tap here when you're done. Questions about the marks? Contact the tuition.", target: () => document.getElementById("logoutBtn") },
       ];
-      startTour("parent_v1", parentSteps);
-      document.getElementById("helpBtn").addEventListener("click", () => startTour("parent_v1", parentSteps, { force: true }));
+      document.getElementById("helpBtn").addEventListener("click", () => startTour("parent_v2", parentSteps, { force: true }));
 
       const children = await api("/api/parent/children");
       const wrap = document.getElementById("children");
@@ -79,6 +79,7 @@
           </div>`;
         wrap.appendChild(card);
       }
+      startTour("parent_v2", parentSteps);  // spotlight tour once the cards have rendered
     })().catch(e => { document.getElementById("children").innerHTML = `<div class="card"><div class="empty">Something went wrong loading your reports.</div></div>`; });
   </script>
 </body>

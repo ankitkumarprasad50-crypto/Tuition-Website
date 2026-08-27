@@ -40,21 +40,20 @@
       if (!me) return;
       document.getElementById("welcome").textContent = "Welcome back, " + me.name + ".";
 
-      const navTip = isMobile()
-        ? "Tap the <strong>☰ menu</strong> (top-right) to move between pages."
-        : "Use the <strong>menu at the top</strong> to move between pages.";
+      const menuStep = isMobile()
+        ? { emoji: "🧭", title: "The menu", body: "Tap this <strong>☰ button</strong> to open the menu and move between pages.", target: () => document.getElementById("menuBtn") }
+        : { emoji: "🧭", title: "The menu", body: "Use these links to move between <strong>Dashboard, Students, Tests, Teachers</strong> and <strong>Settings</strong>.", target: () => document.getElementById("topnav") };
       const teacherSteps = [
-        { emoji: "👋", title: "Welcome to your portal", body: "This is where you manage students, record test marks, and share progress with parents. Here's a quick tour — you can tap <strong>Skip</strong> anytime." },
-        { emoji: "🧭", title: "Getting around", body: navTip + " The pages are <strong>Dashboard, Students, Tests, Teachers</strong> and <strong>Settings</strong>." },
-        { emoji: "🧑‍🎓", title: "1 · Add your students", body: "Open <strong>Students → + Add Student</strong>. Add the child's name, class, and the <strong>parent's email</strong> (needed for reports and the parent login)." },
-        { emoji: "📝", title: "2 · Create tests", body: "Open <strong>Tests → + Add Test</strong> and enter each test's name, subject, date and maximum marks." },
-        { emoji: "✍️", title: "3 · Record marks", body: "Open a student and scroll to <strong>Record marks</strong>. Type a score and click away — it <strong>saves automatically</strong>." },
-        { emoji: "📊", title: "4 · See progress", body: "Each student page shows their <strong>average, charts and trend</strong>. Tap <strong>✉️ Email report to parent</strong> to send it by email." },
-        { emoji: "👪", title: "5 · Give parents a login", body: "On a student's page, set a password under <strong>Parent login access</strong> and share it — parents sign in at <strong>hrm99.com/parent</strong> to view progress." },
-        { emoji: "⚙️", title: "Settings & help", body: "In <strong>Settings</strong> you can change your password and connect the sending email. Tap <strong>❔ How to use</strong> anytime to replay this, or open the <a href='/guide' target='_blank'>full guide</a>." },
+        { emoji: "👋", title: "Welcome to your portal", body: "Quick tour — I'll point out each part. Tap <strong>Skip</strong> anytime." },
+        menuStep,
+        { emoji: "📊", title: "Your overview", body: "At a glance: how many students and tests you have, and the class average.", target: () => document.getElementById("stats") },
+        { emoji: "🧑‍🎓", title: "Students", body: "Add and open students here. Include the <strong>parent's email</strong> so you can email reports and give parents a login.", target: () => document.querySelector('.page-head a[href="/admin/students"]') },
+        { emoji: "❔", title: "Replay anytime", body: "Tap <strong>How to use</strong> to see this tour again, or open the <a href='/guide' target='_blank'>full written guide</a>.", target: () => document.getElementById("helpBtn") },
+        { emoji: "📝", title: "Then: tests & marks", body: "1) Open <strong>Tests</strong> to create tests. 2) Open a student to <strong>record marks</strong> (they auto-save) and see <strong>charts</strong>." },
+        { emoji: "👪", title: "Reports & parent login", body: "On a student's page: <strong>✉️ Email report to parent</strong>, and set a password under <strong>Parent login access</strong> so parents can sign in at hrm99.com/parent." },
+        { emoji: "⚙️", title: "Settings", body: "Change your password, connect the sending email, and enable <strong>Sign in with Google</strong>. Enjoy! 🎉" },
       ];
-      startTour("teacher_v1", teacherSteps);
-      document.getElementById("helpBtn").addEventListener("click", () => startTour("teacher_v1", teacherSteps, { force: true }));
+      document.getElementById("helpBtn").addEventListener("click", () => startTour("teacher_v2", teacherSteps, { force: true }));
 
       const [students, tests, teachers] = await Promise.all([
         api("/api/students"), api("/api/tests"), api("/api/teachers"),
@@ -67,6 +66,8 @@
         <div class="card stat"><span class="stat__num">${tests.length}</span><span class="stat__label">Tests created</span></div>
         <div class="card stat"><span class="stat__num">${overall}%</span><span class="stat__label">Class average</span></div>
         <div class="card stat"><span class="stat__num">${teachers.length}</span><span class="stat__label">Teachers</span></div>`;
+
+      startTour("teacher_v2", teacherSteps);  // spotlight tour once the page has rendered
 
       const rows = document.getElementById("rows");
       if (!students.length) { rows.innerHTML = `<tr><td colspan="5" class="empty">No students yet. <a href="/admin/students">Add your first student</a>.</td></tr>`; return; }
