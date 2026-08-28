@@ -11,6 +11,7 @@ public record StudentReport(
     string ClassName,
     string ParentName,
     string ParentEmail,
+    string ParentPhone,
     string TeacherName,
     IReadOnlyList<ReportRow> Rows,
     double AveragePercent,
@@ -35,7 +36,7 @@ public static class ReportBuilder
         var verdict = Verdict(avg, rows.Count);
 
         return new StudentReport(student.Id, student.Name, student.ClassName, student.ParentName,
-            student.ParentEmail, teacherName, rows, avg, verdict);
+            student.ParentEmail, student.ParentPhone, teacherName, rows, avg, verdict);
     }
 
     public static string Verdict(double avg, int count)

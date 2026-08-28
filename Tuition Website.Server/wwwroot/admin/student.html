@@ -15,7 +15,10 @@
     <div class="crumb"><a href="/admin/students">← Students</a></div>
     <div class="page-head">
       <div><h1 id="sname">Student</h1><p id="sinfo" class="muted"></p></div>
-      <button class="btn btn--primary" id="emailBtn">✉️ Email report to parent</button>
+      <div class="row">
+        <button class="btn btn--whatsapp" id="whatsappBtn">📲 WhatsApp report</button>
+        <button class="btn btn--primary" id="emailBtn">✉️ Email report</button>
+      </div>
     </div>
 
     <!-- Report summary -->
@@ -58,6 +61,7 @@
   <script src="/admin/assets/admin.js"></script>
   <script>
     const id = qs("id");
+    let reportData = null;
 
     async function loadReport() {
       const r = await api(`/api/students/${id}/report`);
@@ -71,10 +75,14 @@
       document.getElementById("barChart").innerHTML = barChart(chartData);
       document.getElementById("lineChart").innerHTML = lineChart(chartData);
 
-      // enable/disable email button based on parent email
+      reportData = r;
+      // enable/disable the Email & WhatsApp buttons based on parent details
       const btn = document.getElementById("emailBtn");
       if (!r.parentEmail) { btn.disabled = true; btn.title = "Add a parent email on the student's Edit form first."; }
       else { btn.disabled = false; btn.title = "Send this report to " + r.parentEmail; }
+      const wbtn = document.getElementById("whatsappBtn");
+      if (!r.parentPhone) { wbtn.disabled = true; wbtn.title = "Add a parent phone on the student's Edit form first."; }
+      else { wbtn.disabled = false; wbtn.title = "Open WhatsApp with the report ready to send"; }
     }
 
     async function loadMarks() {
@@ -117,7 +125,33 @@
         const r = await api(`/api/students/${id}/report/email`, { method: "POST" });
         toast("Report emailed to " + r.to);
       } catch (ex) { toast(ex.error || "Could not send email", true); }
-      finally { btn.disabled = false; btn.textContent = "✉️ Email report to parent"; }
+      finally { btn.disabled = false; btn.textContent = "✉️ Email report"; }
+    });
+
+    // --- Free WhatsApp report: opens WhatsApp with the report pre-filled ---
+    function waNumber(raw) {
+      let d = (raw || "").replace(/\D/g, "");
+      if (!d) return "";
+      if (d.length === 10) d = "91" + d;                 // add India country code
+      else if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1);
+      return d;
+    }
+    function buildWaText(r) {
+      let t = "🌳 Vidya Vriksh Tuition — Progress Report\n\n";
+      t += "Student: " + r.studentName + (r.className ? " (" + r.className + ")" : "") + "\n";
+      t += "Overall: " + (r.rows.length ? r.averagePercent + "% — " + r.verdict : "No tests recorded yet") + "\n";
+      if (r.rows.length) {
+        t += "\n";
+        r.rows.forEach(x => { t += "• " + x.test + (x.subject ? " (" + x.subject + ")" : "") + ": " + x.score + "/" + x.maxMarks + " (" + x.percent + "%)\n"; });
+      }
+      t += "\n— " + (r.teacherName || "Vidya Vriksh Tuition");
+      return t;
+    }
+    document.getElementById("whatsappBtn").addEventListener("click", () => {
+      if (!reportData) return;
+      const num = waNumber(reportData.parentPhone);
+      if (!num) { toast("No valid parent phone number", true); return; }
+      window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(buildWaText(reportData)), "_blank");
     });
 
     async function loadParentAccess() {

@@ -47,6 +47,8 @@ h1,h2,h3{margin:0;line-height:1.2}
 .btn--sage:hover{background:var(--sage-dark)}
 .btn--danger{background:#fff;color:#b3402b;border:2px solid #f0c9bf}
 .btn--danger:hover{background:#fdeee9}
+.btn--whatsapp{background:#25D366;color:#fff}
+.btn--whatsapp:hover{background:#1eb457}
 .btn--sm{padding:.4rem .8rem;font-size:.85rem}
 .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
 
