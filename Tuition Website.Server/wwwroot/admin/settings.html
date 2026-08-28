@@ -20,42 +20,42 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="page-head"><div><h1>Settings</h1><p>Manage your account and how emails are sent.</p></div></div>
+    <div class="page-head"><div><h1 data-i18n="a.settings.title">Settings</h1><p data-i18n="a.settings.sub">Manage your account and how emails are sent.</p></div></div>
 
     <!-- Account -->
     <div class="card" style="margin-bottom:1.4rem">
-      <div class="stat__label" style="margin-bottom:.7rem">Your account</div>
+      <div class="stat__label" style="margin-bottom:.7rem" data-i18n="a.yourAccount">Your account</div>
       <form id="emailForm" class="form-grid" style="max-width:520px;margin-bottom:1.4rem">
-        <div class="field field--full"><label for="em">Login email</label><input id="em" type="email" required autocomplete="email" placeholder="you@example.com" /></div>
-        <div class="field field--full"><button class="btn btn--ghost" type="submit">Update login email</button></div>
+        <div class="field field--full"><label for="em" data-i18n="a.loginEmail">Login email</label><input id="em" type="email" required autocomplete="email" placeholder="you@example.com" /></div>
+        <div class="field field--full"><button class="btn btn--ghost" type="submit" data-i18n="a.updateEmail">Update login email</button></div>
       </form>
-      <div class="stat__label" style="margin-bottom:.5rem">Change password</div>
+      <div class="stat__label" style="margin-bottom:.5rem" data-i18n="a.changePw">Change password</div>
       <form id="pwForm" class="form-grid" style="max-width:520px">
-        <div class="field field--full"><label for="cur">Current password</label><input id="cur" type="password" required autocomplete="current-password" /></div>
-        <div class="field field--full"><label for="nw">New password (min 6 chars)</label><input id="nw" type="password" required minlength="6" autocomplete="new-password" /></div>
-        <div class="field field--full"><button class="btn btn--primary" type="submit">Update password</button></div>
+        <div class="field field--full"><label for="cur" data-i18n="a.curPw">Current password</label><input id="cur" type="password" required autocomplete="current-password" /></div>
+        <div class="field field--full"><label for="nw" data-i18n="a.newPw">New password (min 6 chars)</label><input id="nw" type="password" required minlength="6" autocomplete="new-password" /></div>
+        <div class="field field--full"><button class="btn btn--primary" type="submit" data-i18n="a.updatePw">Update password</button></div>
       </form>
     </div>
 
     <!-- Sending email -->
     <div class="card">
-      <div class="stat__label" style="margin-bottom:.6rem">Sending email</div>
-      <p class="muted" style="margin-bottom:.9rem">Parent enquiry alerts and student report emails are sent from this Gmail account. Connect your own Gmail using a Google <strong>App Password</strong> (a one-off 16-character code — never your normal Gmail password).</p>
-      <div id="status" class="status no" style="margin-bottom:1rem">Checking…</div>
+      <div class="stat__label" style="margin-bottom:.6rem" data-i18n="a.sendingEmail">Sending email</div>
+      <p class="muted" style="margin-bottom:.9rem" data-i18n="a.sending.desc">Parent enquiry alerts and student report emails are sent from this Gmail account. Connect your own Gmail using a Google App Password (a one-off 16-character code — never your normal Gmail password).</p>
+      <div id="status" class="status no" style="margin-bottom:1rem" data-i18n="a.status.checking">Checking…</div>
 
       <form id="sendForm" class="form-grid" style="max-width:520px">
-        <div class="field field--full"><label for="sendSender">Gmail address</label><input id="sendSender" type="email" required autocomplete="email" placeholder="yourname@gmail.com" /></div>
-        <div class="field field--full"><label for="sendPw">App Password (16 characters)</label><input id="sendPw" type="password" required placeholder="xxxx xxxx xxxx xxxx" /></div>
-        <div class="field field--full"><label for="sendName">Sender name (shown to parents)</label><input id="sendName" placeholder="Vidya Vriksh Tuition" /></div>
-        <div class="field field--full"><button class="btn btn--primary" id="sendBtn" type="submit">Connect &amp; verify</button></div>
+        <div class="field field--full"><label for="sendSender" data-i18n="a.gmailAddr">Gmail address</label><input id="sendSender" type="email" required autocomplete="email" placeholder="yourname@gmail.com" /></div>
+        <div class="field field--full"><label for="sendPw" data-i18n="a.appPw">App Password (16 characters)</label><input id="sendPw" type="password" required placeholder="xxxx xxxx xxxx xxxx" /></div>
+        <div class="field field--full"><label for="sendName" data-i18n="a.senderName">Sender name (shown to parents)</label><input id="sendName" placeholder="Vidya Vriksh Tuition" /></div>
+        <div class="field field--full"><button class="btn btn--primary" id="sendBtn" type="submit" data-i18n="a.connect">Connect &amp; verify</button></div>
       </form>
 
       <details class="help">
-        <summary>How do I get an App Password?</summary>
+        <summary data-i18n="a.help.summary">How do I get an App Password?</summary>
         <ol>
-          <li>Turn on <strong>2-Step Verification</strong> for your Gmail at <a href="https://myaccount.google.com/security" target="_blank" rel="noopener">myaccount.google.com/security</a>.</li>
-          <li>Go to <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a>, name it “Vidya Vriksh”, and copy the 16-character code.</li>
-          <li>Paste it above and click <strong>Connect &amp; verify</strong> — we'll send a quick test to your inbox and switch sending over automatically.</li>
+          <li data-i18n="a.help.s1">Turn on 2-Step Verification for your Gmail.</li>
+          <li data-i18n="a.help.s2">Create an App Password and copy the 16-character code.</li>
+          <li data-i18n="a.help.s3">Paste it above and click Connect &amp; verify — we'll send a quick test and switch sending over.</li>
         </ol>
       </details>
     </div>
@@ -74,8 +74,8 @@
         e.preventDefault();
         try {
           await api("/api/auth/change-email", { method: "POST", body: { email: emInput.value } });
-          toast("Login email updated — use it next time you sign in");
-        } catch (ex) { toast(ex.error || "Could not update email", true); }
+          toast(aLang() === "te" ? "లాగిన్ ఇమెయిల్ మారింది — తదుపరి సైన్ ఇన్‌లో దీన్ని వాడండి" : "Login email updated — use it next time you sign in");
+        } catch (ex) { toast(ex.error || (aLang() === "te" ? "ఇమెయిల్ మార్చలేకపోయాం" : "Could not update email"), true); }
       });
 
       // --- Password ---
@@ -84,21 +84,22 @@
         try {
           await api("/api/auth/change-password", { method: "POST",
             body: { currentPassword: document.getElementById("cur").value, newPassword: document.getElementById("nw").value } });
-          e.target.reset(); toast("Password updated");
-        } catch (ex) { toast(ex.error || "Could not update password", true); }
+          e.target.reset(); toast(aLang() === "te" ? "పాస్‌వర్డ్ మారింది" : "Password updated");
+        } catch (ex) { toast(ex.error || (aLang() === "te" ? "పాస్‌వర్డ్ మార్చలేకపోయాం" : "Could not update password"), true); }
       });
 
       // --- Sending email status ---
       async function refreshStatus() {
         const s = await api("/api/settings/email");
         const el = document.getElementById("status");
+        el.removeAttribute("data-i18n");
         if (s.configured) {
           el.className = "status ok";
-          el.textContent = "✅ Sending from " + s.sender;
+          el.textContent = tr("a.status.okPrefix") + " " + s.sender;
           document.getElementById("sendSender").value = s.sender;
         } else {
           el.className = "status no";
-          el.textContent = "⚠️ Not set up yet — connect a Gmail below";
+          el.textContent = tr("a.status.no");
         }
       }
       await refreshStatus();
@@ -106,7 +107,7 @@
       document.getElementById("sendForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const btn = document.getElementById("sendBtn");
-        btn.disabled = true; btn.textContent = "Verifying…";
+        btn.disabled = true; btn.textContent = aLang() === "te" ? "ధృవీకరిస్తోంది…" : "Verifying…";
         try {
           const r = await api("/api/settings/email", { method: "POST", body: {
             sender: document.getElementById("sendSender").value,
@@ -114,15 +115,15 @@
             fromName: document.getElementById("sendName").value,
           }});
           document.getElementById("sendPw").value = "";
-          toast("Connected! Emails now send from " + r.sender);
+          toast((aLang() === "te" ? "కనెక్ట్ అయింది! ఇప్పుడు ఇమెయిల్‌లు దీని నుండి పంపబడతాయి: " : "Connected! Emails now send from ") + r.sender);
           await refreshStatus();
         } catch (ex) {
-          toast(ex.error || "Could not verify the email", true);
+          toast(ex.error || (aLang() === "te" ? "ఇమెయిల్‌ను ధృవీకరించలేకపోయాం" : "Could not verify the email"), true);
         } finally {
-          btn.disabled = false; btn.textContent = "Connect & verify";
+          btn.disabled = false; btn.textContent = tr("a.connect");
         }
       });
-    })().catch(e => toast(e.error || "Error", true));
+    })().catch(e => toast(e.error || (aLang() === "te" ? "లోపం" : "Error"), true));
   </script>
 </body>
 </html>

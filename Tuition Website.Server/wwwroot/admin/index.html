@@ -13,20 +13,20 @@
 <body>
   <div class="wrap">
     <div class="page-head">
-      <div><h1>Dashboard</h1><p id="welcome" class="muted"></p></div>
-      <div class="row"><button class="help-btn" id="helpBtn" type="button">❔ How to use</button>
-        <a class="btn btn--primary" href="/admin/students">+ Manage Students</a></div>
+      <div><h1 data-i18n="a.dash.title">Dashboard</h1><p id="welcome" class="muted"></p></div>
+      <div class="row"><button class="help-btn" id="helpBtn" type="button" data-i18n="a.howto">❔ How to use</button>
+        <a class="btn btn--primary" href="/admin/students" data-i18n="a.dash.manage">+ Manage Students</a></div>
     </div>
 
     <div class="cards" id="stats"></div>
 
-    <div class="page-head mt"><h1 style="font-size:1.3rem">Your students</h1>
-      <a class="btn btn--ghost btn--sm" href="/admin/students">View all</a></div>
+    <div class="page-head mt"><h1 style="font-size:1.3rem" data-i18n="a.dash.yourStudents">Your students</h1>
+      <a class="btn btn--ghost btn--sm" href="/admin/students" data-i18n="a.viewAll">View all</a></div>
     <div class="table-card">
       <div class="table-wrap">
         <table class="data">
-          <thead><tr><th>Name</th><th>Class</th><th>Tests</th><th>Average</th><th></th></tr></thead>
-          <tbody id="rows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+          <thead><tr><th data-i18n="a.th.name">Name</th><th data-i18n="a.th.class">Class</th><th data-i18n="a.th.tests">Tests</th><th data-i18n="a.th.avg">Average</th><th></th></tr></thead>
+          <tbody id="rows"><tr><td colspan="5" class="empty">…</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -38,20 +38,20 @@
     (async () => {
       const me = await initShell("/admin/");
       if (!me) return;
-      document.getElementById("welcome").textContent = "Welcome back, " + me.name + ".";
+      document.getElementById("welcome").textContent = tr("a.dash.welcome") + " " + me.name + ".";
 
       const menuStep = isMobile()
-        ? { emoji: "🧭", title: "The menu", body: "Tap this <strong>☰ button</strong> to open the menu and move between pages.", target: () => document.getElementById("menuBtn") }
-        : { emoji: "🧭", title: "The menu", body: "Use these links to move between <strong>Dashboard, Students, Tests, Teachers</strong> and <strong>Settings</strong>.", target: () => document.getElementById("topnav") };
+        ? { emoji: "🧭", title: tr("a.tour.menuT"), body: tr("a.tour.menuMobileB"), target: () => document.getElementById("menuBtn") }
+        : { emoji: "🧭", title: tr("a.tour.menuT"), body: tr("a.tour.menuDeskB"), target: () => document.getElementById("topnav") };
       const teacherSteps = [
-        { emoji: "👋", title: "Welcome to your portal", body: "Quick tour — I'll point out each part. Tap <strong>Skip</strong> anytime." },
+        { emoji: "👋", title: tr("a.tour.welcomeT"), body: tr("a.tour.welcomeB") },
         menuStep,
-        { emoji: "📊", title: "Your overview", body: "At a glance: how many students and tests you have, and the class average.", target: () => document.getElementById("stats") },
-        { emoji: "🧑‍🎓", title: "Students", body: "Add and open students here. Include the <strong>parent's email</strong> so you can email reports and give parents a login.", target: () => document.querySelector('.page-head a[href="/admin/students"]') },
-        { emoji: "❔", title: "Replay anytime", body: "Tap <strong>How to use</strong> to see this tour again, or open the <a href='/guide' target='_blank'>full written guide</a>.", target: () => document.getElementById("helpBtn") },
-        { emoji: "📝", title: "Then: tests & marks", body: "1) Open <strong>Tests</strong> to create tests. 2) Open a student to <strong>record marks</strong> (they auto-save) and see <strong>charts</strong>." },
-        { emoji: "👪", title: "Reports & parent login", body: "On a student's page: <strong>✉️ Email report to parent</strong>, and set a password under <strong>Parent login access</strong> so parents can sign in at hrm99.com/parent." },
-        { emoji: "⚙️", title: "Settings", body: "Change your password, connect the sending email, and enable <strong>Sign in with Google</strong>. Enjoy! 🎉" },
+        { emoji: "📊", title: tr("a.tour.overviewT"), body: tr("a.tour.overviewB"), target: () => document.getElementById("stats") },
+        { emoji: "🧑‍🎓", title: tr("a.tour.studentsT"), body: tr("a.tour.studentsB"), target: () => document.querySelector('.page-head a[href="/admin/students"]') },
+        { emoji: "❔", title: tr("a.tour.replayT"), body: tr("a.tour.replayB"), target: () => document.getElementById("helpBtn") },
+        { emoji: "📝", title: tr("a.tour.testsT"), body: tr("a.tour.testsB") },
+        { emoji: "👪", title: tr("a.tour.reportsT"), body: tr("a.tour.reportsB") },
+        { emoji: "⚙️", title: tr("a.tour.settingsT"), body: tr("a.tour.settingsB") },
       ];
       document.getElementById("helpBtn").addEventListener("click", () => startTour("teacher_v2", teacherSteps, { force: true }));
 
@@ -62,24 +62,24 @@
       const overall = avg.length ? Math.round(avg.reduce((a, s) => a + s.average, 0) / avg.length) : 0;
 
       document.getElementById("stats").innerHTML = `
-        <div class="card stat"><span class="stat__num">${students.length}</span><span class="stat__label">Students</span></div>
-        <div class="card stat"><span class="stat__num">${tests.length}</span><span class="stat__label">Tests created</span></div>
-        <div class="card stat"><span class="stat__num">${overall}%</span><span class="stat__label">Class average</span></div>
-        <div class="card stat"><span class="stat__num">${teachers.length}</span><span class="stat__label">Teachers</span></div>`;
+        <div class="card stat"><span class="stat__num">${students.length}</span><span class="stat__label">${tr("a.stat.students")}</span></div>
+        <div class="card stat"><span class="stat__num">${tests.length}</span><span class="stat__label">${tr("a.stat.tests")}</span></div>
+        <div class="card stat"><span class="stat__num">${overall}%</span><span class="stat__label">${tr("a.stat.avg")}</span></div>
+        <div class="card stat"><span class="stat__num">${teachers.length}</span><span class="stat__label">${tr("a.stat.teachers")}</span></div>`;
 
       startTour("teacher_v2", teacherSteps);  // spotlight tour once the page has rendered
 
       const rows = document.getElementById("rows");
-      if (!students.length) { rows.innerHTML = `<tr><td colspan="5" class="empty">No students yet. <a href="/admin/students">Add your first student</a>.</td></tr>`; return; }
+      if (!students.length) { rows.innerHTML = `<tr><td colspan="5" class="empty">${tr("a.dash.noStudents")} <a href="/admin/students">${tr("a.dash.addFirst")}</a>.</td></tr>`; return; }
       rows.innerHTML = students.slice(0, 8).map(s => `
         <tr>
           <td><strong>${escapeHtml(s.name)}</strong></td>
           <td>${escapeHtml(s.className) || "—"}</td>
           <td>${s.tests}</td>
           <td><span class="pill ${pillClass(s.average)}">${s.tests ? s.average + "%" : "—"}</span></td>
-          <td><a class="btn btn--sage btn--sm" href="/admin/student?id=${s.id}">Open</a></td>
+          <td><a class="btn btn--sage btn--sm" href="/admin/student?id=${s.id}">${tr("a.open")}</a></td>
         </tr>`).join("");
-    })().catch(e => toast(e.error || "Something went wrong", true));
+    })().catch(e => toast(e.error || (aLang() === "te" ? "ఏదో తప్పు జరిగింది" : "Something went wrong"), true));
   </script>
 </body>
 </html>

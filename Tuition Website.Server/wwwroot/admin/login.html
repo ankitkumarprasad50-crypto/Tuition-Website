@@ -70,26 +70,27 @@
 
   <form class="card" id="loginForm">
     <div class="logo" aria-hidden="true">🌳</div>
-    <h1>Teacher Portal</h1>
-    <p class="sub">Welcome back — please sign in</p>
+    <h1 data-i18n="a.login.title">Teacher Portal</h1>
+    <p class="sub" data-i18n="a.login.sub">Welcome back — please sign in</p>
 
     <div class="field">
-      <label for="email">Email</label>
+      <label for="email" data-i18n="a.email">Email</label>
       <div class="inp"><input id="email" name="email" type="email" required autocomplete="username" placeholder="you@vidyavriksh.local" /></div>
     </div>
     <div class="field">
-      <label for="password">Password</label>
+      <label for="password" data-i18n="a.password">Password</label>
       <div class="inp">
         <input id="password" name="password" type="password" required autocomplete="current-password" placeholder="Your password" />
         <button type="button" class="toggle" id="toggle" aria-label="Show password">👁️</button>
       </div>
     </div>
 
-    <button class="btn" type="submit" id="loginBtn">Sign in</button>
+    <button class="btn" type="submit" id="loginBtn" data-i18n="a.signin">Sign in</button>
     <div class="err" id="err" role="alert" aria-live="polite"></div>
-    <div class="divider" id="gdivider">or</div>
+    <div class="divider" id="gdivider" data-i18n="a.or">or</div>
     <div id="gbtn"></div>
-    <a class="back" href="/">← Back to website</a>
+    <a class="back" href="/" data-i18n="a.back">← Back to website</a>
+    <br><button class="lang-toggle" type="button" onclick="toggleAdminLang()" style="margin-top:.9rem">తెలుగు</button>
   </form>
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -111,14 +112,14 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       err.textContent = "";
-      btn.disabled = true; btn.textContent = "Signing in…";
+      btn.disabled = true; btn.textContent = aLang() === "te" ? "సైన్ ఇన్ అవుతోంది…" : "Signing in…";
       try {
         await api("/api/auth/login", { method: "POST", noRedirect: true,
           body: { email: document.getElementById("email").value, password: pw.value } });
         location.href = "/admin/";
       } catch (ex) {
-        err.textContent = ex.error || "Sign in failed.";
-        btn.disabled = false; btn.textContent = "Sign in";
+        err.textContent = ex.error || (aLang() === "te" ? "సైన్ ఇన్ విఫలమైంది." : "Sign in failed.");
+        btn.disabled = false; btn.textContent = tr("a.signin");
       }
     });
 

@@ -37,137 +37,137 @@
   <div id="site-header"></div>
 
   <main class="guide">
-    <button class="btn btn--primary print-btn" onclick="window.print()">🖨️ Save as PDF / Print</button>
-    <span class="pill">User Guide</span>
-    <h1 style="margin:.6rem 0">How to use Vidya Vriksh</h1>
-    <p style="font-size:1.1rem;color:var(--muted)">A simple, step-by-step guide for <strong>teachers</strong> and <strong>parents</strong>. Works on phones and computers.</p>
+    <button class="btn btn--primary print-btn" onclick="window.print()" data-i18n="g.print">🖨️ Save as PDF / Print</button>
+    <span class="pill" data-i18n="g.badge">User Guide</span>
+    <h1 style="margin:.6rem 0" data-i18n="g.title">How to use Vidya Vriksh</h1>
+    <p style="font-size:1.1rem;color:var(--muted)" data-i18n-html="g.intro">A simple, step-by-step guide for <strong>teachers</strong> and <strong>parents</strong>. Works on phones and computers.</p>
 
     <div class="toc" style="margin-top:1.4rem">
-      <strong>Contents</strong>
+      <strong data-i18n="g.contents">Contents</strong>
       <ul style="list-style:none;padding-left:0;margin:.6rem 0 0">
-        <li>👩‍🏫 <a href="#teacher">Teacher Portal</a> — sign in, students, tests, marks, reports, emailing, parent access, settings</li>
-        <li>👪 <a href="#parent">Parent Portal</a> — sign in and view your child's progress</li>
-        <li>📱 <a href="#tips">Tips for phone &amp; browser</a></li>
+        <li data-i18n-html="g.toc1">👩‍🏫 <a href="#teacher">Teacher Portal</a> — sign in, students, tests, marks, reports, emailing, parent access, settings</li>
+        <li data-i18n-html="g.toc2">👪 <a href="#parent">Parent Portal</a> — sign in and view your child's progress</li>
+        <li data-i18n-html="g.toc3">📱 <a href="#tips">Tips for phone &amp; browser</a></li>
       </ul>
     </div>
 
     <!-- ================= TEACHER ================= -->
-    <h2 id="teacher">👩‍🏫 Teacher Portal</h2>
-    <p>The Teacher Portal is where you manage students, record test marks, and share progress with parents.</p>
+    <h2 id="teacher" data-i18n="g.tHead">👩‍🏫 Teacher Portal</h2>
+    <p data-i18n="g.tIntro">The Teacher Portal is where you manage students, record test marks, and share progress with parents.</p>
 
-    <h3>1. Signing in</h3>
+    <h3 data-i18n="g.t1h">1. Signing in</h3>
     <div class="step">
       <ol>
-        <li><strong>Easiest — tap <span class="kbd">Sign in with Google</span></strong> and pick your account. No password needed (your Google email just has to match your teacher account). ✅</li>
-        <li>Or enter your <strong>email</strong> and <strong>password</strong> (tap the 👁️ to see what you typed) and tap <span class="kbd">Sign in</span>.</li>
+        <li data-i18n-html="g.t1a"><strong>Easiest — tap <span class="kbd">Sign in with Google</span></strong> and pick your account. No password needed (your Google email just has to match your teacher account). ✅</li>
+        <li data-i18n-html="g.t1b">Or enter your <strong>email</strong> and <strong>password</strong> (tap the 👁️ to see what you typed) and tap <span class="kbd">Sign in</span>.</li>
       </ol>
     </div>
-    <p class="callout">🔑 Using a password? First time, use the temporary one you were given, then change it in <em>Settings</em>. Forgot it? Ask the tuition to reset it — or just use <strong>Sign in with Google</strong>.</p>
+    <p class="callout" data-i18n-html="g.t1note">🔑 Using a password? First time, use the temporary one you were given, then change it in <em>Settings</em>. Forgot it? Ask the tuition to reset it — or just use <strong>Sign in with Google</strong>.</p>
 
-    <h3>2. Dashboard</h3>
-    <p>After signing in you'll see the <strong>Dashboard</strong>: quick counts (students, tests, class average) and a list of your students. Tap <span class="kbd">Open</span> on any student to view their page.</p>
+    <h3 data-i18n="g.t2h">2. Dashboard</h3>
+    <p data-i18n-html="g.t2p">After signing in you'll see the <strong>Dashboard</strong>: quick counts (students, tests, class average) and a list of your students. Tap <span class="kbd">Open</span> on any student to view their page.</p>
 
-    <h3>3. Students — add &amp; manage</h3>
+    <h3 data-i18n="g.t3h">3. Students — add &amp; manage</h3>
     <div class="step">
       <ol>
-        <li>Go to <strong>Students</strong> → tap <span class="kbd">+ Add Student</span>.</li>
-        <li>Fill in the child's <strong>name</strong> and <strong>class</strong>.</li>
-        <li>Add the <strong>parent's name, phone</strong>, and especially the <strong>parent's email</strong> — this is needed to email reports and to give parents a login.</li>
-        <li>Tap <span class="kbd">Save</span>.</li>
+        <li data-i18n-html="g.t3a">Go to <strong>Students</strong> → tap <span class="kbd">+ Add Student</span>.</li>
+        <li data-i18n-html="g.t3b">Fill in the child's <strong>name</strong> and <strong>class</strong>.</li>
+        <li data-i18n-html="g.t3c">Add the <strong>parent's name, phone</strong>, and especially the <strong>parent's email</strong> — this is needed to email reports and to give parents a login.</li>
+        <li data-i18n-html="g.t3d">Tap <span class="kbd">Save</span>.</li>
       </ol>
     </div>
-    <p>Use <span class="kbd">Edit</span> to update details or <span class="kbd">✕</span> to remove a student. Each teacher only sees their own students.</p>
+    <p data-i18n-html="g.t3p">Use <span class="kbd">Edit</span> to update details or <span class="kbd">✕</span> to remove a student. Each teacher only sees their own students.</p>
 
-    <h3>4. Tests — create them first</h3>
+    <h3 data-i18n="g.t4h">4. Tests — create them first</h3>
     <div class="step">
       <ol>
-        <li>Go to <strong>Tests</strong> → tap <span class="kbd">+ Add Test</span>.</li>
-        <li>Enter the <strong>test name</strong> (e.g. "Unit Test 1"), <strong>subject</strong>, <strong>date</strong>, and <strong>maximum marks</strong>.</li>
-        <li>Tap <span class="kbd">Save</span>. Repeat for each test.</li>
-      </ol>
-    </div>
-
-    <h3>5. Recording marks</h3>
-    <div class="step">
-      <ol>
-        <li>Open a student (Students → <span class="kbd">Open</span>).</li>
-        <li>Scroll to <strong>Record marks</strong> — you'll see a row for every test.</li>
-        <li>Type the score in the <strong>Score</strong> box and <strong>click away</strong> — it <strong>saves automatically</strong> (you'll see a "Saved" note).</li>
-        <li>Add an optional remark. To remove a mark, clear the box.</li>
+        <li data-i18n-html="g.t4a">Go to <strong>Tests</strong> → tap <span class="kbd">+ Add Test</span>.</li>
+        <li data-i18n-html="g.t4b">Enter the <strong>test name</strong> (e.g. "Unit Test 1"), <strong>subject</strong>, <strong>date</strong>, and <strong>maximum marks</strong>.</li>
+        <li data-i18n-html="g.t4c">Tap <span class="kbd">Save</span>. Repeat for each test.</li>
       </ol>
     </div>
 
-    <h3>6. Reports &amp; charts</h3>
-    <p>On the student's page you'll see their <strong>overall average</strong>, a short <strong>verdict</strong>, and two charts that update as you add marks:</p>
+    <h3 data-i18n="g.t5h">5. Recording marks</h3>
+    <div class="step">
+      <ol>
+        <li data-i18n-html="g.t5a">Open a student (Students → <span class="kbd">Open</span>).</li>
+        <li data-i18n-html="g.t5b">Scroll to <strong>Record marks</strong> — you'll see a row for every test.</li>
+        <li data-i18n-html="g.t5c">Type the score in the <strong>Score</strong> box and <strong>click away</strong> — it <strong>saves automatically</strong> (you'll see a "Saved" note).</li>
+        <li data-i18n-html="g.t5d">Add an optional remark. To remove a mark, clear the box.</li>
+      </ol>
+    </div>
+
+    <h3 data-i18n="g.t6h">6. Reports &amp; charts</h3>
+    <p data-i18n-html="g.t6p">On the student's page you'll see their <strong>overall average</strong>, a short <strong>verdict</strong>, and two charts that update as you add marks:</p>
     <ul>
-      <li><strong>Marks by test</strong> — a bar for each test's percentage.</li>
-      <li><strong>Progress trend</strong> — a line showing whether results are improving.</li>
+      <li data-i18n-html="g.t6a"><strong>Marks by test</strong> — a bar for each test's percentage.</li>
+      <li data-i18n-html="g.t6b"><strong>Progress trend</strong> — a line showing whether results are improving.</li>
     </ul>
 
-    <h3>7. Send a report to the parent</h3>
+    <h3 data-i18n="g.t7h">7. Send a report to the parent</h3>
     <div class="step">
       <ol>
-        <li><strong>WhatsApp (free):</strong> tap <span class="kbd">📲 WhatsApp report</span> — WhatsApp opens with the report already typed out to the parent's number. Just tap <strong>Send</strong>. (Needs the student's <strong>parent phone</strong>.)</li>
-        <li><strong>Email:</strong> tap <span class="kbd">✉️ Email report</span> to email a neat report with scores and bars. (Needs the <strong>parent email</strong> + email connected in <em>Settings → Sending email</em>.)</li>
+        <li data-i18n-html="g.t7a"><strong>WhatsApp (free):</strong> tap <span class="kbd">📲 WhatsApp report</span> — WhatsApp opens with the report already typed out to the parent's number. Just tap <strong>Send</strong>. (Needs the student's <strong>parent phone</strong>.)</li>
+        <li data-i18n-html="g.t7b"><strong>Email:</strong> tap <span class="kbd">✉️ Email report</span> to email a neat report with scores and bars. (Needs the <strong>parent email</strong> + email connected in <em>Settings → Sending email</em>.)</li>
       </ol>
     </div>
 
-    <h3>8. Give a parent their own login</h3>
+    <h3 data-i18n="g.t8h">8. Give a parent their own login</h3>
     <div class="step">
       <ol>
-        <li>Open the student (they must have a parent email).</li>
-        <li>In the <strong>Parent login access</strong> box, type a password and tap <span class="kbd">Save</span>.</li>
-        <li>Share the <strong>parent's email + that password</strong> with them. They sign in at <strong>hrm99.com/parent</strong>.</li>
+        <li data-i18n-html="g.t8a">Open the student (they must have a parent email).</li>
+        <li data-i18n-html="g.t8b">In the <strong>Parent login access</strong> box, type a password and tap <span class="kbd">Save</span>.</li>
+        <li data-i18n-html="g.t8c">Share the <strong>parent's email + that password</strong> with them. They sign in at <strong>hrm99.com/parent</strong>.</li>
       </ol>
     </div>
 
-    <h3>9. Add another teacher</h3>
-    <p>Go to <strong>Teachers</strong> → <span class="kbd">+ Add Teacher</span> → enter their name, email and a temporary password → share it with them. Any teacher can add teachers.</p>
+    <h3 data-i18n="g.t9h">9. Add another teacher</h3>
+    <p data-i18n-html="g.t9p">Go to <strong>Teachers</strong> → <span class="kbd">+ Add Teacher</span> → enter their name, email and a temporary password → share it with them. Any teacher can add teachers.</p>
 
-    <h3>10. Settings</h3>
+    <h3 data-i18n="g.t10h">10. Settings</h3>
     <ul>
-      <li><strong>Login email</strong> — change the email you sign in with.</li>
-      <li><strong>Change password</strong> — set a new password anytime.</li>
-      <li><strong>Sending email</strong> — connect the Gmail that report/enquiry emails are sent from: turn on 2-Step Verification, create a Google <strong>App Password</strong>, paste it here, and tap <span class="kbd">Connect &amp; verify</span>. (Steps are shown on the page.)</li>
+      <li data-i18n-html="g.t10a"><strong>Login email</strong> — change the email you sign in with.</li>
+      <li data-i18n-html="g.t10b"><strong>Change password</strong> — set a new password anytime.</li>
+      <li data-i18n-html="g.t10c"><strong>Sending email</strong> — connect the Gmail that report/enquiry emails are sent from: turn on 2-Step Verification, create a Google <strong>App Password</strong>, paste it here, and tap <span class="kbd">Connect &amp; verify</span>. (Steps are shown on the page.)</li>
     </ul>
 
     <!-- ================= PARENT ================= -->
-    <h2 id="parent">👪 Parent Portal</h2>
-    <p>Parents can sign in to see their child's marks and progress — anytime, on any device. It's <strong>view-only</strong>.</p>
+    <h2 id="parent" data-i18n="g.pHead">👪 Parent Portal</h2>
+    <p data-i18n-html="g.pIntro">Parents can sign in to see their child's marks and progress — anytime, on any device. It's <strong>view-only</strong>.</p>
 
-    <h3>1. Signing in</h3>
+    <h3 data-i18n="g.p1h">1. Signing in</h3>
     <div class="step">
       <ol>
-        <li>Open <strong>hrm99.com/parent</strong>.</li>
-        <li><strong>Easiest — tap <span class="kbd">Sign in with Google</span></strong> and pick your account. No password needed, as long as the tuition has your Google email on file. ✅</li>
-        <li>Or enter the <strong>email</strong> and <strong>password</strong> the tuition gave you (tap 👁️ to reveal) and tap <span class="kbd">Sign in</span>.</li>
+        <li data-i18n-html="g.p1a">Open <strong>hrm99.com/parent</strong>.</li>
+        <li data-i18n-html="g.p1b"><strong>Easiest — tap <span class="kbd">Sign in with Google</span></strong> and pick your account. No password needed, as long as the tuition has your Google email on file. ✅</li>
+        <li data-i18n-html="g.p1c">Or enter the <strong>email</strong> and <strong>password</strong> the tuition gave you (tap 👁️ to reveal) and tap <span class="kbd">Sign in</span>.</li>
       </ol>
     </div>
-    <p class="callout">Don't see your child after signing in? Ask the tuition to add your email to your child's record.</p>
+    <p class="callout" data-i18n="g.p1note">Don't see your child after signing in? Ask the tuition to add your email to your child's record.</p>
 
-    <h3>2. Viewing your child's progress</h3>
-    <p>You'll see a card for <strong>each of your children</strong>, showing:</p>
+    <h3 data-i18n="g.p2h">2. Viewing your child's progress</h3>
+    <p data-i18n-html="g.p2p">You'll see a card for <strong>each of your children</strong>, showing:</p>
     <ul>
-      <li><strong>Overall average</strong> and a short <strong>verdict</strong>.</li>
-      <li><strong>Marks by test</strong> — a bar per test. <span style="color:#5E927B;font-weight:800">Green</span> = strong, <span style="color:#b98a2a;font-weight:800">amber</span> = okay, <span style="color:#C65B42;font-weight:800">red</span> = needs support.</li>
-      <li><strong>Progress trend</strong> — is your child improving over time?</li>
-      <li>A <strong>table of every test</strong> with the exact score.</li>
+      <li data-i18n-html="g.p2a"><strong>Overall average</strong> and a short <strong>verdict</strong>.</li>
+      <li data-i18n-html="g.p2b"><strong>Marks by test</strong> — a bar per test. <span style="color:#5E927B;font-weight:800">Green</span> = strong, <span style="color:#b98a2a;font-weight:800">amber</span> = okay, <span style="color:#C65B42;font-weight:800">red</span> = needs support.</li>
+      <li data-i18n-html="g.p2c"><strong>Progress trend</strong> — is your child improving over time?</li>
+      <li data-i18n-html="g.p2d">A <strong>table of every test</strong> with the exact score.</li>
     </ul>
 
-    <h3>3. Logging out</h3>
-    <p>Tap <span class="kbd">Log out</span> (top-right). Have a question about the marks? Contact the tuition directly.</p>
+    <h3 data-i18n="g.p3h">3. Logging out</h3>
+    <p data-i18n-html="g.p3p">Tap <span class="kbd">Log out</span> (top-right). Have a question about the marks? Contact the tuition directly.</p>
 
     <!-- ================= TIPS ================= -->
-    <h2 id="tips">📱 Tips for phone &amp; browser</h2>
+    <h2 id="tips" data-i18n="g.tipsHead">📱 Tips for phone &amp; browser</h2>
     <ul>
-      <li><strong>On a phone:</strong> tap the <span class="kbd">☰</span> menu (top-right) to move between pages. Everything works on phones.</li>
-      <li><strong>Browser:</strong> use an up-to-date <strong>Chrome</strong> or <strong>Safari</strong>. If a page looks out of date, refresh it.</li>
-      <li><strong>Saving:</strong> marks save automatically — no "save" button needed.</li>
-      <li><strong>Security:</strong> keep your password private and log out on shared devices.</li>
-      <li><strong>Need this on paper?</strong> Tap <strong>🖨️ Save as PDF / Print</strong> at the top of this page.</li>
+      <li data-i18n-html="g.tip1"><strong>On a phone:</strong> tap the <span class="kbd">☰</span> menu (top-right) to move between pages. Everything works on phones.</li>
+      <li data-i18n-html="g.tip2"><strong>Browser:</strong> use an up-to-date <strong>Chrome</strong> or <strong>Safari</strong>. If a page looks out of date, refresh it.</li>
+      <li data-i18n-html="g.tip3"><strong>Saving:</strong> marks save automatically — no "save" button needed.</li>
+      <li data-i18n-html="g.tip4"><strong>Security:</strong> keep your password private and log out on shared devices.</li>
+      <li data-i18n-html="g.tip5"><strong>Need this on paper?</strong> Tap <strong>🖨️ Save as PDF / Print</strong> at the top of this page.</li>
     </ul>
 
-    <p style="margin-top:2rem;color:var(--muted)">Vidya Vriksh Tuition · Kovvur — need help? Contact the tuition.</p>
+    <p style="margin-top:2rem;color:var(--muted)" data-i18n="g.footer">Vidya Vriksh Tuition · Kovvur — need help? Contact the tuition.</p>
   </main>
 
   <div id="site-footer"></div>

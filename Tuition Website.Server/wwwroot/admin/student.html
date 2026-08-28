@@ -12,50 +12,50 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="crumb"><a href="/admin/students">← Students</a></div>
+    <div class="crumb"><a href="/admin/students" data-i18n="a.back.students">← Students</a></div>
     <div class="page-head">
       <div><h1 id="sname">Student</h1><p id="sinfo" class="muted"></p></div>
       <div class="row">
-        <button class="btn btn--whatsapp" id="whatsappBtn">📲 WhatsApp report</button>
-        <button class="btn btn--primary" id="emailBtn">✉️ Email report</button>
+        <button class="btn btn--whatsapp" id="whatsappBtn" data-i18n="a.waReport">📲 WhatsApp report</button>
+        <button class="btn btn--primary" id="emailBtn" data-i18n="a.emailReport">✉️ Email report</button>
       </div>
     </div>
 
     <!-- Report summary -->
     <div class="report-hero">
-      <div><div class="stat__label">Overall average</div><div class="big" id="avg">—</div></div>
+      <div><div class="stat__label" data-i18n="a.overall">Overall average</div><div class="big" id="avg">—</div></div>
       <div class="verdict" id="verdict"></div>
     </div>
 
     <!-- Charts -->
     <div class="charts">
-      <div class="chart-card"><h3>Marks by test</h3><div class="sub">Percentage scored in each test</div><div id="barChart"></div></div>
-      <div class="chart-card"><h3>Progress trend</h3><div class="sub">How results are changing over time</div><div id="lineChart"></div></div>
+      <div class="chart-card"><h3 data-i18n="a.marksByTest">Marks by test</h3><div class="sub" data-i18n="a.marksSub">Percentage scored in each test</div><div id="barChart"></div></div>
+      <div class="chart-card"><h3 data-i18n="a.trend">Progress trend</h3><div class="sub" data-i18n="a.trendSub">How results are changing over time</div><div id="lineChart"></div></div>
     </div>
 
     <!-- Parent login access -->
     <div class="card mt">
-      <div class="stat__label" style="margin-bottom:.5rem">Parent login access</div>
-      <p class="muted" id="paInfo" style="margin-bottom:.7rem">Loading…</p>
+      <div class="stat__label" style="margin-bottom:.5rem" data-i18n="a.parentAccess">Parent login access</div>
+      <p class="muted" id="paInfo" style="margin-bottom:.7rem" data-i18n="a.pa.loading">Loading…</p>
       <form id="paForm" class="row" style="max-width:520px;display:none">
-        <input id="paPw" type="text" placeholder="Set a parent password (min 6 chars)" minlength="6" required
+        <input id="paPw" type="text" data-i18n-ph="a.pa.pwPlaceholder" placeholder="Set a parent password (min 6 chars)" minlength="6" required
           style="flex:1;min-width:180px;padding:.6rem .75rem;border-radius:10px;border:2px solid var(--peach-deep);background:var(--cream);font-family:inherit;font-size:1rem" />
-        <button class="btn btn--sage btn--sm" type="submit">Save</button>
+        <button class="btn btn--sage btn--sm" type="submit" data-i18n="a.save">Save</button>
       </form>
     </div>
 
     <!-- Marks entry -->
-    <div class="page-head mt"><h1 style="font-size:1.3rem">Record marks</h1>
-      <a class="btn btn--ghost btn--sm" href="/admin/tests">Manage tests</a></div>
+    <div class="page-head mt"><h1 style="font-size:1.3rem" data-i18n="a.recordMarks">Record marks</h1>
+      <a class="btn btn--ghost btn--sm" href="/admin/tests" data-i18n="a.manageTests">Manage tests</a></div>
     <div class="table-card">
       <div class="table-wrap">
         <table class="data">
-          <thead><tr><th>Test</th><th>Subject</th><th>Date</th><th>Score</th><th>Remark</th></tr></thead>
-          <tbody id="marks"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+          <thead><tr><th data-i18n="a.th.test">Test</th><th data-i18n="a.th.subject">Subject</th><th data-i18n="a.th.date">Date</th><th data-i18n="a.th.score">Score</th><th data-i18n="a.th.remark">Remark</th></tr></thead>
+          <tbody id="marks"><tr><td colspan="5" class="empty">…</td></tr></tbody>
         </table>
       </div>
     </div>
-    <p class="muted mt">💡 Type a score and click away — it saves automatically. Clear a box to remove that mark.</p>
+    <p class="muted mt" data-i18n="a.marksTip">💡 Type a score and click away — it saves automatically. Clear a box to remove that mark.</p>
   </div>
 
   <script src="/admin/assets/admin.js"></script>
@@ -65,11 +65,12 @@
 
     async function loadReport() {
       const r = await api(`/api/students/${id}/report`);
+      const te = aLang() === "te";
       document.getElementById("sname").textContent = r.studentName;
       document.getElementById("sinfo").textContent =
-        [r.className, r.parentName ? "Parent: " + r.parentName : "", r.parentEmail || "no parent email"].filter(Boolean).join("  ·  ");
+        [r.className, r.parentName ? (te ? "తల్లిదండ్రులు: " : "Parent: ") + r.parentName : "", r.parentEmail || (te ? "తల్లిదండ్రుల ఇమెయిల్ లేదు" : "no parent email")].filter(Boolean).join("  ·  ");
       document.getElementById("avg").textContent = r.rows.length ? r.averagePercent + "%" : "—";
-      document.getElementById("verdict").textContent = r.verdict;
+      document.getElementById("verdict").textContent = aVerdict(r.verdict);
 
       const chartData = r.rows.map(x => ({ label: x.test, value: x.percent }));
       document.getElementById("barChart").innerHTML = barChart(chartData);
@@ -78,24 +79,26 @@
       reportData = r;
       // enable/disable the Email & WhatsApp buttons based on parent details
       const btn = document.getElementById("emailBtn");
-      if (!r.parentEmail) { btn.disabled = true; btn.title = "Add a parent email on the student's Edit form first."; }
-      else { btn.disabled = false; btn.title = "Send this report to " + r.parentEmail; }
+      if (!r.parentEmail) { btn.disabled = true; btn.title = te ? "ముందుగా విద్యార్థి సవరణ ఫారంలో తల్లిదండ్రుల ఇమెయిల్ చేర్చండి." : "Add a parent email on the student's Edit form first."; }
+      else { btn.disabled = false; btn.title = (te ? "ఈ రిపోర్ట్‌ను దీనికి పంపండి: " : "Send this report to ") + r.parentEmail; }
       const wbtn = document.getElementById("whatsappBtn");
-      if (!r.parentPhone) { wbtn.disabled = true; wbtn.title = "Add a parent phone on the student's Edit form first."; }
-      else { wbtn.disabled = false; wbtn.title = "Open WhatsApp with the report ready to send"; }
+      if (!r.parentPhone) { wbtn.disabled = true; wbtn.title = te ? "ముందుగా విద్యార్థి సవరణ ఫారంలో తల్లిదండ్రుల ఫోన్ చేర్చండి." : "Add a parent phone on the student's Edit form first."; }
+      else { wbtn.disabled = false; wbtn.title = te ? "రిపోర్ట్ సిద్ధంగా ఉన్న వాట్సాప్ తెరవండి" : "Open WhatsApp with the report ready to send"; }
     }
 
     async function loadMarks() {
       const rows = await api(`/api/students/${id}/marks`);
       const body = document.getElementById("marks");
-      if (!rows.length) { body.innerHTML = `<tr><td colspan="5" class="empty">No tests yet. <a href="/admin/tests">Create a test</a> first.</td></tr>`; return; }
+      if (!rows.length) { body.innerHTML = aLang() === "te"
+        ? `<tr><td colspan="5" class="empty">ఇంకా పరీక్షలు లేవు. ముందుగా <a href="/admin/tests">ఒక పరీక్ష సృష్టించండి</a>.</td></tr>`
+        : `<tr><td colspan="5" class="empty">No tests yet. <a href="/admin/tests">Create a test</a> first.</td></tr>`; return; }
       body.innerHTML = rows.map(m => `
         <tr>
           <td><strong>${escapeHtml(m.test)}</strong></td>
           <td>${escapeHtml(m.subject) || "—"}</td>
           <td>${m.date}</td>
           <td><input class="score" type="number" min="0" max="${m.maxMarks}" step="0.5" data-test="${m.testId}" data-max="${m.maxMarks}" value="${m.score ?? ""}" /> <span class="muted">/ ${m.maxMarks}</span></td>
-          <td><input data-remark="${m.testId}" value="${escapeHtml(m.remark)}" placeholder="optional" style="min-width:160px" /></td>
+          <td><input data-remark="${m.testId}" value="${escapeHtml(m.remark)}" placeholder="${aLang() === "te" ? "ఐచ్ఛికం" : "optional"}" style="min-width:160px" /></td>
         </tr>`).join("");
 
       body.querySelectorAll("input.score, input[data-remark]").forEach(inp => {
@@ -109,23 +112,25 @@
       const testId = parseInt(scoreInp.dataset.test);
       const max = parseFloat(scoreInp.dataset.max);
       let score = scoreInp.value === "" ? null : parseFloat(scoreInp.value);
-      if (score !== null && (isNaN(score) || score < 0)) { toast("Enter a valid score", true); return; }
-      if (score !== null && score > max) { toast(`Score can't exceed ${max}`, true); scoreInp.value = ""; return; }
+      const te = aLang() === "te";
+      if (score !== null && (isNaN(score) || score < 0)) { toast(te ? "సరైన స్కోర్ నమోదు చేయండి" : "Enter a valid score", true); return; }
+      if (score !== null && score > max) { toast(te ? `స్కోర్ ${max} మించకూడదు` : `Score can't exceed ${max}`, true); scoreInp.value = ""; return; }
       try {
         await api("/api/marks", { method: "PUT", body: { studentId: parseInt(id), testId, score, remark: remarkInp.value } });
-        toast("Saved");
+        toast(te ? "సేవ్ అయింది" : "Saved");
         loadReport();
-      } catch (ex) { toast(ex.error || "Could not save", true); }
+      } catch (ex) { toast(ex.error || (te ? "సేవ్ చేయలేకపోయాం" : "Could not save"), true); }
     }
 
     document.getElementById("emailBtn").addEventListener("click", async () => {
+      const te = aLang() === "te";
       const btn = document.getElementById("emailBtn");
-      btn.disabled = true; btn.textContent = "Sending…";
+      btn.disabled = true; btn.textContent = te ? "పంపుతోంది…" : "Sending…";
       try {
         const r = await api(`/api/students/${id}/report/email`, { method: "POST" });
-        toast("Report emailed to " + r.to);
-      } catch (ex) { toast(ex.error || "Could not send email", true); }
-      finally { btn.disabled = false; btn.textContent = "✉️ Email report"; }
+        toast((te ? "రిపోర్ట్ దీనికి ఇమెయిల్ చేయబడింది: " : "Report emailed to ") + r.to);
+      } catch (ex) { toast(ex.error || (te ? "ఇమెయిల్ పంపలేకపోయాం" : "Could not send email"), true); }
+      finally { btn.disabled = false; btn.textContent = tr("a.emailReport"); }
     });
 
     // --- Free WhatsApp report: opens WhatsApp with the report pre-filled ---
@@ -137,56 +142,63 @@
       return d;
     }
     function buildWaText(r) {
-      let t = "🌳 Vidya Vriksh Tuition — Progress Report\n\n";
-      t += "Student: " + r.studentName + (r.className ? " (" + r.className + ")" : "") + "\n";
-      t += "Overall: " + (r.rows.length ? r.averagePercent + "% — " + r.verdict : "No tests recorded yet") + "\n";
+      const te = aLang() === "te";
+      let t = "🌳 " + (te ? "విద్యా వృక్ష్ ట్యూషన్ — ప్రగతి నివేదిక" : "Vidya Vriksh Tuition — Progress Report") + "\n\n";
+      t += (te ? "విద్యార్థి: " : "Student: ") + r.studentName + (r.className ? " (" + r.className + ")" : "") + "\n";
+      t += (te ? "మొత్తం: " : "Overall: ") + (r.rows.length ? r.averagePercent + "% — " + aVerdict(r.verdict) : (te ? "ఇంకా పరీక్షలు నమోదు కాలేదు" : "No tests recorded yet")) + "\n";
       if (r.rows.length) {
         t += "\n";
         r.rows.forEach(x => { t += "• " + x.test + (x.subject ? " (" + x.subject + ")" : "") + ": " + x.score + "/" + x.maxMarks + " (" + x.percent + "%)\n"; });
       }
-      t += "\n— " + (r.teacherName || "Vidya Vriksh Tuition");
+      t += "\n— " + (r.teacherName || (te ? "విద్యా వృక్ష్ ట్యూషన్" : "Vidya Vriksh Tuition"));
       return t;
     }
     document.getElementById("whatsappBtn").addEventListener("click", () => {
       if (!reportData) return;
       const num = waNumber(reportData.parentPhone);
-      if (!num) { toast("No valid parent phone number", true); return; }
+      if (!num) { toast(aLang() === "te" ? "సరైన తల్లిదండ్రుల ఫోన్ నంబర్ లేదు" : "No valid parent phone number", true); return; }
       window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(buildWaText(reportData)), "_blank");
     });
 
     async function loadParentAccess() {
       const info = document.getElementById("paInfo");
       const form = document.getElementById("paForm");
+      const te = aLang() === "te";
       try {
         const pa = await api(`/api/students/${id}/parent-access`);
+        info.removeAttribute("data-i18n");
         if (!pa.parentEmail) {
-          info.textContent = "Add a parent email (Edit the student) to enable parent login.";
+          info.textContent = tr("a.pa.needEmail");
           form.style.display = "none";
           return;
         }
+        const em = escapeHtml(pa.parentEmail);
         info.innerHTML = pa.hasAccess
-          ? `✅ The parent can sign in at <strong>/parent/</strong> with <strong>${escapeHtml(pa.parentEmail)}</strong>. Set a new password below to reset it.`
-          : `Set a password so <strong>${escapeHtml(pa.parentEmail)}</strong> can sign in at <strong>/parent/</strong> and view this child's report.`;
+          ? (te ? `✅ తల్లిదండ్రులు <strong>${em}</strong> తో <strong>/parent/</strong> వద్ద సైన్ ఇన్ చేయవచ్చు. రీసెట్ చేయడానికి కింద కొత్త పాస్‌వర్డ్ సెట్ చేయండి.`
+                : `✅ The parent can sign in at <strong>/parent/</strong> with <strong>${em}</strong>. Set a new password below to reset it.`)
+          : (te ? `<strong>${em}</strong> తో <strong>/parent/</strong> వద్ద సైన్ ఇన్ చేసి ఈ పిల్లవాడి రిపోర్ట్ చూడటానికి పాస్‌వర్డ్ సెట్ చేయండి.`
+                : `Set a password so <strong>${em}</strong> can sign in at <strong>/parent/</strong> and view this child's report.`);
         form.style.display = "flex";
-      } catch { info.textContent = "Could not load parent access."; }
+      } catch { info.textContent = te ? "తల్లిదండ్రుల యాక్సెస్ లోడ్ చేయలేకపోయాం." : "Could not load parent access."; }
     }
     document.getElementById("paForm").addEventListener("submit", async (e) => {
       e.preventDefault();
+      const te = aLang() === "te";
       try {
         const pa = await api(`/api/students/${id}/parent-access`, { method: "POST", body: { password: document.getElementById("paPw").value } });
         document.getElementById("paPw").value = "";
-        toast("Parent login ready — share the email + password with " + (pa.parentEmail || "the parent"));
+        toast((te ? "తల్లిదండ్రుల లాగిన్ సిద్ధం — ఇమెయిల్ + పాస్‌వర్డ్‌ను వీరితో పంచుకోండి: " : "Parent login ready — share the email + password with ") + (pa.parentEmail || (te ? "తల్లిదండ్రులు" : "the parent")));
         loadParentAccess();
-      } catch (ex) { toast(ex.error || "Could not save", true); }
+      } catch (ex) { toast(ex.error || (te ? "సేవ్ చేయలేకపోయాం" : "Could not save"), true); }
     });
 
     (async () => {
       if (!(await initShell("/admin/students"))) return;
-      if (!id) { toast("No student selected", true); return; }
+      if (!id) { toast(aLang() === "te" ? "విద్యార్థి ఎంపిక కాలేదు" : "No student selected", true); return; }
       await loadReport();
       await loadMarks();
       await loadParentAccess();
-    })().catch(e => toast(e.error || "Something went wrong", true));
+    })().catch(e => toast(e.error || (aLang() === "te" ? "ఏదో తప్పు జరిగింది" : "Something went wrong"), true));
   </script>
 </body>
 </html>
