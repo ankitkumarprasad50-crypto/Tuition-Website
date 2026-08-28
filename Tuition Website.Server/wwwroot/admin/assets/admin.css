@@ -146,6 +146,8 @@ table.data td.actions{display:flex;gap:.4rem}
   table.data th,table.data td{padding:.6rem .7rem}
 }
 .menu-btn{display:none;background:none;border:none;font-size:1.4rem;cursor:pointer}
+.lang-toggle{background:var(--honey);border:none;color:var(--ink);font-family:inherit;font-weight:800;font-size:.82rem;padding:.35rem .7rem;border-radius:999px;cursor:pointer}
+.lang-toggle:hover{filter:brightness(.96)}
 
 /* First-login spotlight tutorial */
 .tour-scrim{position:fixed;inset:0;z-index:300}

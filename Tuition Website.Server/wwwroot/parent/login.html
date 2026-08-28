@@ -46,6 +46,7 @@
     .divider{display:none;align-items:center;gap:.6rem;color:var(--muted);font-weight:700;font-size:.85rem;margin:1.1rem 0 .5rem}
     .divider::before,.divider::after{content:"";flex:1;height:1px;background:rgba(129,178,154,.4)}
     #gbtn{display:flex;justify-content:center}
+    .lang-toggle{background:#F2CC8F;border:none;color:#3D342A;font-family:inherit;font-weight:800;font-size:.82rem;padding:.35rem .8rem;border-radius:999px;cursor:pointer;margin-top:.9rem}
     @media (prefers-reduced-motion:reduce){.blob{animation:none}.card{animation:none}}
   </style>
 </head>
@@ -53,24 +54,25 @@
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
   <form class="card" id="loginForm">
     <div class="logo" aria-hidden="true">👪</div>
-    <h1>Parent Portal</h1>
-    <p class="sub">See your child's marks &amp; progress</p>
+    <h1 data-i18n="p.loginTitle">Parent Portal</h1>
+    <p class="sub" data-i18n="p.loginSub">See your child's marks &amp; progress</p>
     <div class="field">
-      <label for="email">Email</label>
+      <label for="email" data-i18n="p.email">Email</label>
       <div class="inp"><input id="email" type="email" required autocomplete="username" placeholder="parent@example.com" /></div>
     </div>
     <div class="field">
-      <label for="password">Password</label>
+      <label for="password" data-i18n="p.password">Password</label>
       <div class="inp">
         <input id="password" type="password" required autocomplete="current-password" placeholder="Your password" />
         <button type="button" class="toggle" id="toggle" aria-label="Show password">👁️</button>
       </div>
     </div>
-    <button class="btn" type="submit" id="loginBtn">Sign in</button>
+    <button class="btn" type="submit" id="loginBtn" data-i18n="p.signin">Sign in</button>
     <div class="err" id="err" role="alert" aria-live="polite"></div>
-    <div class="divider" id="gdivider">or</div>
+    <div class="divider" id="gdivider" data-i18n="p.or">or</div>
     <div id="gbtn"></div>
-    <a class="back" href="/">← Back to website</a>
+    <a class="back" href="/" data-i18n="p.back">← Back to website</a>
+    <br><button class="lang-toggle" type="button" onclick="toggleParentLang()">తెలుగు</button>
   </form>
 
   <script src="https://accounts.google.com/gsi/client" async defer></script>

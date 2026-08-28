@@ -26,9 +26,9 @@
     <section class="page-hero">
       <div class="page-hero__blob page-hero__blob--1" aria-hidden="true"></div>
       <div class="page-hero__inner">
-        <div class="breadcrumb"><a href="/">Home</a> › Contact</div>
-        <h1>Contact &amp; Enrol</h1>
-        <p>Call, message us on WhatsApp, or send the enquiry form below — we'll get back to you quickly.</p>
+        <div class="breadcrumb"><a href="/" data-i18n="nav.home">Home</a> › <span data-i18n="nav.contact">Contact</span></div>
+        <h1 data-i18n="ct.h1">Contact &amp; Enrol</h1>
+        <p data-i18n="ct.heroP">Call, message us on WhatsApp, or send the enquiry form below — we'll get back to you quickly.</p>
       </div>
     </section>
 
@@ -37,23 +37,23 @@
       <div class="contact__grid">
         <a class="contact__card" href="tel:+918340077114">
           <span aria-hidden="true">📞</span>
-          <div><strong>Call</strong><span>+91 83400 77114</span></div>
+          <div><strong data-i18n="ct.call">Call</strong><span>+91 83400 77114</span></div>
         </a>
         <a class="contact__card" href="https://wa.me/918340077114" target="_blank" rel="noopener noreferrer">
           <span aria-hidden="true">💬</span>
-          <div><strong>WhatsApp</strong><span>+91 83400 77114</span></div>
+          <div><strong data-i18n="ct.wa">WhatsApp</strong><span>+91 83400 77114</span></div>
         </a>
         <a class="contact__card" href="https://www.google.com/maps/search/?api=1&query=Bapuji%20Nagar%2C%20Near%20Railway%20Station%2C%20Kovvur%2C%20East%20Godavari%2C%20Andhra%20Pradesh" target="_blank" rel="noopener noreferrer">
           <span aria-hidden="true">📍</span>
-          <div><strong>Visit</strong><span>D.No 15-10-27, Bapuji Nagar, Near Railway Station, Kovvur, East Godavari, Andhra Pradesh</span></div>
+          <div><strong data-i18n="ct.visit">Visit</strong><span>D.No 15-10-27, Bapuji Nagar, Near Railway Station, Kovvur, East Godavari, Andhra Pradesh</span></div>
         </a>
         <a class="contact__card" href="mailto:jyotiprasad980307@gmail.com">
           <span aria-hidden="true">✉️</span>
-          <div><strong>Email</strong><span>jyotiprasad980307@gmail.com</span></div>
+          <div><strong data-i18n="ct.email">Email</strong><span>jyotiprasad980307@gmail.com</span></div>
         </a>
         <div class="contact__card">
           <span aria-hidden="true">🕕</span>
-          <div><strong>Timings</strong><span>6:00 PM – 8:00 PM · Mon to Sat</span></div>
+          <div><strong data-i18n="ct.timings">Timings</strong><span data-i18n="ct.timeVal">6:00 PM – 8:00 PM · Mon to Sat</span></div>
         </div>
       </div>
 
@@ -67,25 +67,25 @@
     <!-- Enquiry form -->
     <section class="section section--soft" id="enquiry">
       <div class="section__head">
-        <span class="eyebrow">Ready to start?</span>
-        <h2>Enrolment Enquiry</h2>
-        <p>Fill in the form and we'll get back to you. It only takes a minute.</p>
+        <span class="eyebrow" data-i18n="ct.eyebrow">Ready to start?</span>
+        <h2 data-i18n="ct.h2">Enrolment Enquiry</h2>
+        <p data-i18n="ct.p">Fill in the form and we'll get back to you. It only takes a minute.</p>
       </div>
 
       <div class="enquiry">
         <form class="enquiry__form" id="enquiryForm">
           <div class="field">
-            <label for="parentName">Parent's name</label>
-            <input id="parentName" name="parentName" required placeholder="Your name" />
+            <label for="parentName" data-i18n="ct.parentName">Parent's name</label>
+            <input id="parentName" name="parentName" required placeholder="Your name" data-i18n-ph="ph.parentName" />
           </div>
           <div class="field">
-            <label for="studentName">Student's name</label>
-            <input id="studentName" name="studentName" required placeholder="Child's name" />
+            <label for="studentName" data-i18n="ct.studentName">Student's name</label>
+            <input id="studentName" name="studentName" required placeholder="Child's name" data-i18n-ph="ph.studentName" />
           </div>
           <div class="field">
-            <label for="studentClass">Class / Standard</label>
+            <label for="studentClass" data-i18n="ct.class">Class / Standard</label>
             <select id="studentClass" name="studentClass" required>
-              <option value="" disabled selected>Select class</option>
+              <option value="" disabled selected data-i18n="ct.selectClass">Select class</option>
               <option>Pre-KG</option>
               <option>Class 1</option><option>Class 2</option><option>Class 3</option>
               <option>Class 4</option><option>Class 5</option><option>Class 6</option>
@@ -95,11 +95,11 @@
             </select>
           </div>
           <div class="field">
-            <label for="subjects">Subjects needed</label>
-            <input id="subjects" name="subjects" placeholder="e.g. Maths, English (or 'All')" />
+            <label for="subjects" data-i18n="ct.subjects">Subjects needed</label>
+            <input id="subjects" name="subjects" placeholder="e.g. Maths, English (or 'All')" data-i18n-ph="ph.subjects" />
           </div>
           <div class="field">
-            <label for="phone">Phone number</label>
+            <label for="phone" data-i18n="ct.phone">Phone number</label>
             <div class="phone-row">
               <select id="countryCode" name="countryCode" aria-label="Country code">
                 <option value="+91" selected>🇮🇳 +91</option>
@@ -113,18 +113,18 @@
                 <option value="+974">🇶🇦 +974</option>
                 <option value="+966">🇸🇦 +966</option>
               </select>
-              <input id="phone" name="phone" type="tel" required placeholder="Your contact number" />
+              <input id="phone" name="phone" type="tel" required placeholder="Your contact number" data-i18n-ph="ph.phone" />
             </div>
           </div>
           <div class="field field--full">
-            <label for="message">Anything else? (optional)</label>
-            <textarea id="message" name="message" rows="3" placeholder="Tell us about your child's needs"></textarea>
+            <label for="message" data-i18n="ct.msg">Anything else? (optional)</label>
+            <textarea id="message" name="message" rows="3" placeholder="Tell us about your child's needs" data-i18n-ph="ph.msg"></textarea>
           </div>
           <div class="enquiry__actions field--full">
-            <button class="btn btn--primary" type="submit" id="enquirySubmit">Submit Enquiry</button>
-            <a class="btn btn--whatsapp" id="whatsappBtn" href="#" target="_blank" rel="noopener noreferrer">Send on WhatsApp</a>
+            <button class="btn btn--primary" type="submit" id="enquirySubmit" data-i18n="ct.submit">Submit Enquiry</button>
+            <a class="btn btn--whatsapp" id="whatsappBtn" href="#" target="_blank" rel="noopener noreferrer" data-i18n="ct.sendWa">Send on WhatsApp</a>
           </div>
-          <p class="enquiry__error field--full" id="enquiryError" hidden role="alert">
+          <p class="enquiry__error field--full" id="enquiryError" hidden role="alert" data-i18n="ct.err">
             Sorry, something went wrong sending the form. Please try the WhatsApp button or call us instead.
           </p>
         </form>
@@ -136,9 +136,9 @@
     <div class="modal-overlay" id="enquiryModal" role="dialog" aria-modal="true" aria-labelledby="emTitle" hidden>
       <div class="modal-card">
         <div class="modal-card__emoji" aria-hidden="true">🎉</div>
-        <h3 id="emTitle">Thank you!</h3>
-        <p>We've received your enquiry and will contact you very soon.</p>
-        <button class="btn btn--primary" id="enquiryClose" type="button">Done</button>
+        <h3 id="emTitle" data-i18n="ct.thankH">Thank you!</h3>
+        <p data-i18n="ct.thankP">We've received your enquiry and will contact you very soon.</p>
+        <button class="btn btn--primary" id="enquiryClose" type="button" data-i18n="ct.done">Done</button>
       </div>
     </div>
   </main>

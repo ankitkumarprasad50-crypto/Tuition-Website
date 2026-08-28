@@ -12,8 +12,8 @@
 </head>
 <body>
   <div class="wrap">
-    <div class="page-head"><div><h1>My children</h1><p id="welcome" class="muted"></p></div>
-      <button class="help-btn" id="helpBtn" type="button">❔ How to use</button></div>
+    <div class="page-head"><div><h1 data-i18n="p.myChildren">My children</h1><p id="welcome" class="muted"></p></div>
+      <button class="help-btn" id="helpBtn" type="button" data-i18n="p.howto">❔ How to use</button></div>
     <div id="children"><div class="card"><div class="empty">Loading…</div></div></div>
   </div>
 
@@ -23,23 +23,23 @@
     (async () => {
       const me = await initParentShell();
       if (!me) return;
-      document.getElementById("welcome").textContent = "Signed in as " + me.email;
+      document.getElementById("welcome").textContent = ptr("p.signedIn") + " " + me.email;
 
       const parentSteps = [
-        { emoji: "👋", title: "Welcome!", body: "A quick tour of your child's progress. Tap <strong>Skip</strong> anytime." },
-        { emoji: "🧑‍🎓", title: "Your child", body: "Each of your children appears in a card like this.", target: () => document.querySelector("#children .card") },
-        { emoji: "📊", title: "Overall average", body: "The average across all tests, with a short note on how they're doing.", target: () => document.querySelector("#children .report-hero") },
-        { emoji: "📈", title: "The charts", body: "<strong>Marks by test</strong> and <strong>Progress trend</strong>. Green = strong, amber = okay, red = needs support.", target: () => document.querySelector("#children .charts") },
-        { emoji: "📋", title: "Every test", body: "The full list of tests with exact marks — read-only.", target: () => document.querySelector("#children .table-card") },
-        { emoji: "❔", title: "Need help?", body: "Tap <strong>How to use</strong> to replay this, or open the <a href='/guide' target='_blank'>full guide</a>.", target: () => document.getElementById("helpBtn") },
-        { emoji: "🔒", title: "Log out", body: "Tap here when you're done. Questions about the marks? Contact the tuition.", target: () => document.getElementById("logoutBtn") },
+        { emoji: "👋", title: ptr("p.tourWelcomeT"), body: ptr("p.tourWelcomeB") },
+        { emoji: "🧑‍🎓", title: ptr("p.tourChildT"), body: ptr("p.tourChildB"), target: () => document.querySelector("#children .card") },
+        { emoji: "📊", title: ptr("p.tourAvgT"), body: ptr("p.tourAvgB"), target: () => document.querySelector("#children .report-hero") },
+        { emoji: "📈", title: ptr("p.tourChartT"), body: ptr("p.tourChartB"), target: () => document.querySelector("#children .charts") },
+        { emoji: "📋", title: ptr("p.tourTableT"), body: ptr("p.tourTableB"), target: () => document.querySelector("#children .table-card") },
+        { emoji: "❔", title: ptr("p.tourHelpT"), body: ptr("p.tourHelpB"), target: () => document.getElementById("helpBtn") },
+        { emoji: "🔒", title: ptr("p.tourOutT"), body: ptr("p.tourOutB"), target: () => document.getElementById("logoutBtn") },
       ];
       document.getElementById("helpBtn").addEventListener("click", () => startTour("parent_v2", parentSteps, { force: true }));
 
       const children = await api("/api/parent/children");
       const wrap = document.getElementById("children");
       if (!children.length) {
-        wrap.innerHTML = `<div class="card"><div class="empty">No student records are linked to your email yet. Please ask the tuition to set this up.</div></div>`;
+        wrap.innerHTML = `<div class="card"><div class="empty">${ptr("p.noChildren")}</div></div>`;
         return;
       }
       wrap.innerHTML = "";
@@ -53,7 +53,7 @@
             <td>${x.date}</td>
             <td>${x.score}/${x.maxMarks}</td>
             <td><span class="pill ${pillClass(x.percent)}">${x.percent}%</span></td>
-          </tr>`).join("") : `<tr><td colspan="5" class="empty">No tests recorded yet.</td></tr>`;
+          </tr>`).join("") : `<tr><td colspan="5" class="empty">${ptr("p.noTests")}</td></tr>`;
 
         const card = document.createElement("div");
         card.className = "card";
@@ -61,26 +61,26 @@
         card.innerHTML = `
           <div class="page-head" style="margin-bottom:1rem">
             <div><h2 style="font-size:1.35rem">${escapeHtml(r.studentName)}</h2>
-              <p class="muted">${escapeHtml(r.className) || ""}${r.teacherName ? " · Teacher: " + escapeHtml(r.teacherName) : ""}</p></div>
+              <p class="muted">${escapeHtml(r.className) || ""}${r.teacherName ? " · " + ptr("p.teacher") + " " + escapeHtml(r.teacherName) : ""}</p></div>
           </div>
           <div class="report-hero">
-            <div><div class="stat__label">Overall average</div><div class="big">${r.rows.length ? r.averagePercent + "%" : "—"}</div></div>
-            <div class="verdict">${escapeHtml(r.verdict)}</div>
+            <div><div class="stat__label">${ptr("p.overall")}</div><div class="big">${r.rows.length ? r.averagePercent + "%" : "—"}</div></div>
+            <div class="verdict">${escapeHtml(pVerdict(r.verdict))}</div>
           </div>
           <div class="charts">
-            <div class="chart-card"><h3>Marks by test</h3><div class="sub">Percentage scored in each test</div>${barChart(chartData)}</div>
-            <div class="chart-card"><h3>Progress trend</h3><div class="sub">How results are changing over time</div>${lineChart(chartData)}</div>
+            <div class="chart-card"><h3>${ptr("p.marksByTest")}</h3><div class="sub">${ptr("p.marksSub")}</div>${barChart(chartData)}</div>
+            <div class="chart-card"><h3>${ptr("p.trend")}</h3><div class="sub">${ptr("p.trendSub")}</div>${lineChart(chartData)}</div>
           </div>
           <div class="table-card mt">
             <div class="table-wrap"><table class="data">
-              <thead><tr><th>Test</th><th>Subject</th><th>Date</th><th>Score</th><th>Result</th></tr></thead>
+              <thead><tr><th>${ptr("p.thTest")}</th><th>${ptr("p.thSubject")}</th><th>${ptr("p.thDate")}</th><th>${ptr("p.thScore")}</th><th>${ptr("p.thResult")}</th></tr></thead>
               <tbody>${rowsHtml}</tbody>
             </table></div>
           </div>`;
         wrap.appendChild(card);
       }
       startTour("parent_v2", parentSteps);  // spotlight tour once the cards have rendered
-    })().catch(e => { document.getElementById("children").innerHTML = `<div class="card"><div class="empty">Something went wrong loading your reports.</div></div>`; });
+    })().catch(e => { document.getElementById("children").innerHTML = `<div class="card"><div class="empty">${ptr("p.loadErr")}</div></div>`; });
   </script>
 </body>
 </html>
