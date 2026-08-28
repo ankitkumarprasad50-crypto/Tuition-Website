@@ -77,6 +77,8 @@ a { color: inherit; }
 .nav__links > a.is-active { color: var(--terracotta-dark); background: var(--peach); }
 .nav__cta { background: var(--terracotta); color: #fff !important; padding: .55rem 1.1rem !important; margin-left: .3rem; }
 .nav__cta:hover { background: var(--terracotta-dark); }
+.lang-toggle { background: var(--honey); border: none; color: var(--ink); font-family: inherit; font-weight: 800; font-size: .85rem; padding: .4rem .8rem; border-radius: 999px; cursor: pointer; margin-left: .2rem; }
+.lang-toggle:hover { filter: brightness(.96); }
 .nav__toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: .4rem; }
 .nav__toggle span { width: 24px; height: 3px; background: var(--ink); border-radius: 3px; transition: .2s; }
 
