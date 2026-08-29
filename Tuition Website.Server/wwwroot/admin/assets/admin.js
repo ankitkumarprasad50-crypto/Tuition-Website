@@ -1,5 +1,5 @@
 // ============================================================================
-//  Vidya Vriksh Teacher Portal — shared helpers, auth guard, and SVG charts
+//  Milestone Tuitions Teacher Portal — shared helpers, auth guard, and SVG charts
 // ============================================================================
 
 const ADMIN_NAV = [
@@ -70,7 +70,7 @@ window.AI18N = {
     "a.tour.studentsT": "Students", "a.tour.studentsB": "Add and open students here. Include the <strong>parent's email</strong> so you can email reports and give parents a login.",
     "a.tour.replayT": "Replay anytime", "a.tour.replayB": "Tap <strong>How to use</strong> to see this tour again, or open the <a href='/guide' target='_blank'>full written guide</a>.",
     "a.tour.testsT": "Then: tests & marks", "a.tour.testsB": "1) Open <strong>Tests</strong> to create tests. 2) Open a student to <strong>record marks</strong> (they auto-save) and see <strong>charts</strong>.",
-    "a.tour.reportsT": "Reports & parent login", "a.tour.reportsB": "On a student's page: <strong>✉️ Email report to parent</strong>, and set a password under <strong>Parent login access</strong> so parents can sign in at hrm99.com/parent.",
+    "a.tour.reportsT": "Reports & parent login", "a.tour.reportsB": "On a student's page: <strong>✉️ Email report to parent</strong>, and set a password under <strong>Parent login access</strong> so parents can sign in at milestonetuitions.com/parent.",
     "a.tour.settingsT": "Settings", "a.tour.settingsB": "Change your password, connect the sending email, and enable <strong>Sign in with Google</strong>. Enjoy! 🎉",
   },
   te: {
@@ -130,7 +130,7 @@ window.AI18N = {
     "a.tour.studentsT": "విద్యార్థులు", "a.tour.studentsB": "ఇక్కడ విద్యార్థులను చేర్చి, తెరవండి. రిపోర్టులు ఇమెయిల్ చేయడానికి, తల్లిదండ్రులకు లాగిన్ ఇవ్వడానికి <strong>తల్లిదండ్రుల ఇమెయిల్</strong> చేర్చండి.",
     "a.tour.replayT": "ఎప్పుడైనా మళ్ళీ చూడండి", "a.tour.replayB": "ఈ పర్యటన మళ్ళీ చూడటానికి <strong>ఎలా వాడాలి</strong> నొక్కండి, లేదా <a href='/guide' target='_blank'>పూర్తి రాతపూర్వక గైడ్</a> తెరవండి.",
     "a.tour.testsT": "తర్వాత: పరీక్షలు & మార్కులు", "a.tour.testsB": "1) పరీక్షలు సృష్టించడానికి <strong>పరీక్షలు</strong> తెరవండి. 2) విద్యార్థిని తెరిచి <strong>మార్కులు నమోదు</strong> చేయండి (ఆటో-సేవ్ అవుతాయి), <strong>చార్టులు</strong> చూడండి.",
-    "a.tour.reportsT": "రిపోర్టులు & తల్లిదండ్రుల లాగిన్", "a.tour.reportsB": "విద్యార్థి పేజీలో: <strong>✉️ తల్లిదండ్రులకు రిపోర్ట్ ఇమెయిల్</strong>, మరియు <strong>తల్లిదండ్రుల లాగిన్ యాక్సెస్</strong> కింద పాస్‌వర్డ్ సెట్ చేయండి, తద్వారా తల్లిదండ్రులు hrm99.com/parent వద్ద సైన్ ఇన్ చేయవచ్చు.",
+    "a.tour.reportsT": "రిపోర్టులు & తల్లిదండ్రుల లాగిన్", "a.tour.reportsB": "విద్యార్థి పేజీలో: <strong>✉️ తల్లిదండ్రులకు రిపోర్ట్ ఇమెయిల్</strong>, మరియు <strong>తల్లిదండ్రుల లాగిన్ యాక్సెస్</strong> కింద పాస్‌వర్డ్ సెట్ చేయండి, తద్వారా తల్లిదండ్రులు milestonetuitions.com/parent వద్ద సైన్ ఇన్ చేయవచ్చు.",
     "a.tour.settingsT": "సెట్టింగ్స్", "a.tour.settingsB": "మీ పాస్‌వర్డ్ మార్చండి, పంపే ఇమెయిల్ కనెక్ట్ చేయండి, <strong>Google తో సైన్ ఇన్</strong> ఎనేబుల్ చేయండి. ఆనందించండి! 🎉",
   },
 };
@@ -189,7 +189,7 @@ async function initShell(activeHref) {
   const bar = document.createElement("div");
   bar.className = "topbar";
   bar.innerHTML = `
-    <a class="topbar__brand" href="/admin/"><span class="topbar__logo">🌳</span> Vidya Vriksh</a>
+    <a class="topbar__brand" href="/admin/"><span class="topbar__logo">🌳</span> Milestone Tuitions</a>
     <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
     <nav class="topbar__nav" id="topnav">${nav}</nav>
     <div class="topbar__user"><span class="who">${tr("a.hi")} ${escapeHtml(me.name)}</span>

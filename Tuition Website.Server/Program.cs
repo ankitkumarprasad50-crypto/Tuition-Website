@@ -211,7 +211,7 @@ publicApi.MapPost("enroll", async (EnrollmentRequest request, ILogger<Program> l
         var ist = r.ReceivedAt.ToOffset(TimeSpan.FromHours(5.5)).ToString("dd MMM yyyy, h:mm tt") + " IST";
         return $@"<div style=""font-family:Arial,Helvetica,sans-serif;max-width:560px;margin:0 auto;color:#3D342A"">
   <div style=""background:#E07A5F;color:#fff;padding:18px 22px;border-radius:12px 12px 0 0"">
-    <div style=""font-size:18px;font-weight:bold"">🌳 Vidya Vriksh Tuition</div>
+    <div style=""font-size:18px;font-weight:bold"">🌳 Milestone Tuitions</div>
     <div style=""opacity:.9;font-size:13px"">New enquiry from the website</div>
   </div>
   <div style=""border:1px solid #F6D9C6;border-top:none;border-radius:0 0 12px 12px;padding:20px"">

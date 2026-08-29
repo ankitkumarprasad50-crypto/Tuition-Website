@@ -39,7 +39,7 @@ public class EmailSender
                 try
                 {
                     var pw = _protector.Unprotect(row.ProtectedAppPassword);
-                    return new Cfg(row.Sender, pw, string.IsNullOrWhiteSpace(row.FromName) ? "Vidya Vriksh Tuition" : row.FromName);
+                    return new Cfg(row.Sender, pw, string.IsNullOrWhiteSpace(row.FromName) ? "Milestone Tuitions" : row.FromName);
                 }
                 catch (Exception ex) { _log.LogWarning(ex, "Could not decrypt saved email password; falling back to config."); }
             }
@@ -49,7 +49,7 @@ public class EmailSender
         var sender = _cfg["Email:Sender"];
         var appPw = _cfg["Email:AppPassword"]?.Replace(" ", "");
         if (!string.IsNullOrWhiteSpace(sender) && !string.IsNullOrWhiteSpace(appPw))
-            return new Cfg(sender, appPw, _cfg["Email:FromName"] ?? "Vidya Vriksh Tuition");
+            return new Cfg(sender, appPw, _cfg["Email:FromName"] ?? "Milestone Tuitions");
 
         return null;
     }
@@ -68,13 +68,13 @@ public class EmailSender
     public async Task VerifyAndSaveAsync(string sender, string appPassword, string? fromName)
     {
         appPassword = (appPassword ?? "").Replace(" ", "");
-        var name = string.IsNullOrWhiteSpace(fromName) ? "Vidya Vriksh Tuition" : fromName!.Trim();
+        var name = string.IsNullOrWhiteSpace(fromName) ? "Milestone Tuitions" : fromName!.Trim();
 
         // Verify by sending a test email to the sender themselves.
         await SendCoreAsync(sender, appPassword, name, sender, name,
-            "Vidya Vriksh — email connected ✅",
+            "Milestone Tuitions — email connected ✅",
             "<div style=\"font-family:Arial,sans-serif;color:#3D342A\"><h2>🌳 Email connected!</h2>" +
-            "<p>This inbox is now set up to send Vidya Vriksh Tuition emails — parent enquiry alerts and student progress reports will come from here.</p></div>");
+            "<p>This inbox is now set up to send Milestone Tuitions emails — parent enquiry alerts and student progress reports will come from here.</p></div>");
 
         // Save (encrypted) only after a successful send.
         using var scope = _scopes.CreateScope();

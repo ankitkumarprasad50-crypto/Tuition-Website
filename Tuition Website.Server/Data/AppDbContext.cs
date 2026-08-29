@@ -74,7 +74,7 @@ public class AppDbContext : DbContext
         if (!db.Teachers.Any())
         {
             db.Teachers.Add(
-                new Teacher { Name = "Jyoti Prasad", Email = "jyoti@vidyavriksh.local", PasswordHash = PasswordHasher.Hash("changeme123") }
+                new Teacher { Name = "Jyoti Prasad", Email = "jyoti@milestonetuitions.local", PasswordHash = PasswordHasher.Hash("changeme123") }
             );
             db.SaveChanges();
             logger.LogInformation("Seeded starter teacher Jyoti (temporary password: changeme123).");

@@ -64,7 +64,7 @@ public class EmailConfig
     public int Id { get; set; }
     public string Sender { get; set; } = "";
     public string ProtectedAppPassword { get; set; } = "";
-    public string FromName { get; set; } = "Vidya Vriksh Tuition";
+    public string FromName { get; set; } = "Milestone Tuitions";
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
 }
 

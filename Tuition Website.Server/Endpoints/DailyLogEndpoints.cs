@@ -201,7 +201,7 @@ public static class DailyLogEndpoints
             try
             {
                 await email.SendAsync(s.ParentEmail, s.ParentName,
-                    $"{s.Name} — Daily Report · Vidya Vriksh Tuition", html);
+                    $"{s.Name} — Daily Report · Milestone Tuitions", html);
                 if (log.Id != 0) { log.ReportEmailedAt = DateTimeOffset.UtcNow; await db.SaveChangesAsync(); }
                 return Results.Ok(new { sent = true, to = s.ParentEmail });
             }

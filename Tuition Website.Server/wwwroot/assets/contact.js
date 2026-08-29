@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function updateWhatsappLink() {
     const d = new FormData(form);
     const text =
-      "Hi! I'd like to enquire about tuition at Vidya Vriksh.\n" +
+      "Hi! I'd like to enquire about tuition at Milestone Tuitions.\n" +
       `Parent: ${d.get("parentName") || ""}\n` +
       `Student: ${d.get("studentName") || ""}\n` +
       `Class: ${d.get("studentClass") || ""}\n` +

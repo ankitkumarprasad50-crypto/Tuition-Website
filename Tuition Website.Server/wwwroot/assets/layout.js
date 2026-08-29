@@ -1,11 +1,11 @@
 // ============================================================================
-//  Vidya Vriksh Tuition — shared header/footer, site config, and a simple
+//  Milestone Tuitions — shared header/footer, site config, and a simple
 //  English ⇄ Telugu translator (a language toggle in the menu).
 //  Translatable text uses data-i18n / data-i18n-html / data-i18n-ph attributes.
 // ============================================================================
 
 const SITE = {
-  name: "Vidya Vriksh Tuition",
+  name: "Milestone Tuitions",
   phoneDisplay: "+91 83400 77114",
   phoneLink: "+918340077114",
   whatsapp: "918340077114",
@@ -45,7 +45,7 @@ window.I18N = {
     "h.spokenTitle": "Spoken English", "h.spokenBody": "Optional Spoken English coaching, available on request.",
     "about.eyebrow": "Meet your teacher",
     "about.creds": "B.Tech (ECE) · Teaching at Kovvur Bhashyam since 2020",
-    "about.bio": "Jyoti started Vidya Vriksh because she believes every child learns differently and deserves patient, one-on-one attention. She helps students from Pre-KG to Intermediate build strong fundamentals across all subjects.",
+    "about.bio": "Jyoti started Milestone Tuitions because she believes every child learns differently and deserves patient, one-on-one attention. She helps students from Pre-KG to Intermediate build strong fundamentals across all subjects.",
     "about.more": "More about Jyoti",
     "courses.eyebrow": "What we teach", "courses.h2": "All Subjects, Pre-KG to Intermediate",
     "courses.sub": "Help with every school subject — plus Spoken English coaching on request.",
@@ -63,9 +63,9 @@ window.I18N = {
     "cta.btn": "Enrol Now",
 
     "crumb.about": "About",
-    "about.h1": "About Vidya Vriksh",
+    "about.h1": "About Milestone Tuitions",
     "about.heroP": "A caring neighbourhood tuition from Pre-KG to Intermediate, run by an experienced teacher.",
-    "about.bioFull": "I'm Jyoti Prasad. I started Vidya Vriksh because I believe every child learns differently and deserves patient, one-on-one attention. In small batches, I help students from Pre-KG to Intermediate build strong fundamentals across all subjects — with confidence, care, and a genuine love of learning. Spoken English coaching is also available on request.",
+    "about.bioFull": "I'm Jyoti Prasad. I started Milestone Tuitions because I believe every child learns differently and deserves patient, one-on-one attention. In small batches, I help students from Pre-KG to Intermediate build strong fundamentals across all subjects — with confidence, care, and a genuine love of learning. Spoken English coaching is also available on request.",
     "about.trial": "Book a Trial Class",
     "ap.eyebrow": "Our approach", "ap.h2": "Why parents choose us",
     "ap.c1t": "Small batches", "ap.c1b": "Every child is seen, heard and helped — no one gets left behind.",
@@ -131,7 +131,7 @@ window.I18N = {
     "ct.submit": "Submit Enquiry", "ct.sendWa": "Send on WhatsApp",
     "ct.err": "Sorry, something went wrong sending the form. Please try the WhatsApp button or call us instead.",
     "ct.thankH": "Thank you!", "ct.thankP": "We've received your enquiry and will contact you very soon.", "ct.done": "Done",
-    "g.print": "🖨️ Save as PDF / Print", "g.badge": "User Guide", "g.title": "How to use Vidya Vriksh",
+    "g.print": "🖨️ Save as PDF / Print", "g.badge": "User Guide", "g.title": "How to use Milestone Tuitions",
     "g.intro": "A simple, step-by-step guide for <strong>teachers</strong> and <strong>parents</strong>. Works on phones and computers.",
     "g.contents": "Contents",
     "g.toc1": "👩‍🏫 <a href=\"#teacher\">Teacher Portal</a> — sign in, students, tests, marks, reports, emailing, parent access, settings",
@@ -169,7 +169,7 @@ window.I18N = {
     "g.t8h": "8. Give a parent their own login",
     "g.t8a": "Open the student (they must have a parent email).",
     "g.t8b": "In the <strong>Parent login access</strong> box, type a password and tap <span class=\"kbd\">Save</span>.",
-    "g.t8c": "Share the <strong>parent's email + that password</strong> with them. They sign in at <strong>hrm99.com/parent</strong>.",
+    "g.t8c": "Share the <strong>parent's email + that password</strong> with them. They sign in at <strong>milestonetuitions.com/parent</strong>.",
     "g.t9h": "9. Add another teacher",
     "g.t9p": "Go to <strong>Teachers</strong> → <span class=\"kbd\">+ Add Teacher</span> → enter their name, email and a temporary password → share it with them. Any teacher can add teachers.",
     "g.t10h": "10. Settings",
@@ -178,7 +178,7 @@ window.I18N = {
     "g.t10c": "<strong>Sending email</strong> — connect the Gmail that report/enquiry emails are sent from: turn on 2-Step Verification, create a Google <strong>App Password</strong>, paste it here, and tap <span class=\"kbd\">Connect &amp; verify</span>. (Steps are shown on the page.)",
     "g.pHead": "👪 Parent Portal", "g.pIntro": "Parents can sign in to see their child's marks and progress — anytime, on any device. It's <strong>view-only</strong>.",
     "g.p1h": "1. Signing in",
-    "g.p1a": "Open <strong>hrm99.com/parent</strong>.",
+    "g.p1a": "Open <strong>milestonetuitions.com/parent</strong>.",
     "g.p1b": "<strong>Easiest — tap <span class=\"kbd\">Sign in with Google</span></strong> and pick your account. No password needed, as long as the tuition has your Google email on file. ✅",
     "g.p1c": "Or enter the <strong>email</strong> and <strong>password</strong> the tuition gave you (tap 👁️ to reveal) and tap <span class=\"kbd\">Sign in</span>.",
     "g.p1note": "Don't see your child after signing in? Ask the tuition to add your email to your child's record.",
@@ -196,7 +196,7 @@ window.I18N = {
     "g.tip3": "<strong>Saving:</strong> marks save automatically — no \"save\" button needed.",
     "g.tip4": "<strong>Security:</strong> keep your password private and log out on shared devices.",
     "g.tip5": "<strong>Need this on paper?</strong> Tap <strong>🖨️ Save as PDF / Print</strong> at the top of this page.",
-    "g.footer": "Vidya Vriksh Tuition · Kovvur — need help? Contact the tuition.",
+    "g.footer": "Milestone Tuitions · Kovvur — need help? Contact the tuition.",
   },
   te: {
     "nav.home": "హోమ్", "nav.about": "మా గురించి", "nav.courses": "కోర్సులు", "nav.fees": "ఫీజులు",
@@ -216,7 +216,7 @@ window.I18N = {
     "h.spokenTitle": "స్పోకెన్ ఇంగ్లీష్", "h.spokenBody": "కావాలంటే స్పోకెన్ ఇంగ్లీష్ కోచింగ్ కూడా అందుబాటులో ఉంది.",
     "about.eyebrow": "మీ టీచర్‌ని కలవండి",
     "about.creds": "బి.టెక్ (ECE) · 2020 నుండి కొవ్వూరు భాష్యంలో బోధన",
-    "about.bio": "ప్రతి పిల్లవాడు వేరుగా నేర్చుకుంటాడని, ఓపికతో వ్యక్తిగత శ్రద్ధ అవసరమని నమ్మి జ్యోతి విద్యా వృక్ష్‌ను ప్రారంభించారు. ప్రీ-కేజీ నుండి ఇంటర్ వరకు విద్యార్థులకు అన్ని సబ్జెక్టులలో బలమైన పునాదిని ఆమె నేర్పిస్తారు.",
+    "about.bio": "ప్రతి పిల్లవాడు వేరుగా నేర్చుకుంటాడని, ఓపికతో వ్యక్తిగత శ్రద్ధ అవసరమని నమ్మి జ్యోతి మైల్‌స్టోన్ ట్యూషన్స్‌ను ప్రారంభించారు. ప్రీ-కేజీ నుండి ఇంటర్ వరకు విద్యార్థులకు అన్ని సబ్జెక్టులలో బలమైన పునాదిని ఆమె నేర్పిస్తారు.",
     "about.more": "జ్యోతి గురించి మరింత",
     "courses.eyebrow": "మేము ఏం బోధిస్తాము", "courses.h2": "అన్ని సబ్జెక్టులు, ప్రీ-కేజీ నుండి ఇంటర్",
     "courses.sub": "ప్రతి స్కూల్ సబ్జెక్ట్‌లో సహాయం — కావాలంటే స్పోకెన్ ఇంగ్లీష్ కూడా.",
@@ -234,9 +234,9 @@ window.I18N = {
     "cta.btn": "ఇప్పుడే చేర్పించండి",
 
     "crumb.about": "మా గురించి",
-    "about.h1": "విద్యా వృక్ష్ గురించి",
+    "about.h1": "మైల్‌స్టోన్ ట్యూషన్స్ గురించి",
     "about.heroP": "అనుభవజ్ఞురాలైన టీచర్ నడిపే, ప్రీ-కేజీ నుండి ఇంటర్ వరకు శ్రద్ధగల స్థానిక ట్యూషన్.",
-    "about.bioFull": "నేను జ్యోతి ప్రసాద్. ప్రతి పిల్లవాడు వేరుగా నేర్చుకుంటాడని, ఓపికతో వ్యక్తిగత శ్రద్ధ అవసరమని నమ్మి విద్యా వృక్ష్‌ను ప్రారంభించాను. చిన్న బ్యాచ్‌లలో, ప్రీ-కేజీ నుండి ఇంటర్ వరకు విద్యార్థులకు అన్ని సబ్జెక్టులలో బలమైన పునాదిని — ఆత్మవిశ్వాసం, శ్రద్ధ, నేర్చుకోవడంపై నిజమైన ఇష్టంతో — నేర్పిస్తాను. కావాలంటే స్పోకెన్ ఇంగ్లీష్ కోచింగ్ కూడా అందుబాటులో ఉంది.",
+    "about.bioFull": "నేను జ్యోతి ప్రసాద్. ప్రతి పిల్లవాడు వేరుగా నేర్చుకుంటాడని, ఓపికతో వ్యక్తిగత శ్రద్ధ అవసరమని నమ్మి మైల్‌స్టోన్ ట్యూషన్స్‌ను ప్రారంభించాను. చిన్న బ్యాచ్‌లలో, ప్రీ-కేజీ నుండి ఇంటర్ వరకు విద్యార్థులకు అన్ని సబ్జెక్టులలో బలమైన పునాదిని — ఆత్మవిశ్వాసం, శ్రద్ధ, నేర్చుకోవడంపై నిజమైన ఇష్టంతో — నేర్పిస్తాను. కావాలంటే స్పోకెన్ ఇంగ్లీష్ కోచింగ్ కూడా అందుబాటులో ఉంది.",
     "about.trial": "ట్రయల్ క్లాస్ బుక్ చేయండి",
     "ap.eyebrow": "మా విధానం", "ap.h2": "తల్లిదండ్రులు మమ్మల్ని ఎందుకు ఎంచుకుంటారు",
     "ap.c1t": "చిన్న బ్యాచ్‌లు", "ap.c1b": "ప్రతి పిల్లవాడిని గమనిస్తాం, వింటాం, సహాయం చేస్తాం — ఎవరూ వెనుకబడరు.",
@@ -302,7 +302,7 @@ window.I18N = {
     "ct.submit": "విచారణ పంపండి", "ct.sendWa": "వాట్సాప్‌లో పంపండి",
     "ct.err": "క్షమించండి, ఫారం పంపడంలో ఏదో పొరపాటు జరిగింది. దయచేసి వాట్సాప్ బటన్ వాడండి లేదా కాల్ చేయండి.",
     "ct.thankH": "ధన్యవాదాలు!", "ct.thankP": "మీ విచారణ అందింది, త్వరలో మిమ్మల్ని సంప్రదిస్తాం.", "ct.done": "సరే",
-    "g.print": "🖨️ PDF గా సేవ్ / ప్రింట్", "g.badge": "వినియోగదారు గైడ్", "g.title": "విద్యా వృక్ష్‌ను ఎలా వాడాలి",
+    "g.print": "🖨️ PDF గా సేవ్ / ప్రింట్", "g.badge": "వినియోగదారు గైడ్", "g.title": "మైల్‌స్టోన్ ట్యూషన్స్‌ను ఎలా వాడాలి",
     "g.intro": "<strong>టీచర్లు</strong> మరియు <strong>తల్లిదండ్రుల</strong> కోసం సరళమైన, దశలవారీ గైడ్. ఫోన్లు, కంప్యూటర్లలో పనిచేస్తుంది.",
     "g.contents": "విషయసూచిక",
     "g.toc1": "👩‍🏫 <a href=\"#teacher\">టీచర్ పోర్టల్</a> — సైన్ ఇన్, విద్యార్థులు, పరీక్షలు, మార్కులు, రిపోర్టులు, ఇమెయిల్, తల్లిదండ్రుల యాక్సెస్, సెట్టింగ్స్",
@@ -340,7 +340,7 @@ window.I18N = {
     "g.t8h": "8. తల్లిదండ్రులకు స్వంత లాగిన్ ఇవ్వండి",
     "g.t8a": "విద్యార్థిని తెరవండి (వారికి తల్లిదండ్రుల ఇమెయిల్ ఉండాలి).",
     "g.t8b": "<strong>తల్లిదండ్రుల లాగిన్ యాక్సెస్</strong> బాక్స్‌లో పాస్‌వర్డ్ టైప్ చేసి <span class=\"kbd\">సేవ్</span> నొక్కండి.",
-    "g.t8c": "<strong>తల్లిదండ్రుల ఇమెయిల్ + ఆ పాస్‌వర్డ్</strong>ను వారితో పంచుకోండి. వారు <strong>hrm99.com/parent</strong> వద్ద సైన్ ఇన్ చేస్తారు.",
+    "g.t8c": "<strong>తల్లిదండ్రుల ఇమెయిల్ + ఆ పాస్‌వర్డ్</strong>ను వారితో పంచుకోండి. వారు <strong>milestonetuitions.com/parent</strong> వద్ద సైన్ ఇన్ చేస్తారు.",
     "g.t9h": "9. మరో టీచర్‌ను చేర్చండి",
     "g.t9p": "<strong>టీచర్లు</strong> → <span class=\"kbd\">+ టీచర్‌ను చేర్చండి</span> → వారి పేరు, ఇమెయిల్, తాత్కాలిక పాస్‌వర్డ్ నమోదు చేసి → వారితో పంచుకోండి. ఏ టీచరైనా టీచర్లను చేర్చవచ్చు.",
     "g.t10h": "10. సెట్టింగ్స్",
@@ -349,7 +349,7 @@ window.I18N = {
     "g.t10c": "<strong>పంపే ఇమెయిల్</strong> — రిపోర్ట్/విచారణ ఇమెయిల్‌లు పంపే జీమెయిల్ కనెక్ట్ చేయండి: 2-స్టెప్ వెరిఫికేషన్ ఆన్ చేసి, Google <strong>యాప్ పాస్‌వర్డ్</strong> సృష్టించి, ఇక్కడ పేస్ట్ చేసి, <span class=\"kbd\">కనెక్ట్ &amp; ధృవీకరించండి</span> నొక్కండి. (దశలు పేజీలో చూపబడతాయి.)",
     "g.pHead": "👪 తల్లిదండ్రుల పోర్టల్", "g.pIntro": "తల్లిదండ్రులు తమ పిల్లల మార్కులు, ప్రగతిని ఎప్పుడైనా, ఏ పరికరంలోనైనా చూడటానికి సైన్ ఇన్ చేయవచ్చు. ఇది <strong>చూడటానికి మాత్రమే</strong>.",
     "g.p1h": "1. సైన్ ఇన్ చేయడం",
-    "g.p1a": "<strong>hrm99.com/parent</strong> తెరవండి.",
+    "g.p1a": "<strong>milestonetuitions.com/parent</strong> తెరవండి.",
     "g.p1b": "<strong>సులభమైనది — <span class=\"kbd\">Google తో సైన్ ఇన్</span> నొక్కి</strong> మీ ఖాతాను ఎంచుకోండి. ట్యూషన్ వద్ద మీ Google ఇమెయిల్ ఉంటే పాస్‌వర్డ్ అవసరం లేదు. ✅",
     "g.p1c": "లేదా ట్యూషన్ ఇచ్చిన <strong>ఇమెయిల్</strong> మరియు <strong>పాస్‌వర్డ్</strong> నమోదు చేసి (చూడటానికి 👁️ నొక్కండి) <span class=\"kbd\">సైన్ ఇన్</span> నొక్కండి.",
     "g.p1note": "సైన్ ఇన్ తర్వాత మీ పిల్లవాడు కనిపించడం లేదా? మీ పిల్లవాడి రికార్డుకు మీ ఇమెయిల్ చేర్చమని ట్యూషన్‌ను అడగండి.",
@@ -367,7 +367,7 @@ window.I18N = {
     "g.tip3": "<strong>సేవ్:</strong> మార్కులు ఆటోమేటిక్‌గా సేవ్ అవుతాయి — \"సేవ్\" బటన్ అవసరం లేదు.",
     "g.tip4": "<strong>భద్రత:</strong> మీ పాస్‌వర్డ్ గోప్యంగా ఉంచండి, పంచుకున్న పరికరాలలో లాగ్ అవుట్ చేయండి.",
     "g.tip5": "<strong>కాగితంపై కావాలా?</strong> ఈ పేజీ పైన <strong>🖨️ PDF గా సేవ్ / ప్రింట్</strong> నొక్కండి.",
-    "g.footer": "విద్యా వృక్ష్ ట్యూషన్ · కొవ్వూరు — సహాయం కావాలా? ట్యూషన్‌ను సంప్రదించండి.",
+    "g.footer": "మైల్‌స్టోన్ ట్యూషన్స్ · కొవ్వూరు — సహాయం కావాలా? ట్యూషన్‌ను సంప్రదించండి.",
   },
 };
 

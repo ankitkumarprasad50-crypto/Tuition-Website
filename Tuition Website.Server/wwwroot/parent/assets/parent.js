@@ -1,5 +1,5 @@
 // ============================================================================
-//  Vidya Vriksh Parent Portal — helpers, auth guard, and SVG charts
+//  Milestone Tuitions Parent Portal — helpers, auth guard, and SVG charts
 // ============================================================================
 async function api(path, opts = {}) {
   const res = await fetch(path, {
@@ -86,7 +86,7 @@ async function initParentShell() {
   const bar = document.createElement("div");
   bar.className = "topbar";
   bar.innerHTML = `
-    <a class="topbar__brand" href="/parent/"><span class="topbar__logo">🌳</span> Vidya Vriksh</a>
+    <a class="topbar__brand" href="/parent/"><span class="topbar__logo">🌳</span> Milestone Tuitions</a>
     <div class="topbar__user">
       <button class="lang-toggle" type="button" onclick="toggleParentLang()">తెలుగు</button>
       <span class="who">${escapeHtml(me.email)}</span>

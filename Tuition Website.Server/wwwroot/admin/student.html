@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex" />
-  <title>Student — Vidya Vriksh Portal</title>
+  <title>Student — Milestone Tuitions Portal</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -143,14 +143,14 @@
     }
     function buildWaText(r) {
       const te = aLang() === "te";
-      let t = "🌳 " + (te ? "విద్యా వృక్ష్ ట్యూషన్ — ప్రగతి నివేదిక" : "Vidya Vriksh Tuition — Progress Report") + "\n\n";
+      let t = "🌳 " + (te ? "మైల్‌స్టోన్ ట్యూషన్స్ — ప్రగతి నివేదిక" : "Milestone Tuitions — Progress Report") + "\n\n";
       t += (te ? "విద్యార్థి: " : "Student: ") + r.studentName + (r.className ? " (" + r.className + ")" : "") + "\n";
       t += (te ? "మొత్తం: " : "Overall: ") + (r.rows.length ? r.averagePercent + "% — " + aVerdict(r.verdict) : (te ? "ఇంకా పరీక్షలు నమోదు కాలేదు" : "No tests recorded yet")) + "\n";
       if (r.rows.length) {
         t += "\n";
         r.rows.forEach(x => { t += "• " + x.test + (x.subject ? " (" + x.subject + ")" : "") + ": " + x.score + "/" + x.maxMarks + " (" + x.percent + "%)\n"; });
       }
-      t += "\n— " + (r.teacherName || (te ? "విద్యా వృక్ష్ ట్యూషన్" : "Vidya Vriksh Tuition"));
+      t += "\n— " + (r.teacherName || (te ? "మైల్‌స్టోన్ ట్యూషన్స్" : "Milestone Tuitions"));
       return t;
     }
     document.getElementById("whatsappBtn").addEventListener("click", () => {

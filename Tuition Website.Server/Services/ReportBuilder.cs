@@ -54,7 +54,7 @@ public static class ReportBuilder
         var sb = new StringBuilder();
         sb.Append($@"<div style=""font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#3D342A"">
   <div style=""background:#E07A5F;color:#fff;padding:20px 24px;border-radius:14px 14px 0 0"">
-    <div style=""font-size:20px;font-weight:bold"">🌳 Vidya Vriksh Tuition</div>
+    <div style=""font-size:20px;font-weight:bold"">🌳 Milestone Tuitions</div>
     <div style=""opacity:.9;font-size:13px"">Progress Report</div>
   </div>
   <div style=""border:1px solid #F6D9C6;border-top:none;border-radius:0 0 14px 14px;padding:24px"">
@@ -96,10 +96,10 @@ public static class ReportBuilder
         sb.Append($@"
     </table>
     <p style=""margin:18px 0 0;color:#7D7264;font-size:14px"">
-      With regards,<br><strong>{Esc(r.TeacherName)}</strong><br>Vidya Vriksh Tuition, Kovvur
+      With regards,<br><strong>{Esc(r.TeacherName)}</strong><br>Milestone Tuitions, Kovvur
     </p>
   </div>
-  <p style=""text-align:center;color:#9a9086;font-size:12px;margin:14px 0"">Sent via Vidya Vriksh Tuition · Kovvur</p>
+  <p style=""text-align:center;color:#9a9086;font-size:12px;margin:14px 0"">Sent via Milestone Tuitions · Kovvur</p>
 </div>");
         return sb.ToString();
     }
@@ -153,7 +153,7 @@ public static class ReportBuilder
 
         return $@"<div style=""font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#3D342A"">
   <div style=""background:#E07A5F;color:#fff;padding:20px 24px;border-radius:14px 14px 0 0"">
-    <div style=""font-size:20px;font-weight:bold"">🌳 Vidya Vriksh Tuition</div>
+    <div style=""font-size:20px;font-weight:bold"">🌳 Milestone Tuitions</div>
     <div style=""opacity:.9;font-size:13px"">{Esc(L.title)} — {Esc(Ist.DateLong(log.Date))}</div>
   </div>
   <div style=""border:1px solid #F6D9C6;border-top:none;border-radius:0 0 14px 14px;padding:24px"">
@@ -168,10 +168,10 @@ public static class ReportBuilder
     </table>
     {confirmHtml}
     <p style=""margin:18px 0 0;color:#7D7264;font-size:14px"">
-      {Esc(L.regards)}<br><strong>{Esc(teacherName)}</strong><br>Vidya Vriksh Tuition, Kovvur
+      {Esc(L.regards)}<br><strong>{Esc(teacherName)}</strong><br>Milestone Tuitions, Kovvur
     </p>
   </div>
-  <p style=""text-align:center;color:#9a9086;font-size:12px;margin:14px 0"">Sent via Vidya Vriksh Tuition · Kovvur</p>
+  <p style=""text-align:center;color:#9a9086;font-size:12px;margin:14px 0"">Sent via Milestone Tuitions · Kovvur</p>
 </div>";
     }
 
@@ -182,7 +182,7 @@ public static class ReportBuilder
         var sb = new StringBuilder();
         if (te)
         {
-            sb.Append("🌳 *విద్యా వృక్ష్ ట్యూషన్* — రోజువారీ నివేదిక\n");
+            sb.Append("🌳 *మైల్‌స్టోన్ ట్యూషన్స్* — రోజువారీ నివేదిక\n");
             sb.Append(Ist.DateLong(log.Date) + "\n\n");
             sb.Append($"👦 {s.Name}" + (string.IsNullOrWhiteSpace(s.ClassName) ? "" : $" ({s.ClassName})") + "\n\n");
             sb.Append($"⏰ ట్యూషన్‌కి చేరారు: {Ist.Time(log.ArrivedAt)}\n");
@@ -195,7 +195,7 @@ public static class ReportBuilder
         }
         else
         {
-            sb.Append("🌳 *Vidya Vriksh Tuition* — Daily Report\n");
+            sb.Append("🌳 *Milestone Tuitions* — Daily Report\n");
             sb.Append(Ist.DateLong(log.Date) + "\n\n");
             sb.Append($"👦 {s.Name}" + (string.IsNullOrWhiteSpace(s.ClassName) ? "" : $" ({s.ClassName})") + "\n\n");
             sb.Append($"⏰ Reached tuition: {Ist.Time(log.ArrivedAt)}\n");
@@ -206,7 +206,7 @@ public static class ReportBuilder
             if (log.ReachedHomeAt is null && !string.IsNullOrWhiteSpace(confirmLink))
                 sb.Append($"\n✅ Tap here once your child is home:\n{confirmLink}\n");
         }
-        sb.Append($"\n— {(string.IsNullOrWhiteSpace(teacherName) ? "Vidya Vriksh Tuition" : teacherName)}");
+        sb.Append($"\n— {(string.IsNullOrWhiteSpace(teacherName) ? "Milestone Tuitions" : teacherName)}");
         return sb.ToString();
     }
 }

@@ -290,7 +290,7 @@ public static class AdminEndpoints
             try
             {
                 await email.SendAsync(student.ParentEmail, student.ParentName,
-                    $"{student.Name} — Progress Report · Vidya Vriksh Tuition", html);
+                    $"{student.Name} — Progress Report · Milestone Tuitions", html);
                 return Results.Ok(new { sent = true, to = student.ParentEmail });
             }
             catch (Exception ex)
