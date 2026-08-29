@@ -21,6 +21,9 @@ enrollments.json
 publish-linux/
 *.tgz
 
+# Data-protection keys (per-machine secret; created at runtime)
+Tuition Website.Server/keys/
+
 # Node (in case a frontend is added back)
 node_modules/
 dist/

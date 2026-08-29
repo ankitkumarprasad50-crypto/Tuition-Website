@@ -9,6 +9,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/admin/assets/admin.css" />
+  <style>
+    .daily{background:linear-gradient(135deg,#EAF2ED,#FBEADF);border:1px solid var(--line);border-radius:14px;padding:1rem 1.1rem;margin-bottom:1.2rem}
+    .daily h3{font-size:1.05rem;margin-bottom:.7rem}
+    .daily h3 .d{color:var(--muted);font-weight:700;font-size:.82rem}
+    .daily-times{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:.7rem}
+    .tchip{background:#fff;border:1px solid var(--line);border-radius:10px;padding:.5rem .6rem;text-align:center}
+    .tchip .lbl{font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+    .tchip .val{font-size:1.05rem;font-weight:900;color:var(--terracotta-dark);margin-top:.15rem}
+    .tchip .val.pending{color:#b98a2a;font-size:.9rem}
+    .daily-note{font-size:.9rem;margin:.35rem 0;line-height:1.5}
+    .daily-note b{color:var(--ink)}
+    .confirm-home{width:100%;margin-top:.6rem;background:var(--sage);color:#fff;border:none;border-radius:12px;font-family:inherit;font-weight:900;font-size:1rem;padding:.8rem;cursor:pointer}
+    .confirm-home:hover{background:var(--sage-dark)}
+    .confirm-home:disabled{opacity:.6;cursor:not-allowed}
+    @media (max-width:480px){ .daily-times{grid-template-columns:1fr} }
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -24,6 +40,47 @@
       const me = await initParentShell();
       if (!me) return;
       document.getElementById("welcome").textContent = ptr("p.signedIn") + " " + me.email;
+
+      // ---- Daily attendance + activity (per child) ----
+      function fmtTime(hhmm) {
+        if (!hhmm) return "";
+        const [h, m] = hhmm.split(":").map(Number);
+        const ap = h >= 12 ? "PM" : "AM"; const h12 = ((h + 11) % 12) + 1;
+        return `${h12}:${String(m).padStart(2, "0")} ${ap}`;
+      }
+      function niceDate(iso) {
+        try { return new Date(iso + "T00:00:00").toLocaleDateString(pLang() === "te" ? "te-IN" : "en-IN", { weekday: "short", day: "numeric", month: "short" }); }
+        catch { return iso; }
+      }
+      function chip(lbl, val) {
+        return `<div class="tchip"><div class="lbl">${lbl}</div><div class="val ${val ? "" : "pending"}">${val ? escapeHtml(fmtTime(val)) : "—"}</div></div>`;
+      }
+      window.dailyBlock = function (id, d) {
+        const log = (d && d.log) ? d.log : {};
+        const hasAny = log.arrived || log.left || log.reachedHome || log.activity || log.homework;
+        let inner = `<div class="daily-times">
+            ${chip(ptr("p.arrived"), log.arrived)}
+            ${chip(ptr("p.leftT"), log.left)}
+            ${chip(ptr("p.reachedHome"), log.reachedHome)}
+          </div>`;
+        if (log.activity) inner += `<div class="daily-note"><b>${ptr("p.activityToday")}:</b> ${escapeHtml(log.activity)}</div>`;
+        if (log.homework) inner += `<div class="daily-note"><b>${ptr("p.homeworkT")}:</b> ${escapeHtml(log.homework)}</div>`;
+        if (!log.reachedHome) inner += `<button class="confirm-home" data-id="${id}">${ptr("p.confirmHome")}</button>`;
+        if (!hasAny) inner = `<p class="muted" style="margin:0">${ptr("p.nothingToday")}</p>`;
+        return `<div class="daily"><h3>${ptr("p.todayTitle")} <span class="d">${d ? escapeHtml(niceDate(d.date)) : ""}</span></h3>${inner}</div>`;
+      };
+      document.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".confirm-home");
+        if (!btn) return;
+        btn.disabled = true;
+        try {
+          const r = await api(`/api/parent/children/${btn.dataset.id}/reached-home`, { method: "POST", body: {} });
+          const box = btn.closest(".daily");
+          const chips = box.querySelectorAll(".tchip .val");
+          if (chips[2]) { chips[2].classList.remove("pending"); chips[2].textContent = fmtTime(r.reachedHome); }
+          btn.outerHTML = `<div class="daily-note" style="color:var(--sage-dark);font-weight:800">${ptr("p.homeThanks")}</div>`;
+        } catch (ex) { btn.disabled = false; btn.textContent = ex.error || "Try again"; }
+      });
 
       const parentSteps = [
         { emoji: "👋", title: ptr("p.tourWelcomeT"), body: ptr("p.tourWelcomeB") },
@@ -45,6 +102,8 @@
       wrap.innerHTML = "";
       for (const c of children) {
         const r = await api(`/api/parent/children/${c.id}/report`);
+        let daily = null;
+        try { daily = await api(`/api/parent/children/${c.id}/daily`); } catch {}
         const chartData = r.rows.map(x => ({ label: x.test, value: x.percent }));
         const rowsHtml = r.rows.length ? r.rows.map(x => `
           <tr>
@@ -63,6 +122,7 @@
             <div><h2 style="font-size:1.35rem">${escapeHtml(r.studentName)}</h2>
               <p class="muted">${escapeHtml(r.className) || ""}${r.teacherName ? " · " + ptr("p.teacher") + " " + escapeHtml(r.teacherName) : ""}</p></div>
           </div>
+          ${dailyBlock(c.id, daily)}
           <div class="report-hero">
             <div><div class="stat__label">${ptr("p.overall")}</div><div class="big">${r.rows.length ? r.averagePercent + "%" : "—"}</div></div>
             <div class="verdict">${escapeHtml(pVerdict(r.verdict))}</div>

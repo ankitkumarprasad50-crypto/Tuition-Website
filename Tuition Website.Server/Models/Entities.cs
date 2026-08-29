@@ -79,3 +79,25 @@ public class Mark
     public double Score { get; set; }
     [MaxLength(300)] public string Remark { get; set; } = "";
 }
+
+// One row per student per day: attendance times + what they did that day.
+// Times are stored as IST wall-clock (Kind=Unspecified). ReachedHomeAt is set
+// by the parent (via a no-login confirm link or the parent portal), or by the
+// teacher as an override.
+public class DailyLog
+{
+    public int Id { get; set; }
+    public int StudentId { get; set; }
+    public Student? Student { get; set; }
+    public DateOnly Date { get; set; }
+
+    public DateTime? ArrivedAt { get; set; }
+    public DateTime? LeftAt { get; set; }
+    public DateTime? ReachedHomeAt { get; set; }
+    [MaxLength(20)] public string ReachedHomeSource { get; set; } = ""; // "Parent" | "Teacher"
+
+    [MaxLength(1000)] public string Activity { get; set; } = "";
+    [MaxLength(500)]  public string Homework { get; set; } = "";
+
+    public DateTimeOffset? ReportEmailedAt { get; set; }
+}

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Reached home — Vidya Vriksh</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box}
+    :root{--ink:#3D342A;--muted:#7D6E5E;--terracotta:#E07A5F;--terracotta-dark:#C65B42;--sage:#81B29A;--sage-dark:#5E927B}
+    html,body{height:100%}
+    body{margin:0;font-family:'Nunito',system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink);
+      display:grid;place-items:center;padding:1rem;background:linear-gradient(135deg,#EAF2ED 0%,#FBEADF 55%,#F2CC8F 100%)}
+    .card{width:min(94vw,420px);background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.7);
+      border-radius:24px;padding:2.2rem 1.8rem;text-align:center;backdrop-filter:blur(16px) saturate(140%);
+      -webkit-backdrop-filter:blur(16px) saturate(140%);box-shadow:0 18px 50px rgba(80,55,35,.2)}
+    .logo{font-size:2.6rem}
+    h1{font-size:1.4rem;margin:.5rem 0 .2rem}
+    .child{font-size:1.15rem;font-weight:800;color:var(--terracotta-dark);margin:.2rem 0}
+    .date{color:var(--muted);font-weight:700;font-size:.9rem;margin-bottom:1.3rem}
+    .lead{color:var(--muted);font-weight:600;line-height:1.6;margin-bottom:1.3rem}
+    .btn{width:100%;padding:1rem;border:none;border-radius:14px;font-family:inherit;font-weight:900;font-size:1.05rem;cursor:pointer;color:#fff;background:var(--sage);box-shadow:0 12px 26px rgba(129,178,154,.45);transition:.15s}
+    .btn:hover{background:var(--sage-dark);transform:translateY(-1px)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .done{font-size:3rem}
+    .ok{color:var(--sage-dark);font-weight:900;font-size:1.25rem;margin:.4rem 0}
+    .err{color:#b3402b;font-weight:800}
+    .sub{color:var(--muted);font-size:.85rem;margin-top:1.2rem}
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="logo">🌳</div>
+    <div id="body"><p class="lead">…</p></div>
+    <div class="sub">Vidya Vriksh Tuition · Kovvur</div>
+  </div>
+
+  <script>
+    const T = (new URLSearchParams(location.search)).get("t") || "";
+    const body = document.getElementById("body");
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    function fmt(hhmm) {
+      if (!hhmm) return "";
+      const [h, m] = hhmm.split(":").map(Number);
+      const ap = h >= 12 ? "PM" : "AM"; const h12 = ((h + 11) % 12) + 1;
+      return `${h12}:${String(m).padStart(2, "0")} ${ap}`;
+    }
+    function confirmedView(timeText) {
+      body.innerHTML = `<div class="done">✅</div>
+        <div class="ok">ధన్యవాదాలు! / Thank you!</div>
+        <p class="lead">ఇంటికి చేరిన సమయం నమోదైంది${timeText ? " — <strong>" + esc(timeText) + "</strong>" : ""}.<br>
+        Reached-home time saved${timeText ? " — <strong>" + esc(timeText) + "</strong>" : ""}.</p>`;
+    }
+
+    async function jf(url, opts) {
+      const r = await fetch(url, Object.assign({ headers: { "Content-Type": "application/json" } }, opts));
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw d;
+      return d;
+    }
+
+    (async () => {
+      if (!T) { body.innerHTML = `<p class="err">This link is invalid.</p>`; return; }
+      let info;
+      try { info = await jf("/api/confirm-home?t=" + encodeURIComponent(T)); }
+      catch (e) { body.innerHTML = `<p class="err">${esc(e.error || "This link is invalid or has expired.")}</p>`; return; }
+
+      if (info.alreadyConfirmed) { confirmedView(fmt(info.time)); return; }
+
+      body.innerHTML = `
+        <h1>ఇంటికి చేరారా? / Reached home?</h1>
+        <div class="child">${esc(info.childName)}${info.className ? " (" + esc(info.className) + ")" : ""}</div>
+        <div class="date">${esc(info.date)}</div>
+        <p class="lead">మీ బిడ్డ ఇంటికి క్షేమంగా చేరాక కింది బటన్ నొక్కండి.<br>
+        Tap the button once your child has reached home safely.</p>
+        <button class="btn" id="go">✅ ఇంటికి చేరారని నిర్ధారించండి<br><span style="font-weight:700;font-size:.9rem">Confirm reached home</span></button>`;
+
+      document.getElementById("go").addEventListener("click", async () => {
+        const b = document.getElementById("go"); b.disabled = true; b.textContent = "…";
+        try { const r = await jf("/api/confirm-home", { method: "POST", body: JSON.stringify({ t: T }) }); confirmedView(fmt(r.time)); }
+        catch (e) { body.innerHTML = `<p class="err">${esc(e.error || "Something went wrong. Please try again.")}</p>`; }
+      });
+    })();
+  </script>
+</body>
+</html>

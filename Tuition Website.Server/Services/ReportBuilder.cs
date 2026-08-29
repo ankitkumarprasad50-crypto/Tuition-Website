@@ -105,4 +105,78 @@ public static class ReportBuilder
     }
 
     private static string Esc(string s) => System.Net.WebUtility.HtmlEncode(s ?? "");
+
+    // ---- Daily attendance + activity report (bilingual Telugu + English) -----
+
+    // Email-safe HTML for one student's day. confirmLink (optional) lets the
+    // parent confirm "reached home" if it isn't recorded yet.
+    public static string BuildDailyEmailHtml(Student s, DailyLog log, string teacherName, string? confirmLink)
+    {
+        string Row(string teLabel, string enLabel, string value) => $@"
+      <tr>
+        <td style=""padding:8px 10px;color:#7D7264;width:190px"">{Esc(teLabel)}<br><span style=""font-size:12px"">{Esc(enLabel)}</span></td>
+        <td style=""padding:8px 10px;font-weight:bold"">{Esc(value)}</td>
+      </tr>";
+
+        var reachedHome = log.ReachedHomeAt is null
+            ? "—"
+            : $"{Ist.Time(log.ReachedHomeAt)}" + (log.ReachedHomeSource == "Parent" ? "" : " *");
+
+        var activityBlock = string.IsNullOrWhiteSpace(log.Activity) ? "—" : log.Activity;
+        var homeworkBlock = string.IsNullOrWhiteSpace(log.Homework) ? "—" : log.Homework;
+
+        var confirmHtml = (log.ReachedHomeAt is null && !string.IsNullOrWhiteSpace(confirmLink))
+            ? $@"<div style=""text-align:center;margin:18px 0 4px"">
+                   <a href=""{Esc(confirmLink!)}"" style=""background:#81B29A;color:#fff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:10px;display:inline-block"">✅ ఇంటికి చేరారని నిర్ధారించండి / Confirm reached home</a>
+                   <div style=""font-size:12px;color:#9a9086;margin-top:6px"">మీ బిడ్డ ఇంటికి చేరాక ఈ బటన్ నొక్కండి · Tap once your child is home</div>
+                 </div>"
+            : "";
+
+        return $@"<div style=""font-family:Arial,Helvetica,sans-serif;max-width:600px;margin:0 auto;color:#3D342A"">
+  <div style=""background:#E07A5F;color:#fff;padding:20px 24px;border-radius:14px 14px 0 0"">
+    <div style=""font-size:20px;font-weight:bold"">🌳 Vidya Vriksh Tuition</div>
+    <div style=""opacity:.9;font-size:13px"">రోజువారీ నివేదిక · Daily Report — {Esc(Ist.DateLong(log.Date))}</div>
+  </div>
+  <div style=""border:1px solid #F6D9C6;border-top:none;border-radius:0 0 14px 14px;padding:24px"">
+    <p style=""margin:0 0 4px"">నమస్తే {Esc(string.IsNullOrWhiteSpace(s.ParentName) ? "తల్లిదండ్రులకు" : s.ParentName)},</p>
+    <p style=""margin:0 0 16px;color:#7D7264"">
+      <strong>{Esc(s.Name)}</strong> {(string.IsNullOrWhiteSpace(s.ClassName) ? "" : "(" + Esc(s.ClassName) + ")")} — ఈ రోజు ట్యూషన్ నివేదిక. <br>
+      <span style=""font-size:13px"">Here is today's tuition report for your child.</span>
+    </p>
+    <table style=""width:100%;border-collapse:collapse;font-size:14px;background:#FBEADF;border-radius:12px;overflow:hidden"">
+      {Row("ట్యూషన్‌కి చేరిన సమయం", "Reached tuition", Ist.Time(log.ArrivedAt))}
+      {Row("ట్యూషన్ నుండి బయలుదేరిన సమయం", "Left tuition", Ist.Time(log.LeftAt))}
+      {Row("ఇంటికి చేరిన సమయం", "Reached home", reachedHome)}
+      {Row("ఈ రోజు ఏం చేశారు", "What we did today", activityBlock)}
+      {Row("ఇంటి పని", "Homework", homeworkBlock)}
+    </table>
+    {confirmHtml}
+    <p style=""margin:18px 0 0;color:#7D7264;font-size:14px"">
+      సప్రేమగా,<br><strong>{Esc(teacherName)}</strong><br>Vidya Vriksh Tuition, Kovvur
+    </p>
+  </div>
+  <p style=""text-align:center;color:#9a9086;font-size:12px;margin:14px 0"">Sent via Vidya Vriksh Tuition · Kovvur</p>
+</div>";
+    }
+
+    // Plain text for the free WhatsApp "click to send" link.
+    public static string BuildDailyWaText(Student s, DailyLog log, string teacherName, string? confirmLink)
+    {
+        var sb = new StringBuilder();
+        sb.Append("🌳 *విద్యా వృక్ష్ ట్యూషన్* — రోజువారీ నివేదిక\n");
+        sb.Append("(Vidya Vriksh Tuition — Daily Report)\n");
+        sb.Append(Ist.DateLong(log.Date) + "\n\n");
+        sb.Append($"👦 {s.Name}" + (string.IsNullOrWhiteSpace(s.ClassName) ? "" : $" ({s.ClassName})") + "\n\n");
+        sb.Append($"⏰ ట్యూషన్‌కి చేరారు / Reached tuition: {Ist.Time(log.ArrivedAt)}\n");
+        sb.Append($"🏃 బయలుదేరారు / Left tuition: {Ist.Time(log.LeftAt)}\n");
+        sb.Append($"🏠 ఇంటికి చేరారు / Reached home: {Ist.Time(log.ReachedHomeAt)}\n");
+        if (!string.IsNullOrWhiteSpace(log.Activity))
+            sb.Append($"\n📚 ఈ రోజు / Today: {log.Activity}\n");
+        if (!string.IsNullOrWhiteSpace(log.Homework))
+            sb.Append($"📝 ఇంటి పని / Homework: {log.Homework}\n");
+        if (log.ReachedHomeAt is null && !string.IsNullOrWhiteSpace(confirmLink))
+            sb.Append($"\n✅ మీ బిడ్డ ఇంటికి చేరాక ఈ లింక్ నొక్కండి / Tap here once your child is home:\n{confirmLink}\n");
+        sb.Append($"\n— {(string.IsNullOrWhiteSpace(teacherName) ? "Vidya Vriksh Tuition" : teacherName)}");
+        return sb.ToString();
+    }
 }

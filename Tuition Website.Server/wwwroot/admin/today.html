@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex" />
+  <title>Today — Vidya Vriksh Portal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B3%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/assets/admin.css" />
+  <style>
+    .day-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:1.1rem 1.2rem;margin-bottom:1rem}
+    .day-card h3{font-size:1.15rem;margin-bottom:.1rem}
+    .day-card .cls{color:var(--muted);font-weight:700;font-size:.85rem;margin-bottom:.8rem}
+    .time-row{display:grid;grid-template-columns:repeat(3,1fr);gap:.7rem;margin-bottom:.9rem}
+    .time-box{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:.6rem .7rem}
+    .time-box label{display:block;font-weight:800;font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.35rem}
+    .time-box input[type=time]{width:100%;font-family:inherit;font-size:1rem;font-weight:800;border:2px solid var(--peach-deep);border-radius:8px;padding:.35rem .4rem;background:#fff;color:var(--ink)}
+    .time-box input[type=time]:focus{outline:none;border-color:var(--terracotta)}
+    .time-box .stamp{margin-top:.4rem;width:100%}
+    .rh-note{font-size:.72rem;font-weight:800;margin-top:.4rem;text-align:center;color:var(--sage-dark)}
+    .rh-note.wait{color:#b98a2a}
+    .field-note{margin:.6rem 0 .2rem;font-weight:800;font-size:.82rem}
+    .day-card textarea,.day-card .hw{width:100%;font-family:inherit;font-size:.95rem;padding:.55rem .7rem;border:2px solid var(--peach-deep);border-radius:10px;background:var(--cream);color:var(--ink);resize:vertical}
+    .day-card textarea:focus,.day-card .hw:focus{outline:none;border-color:var(--terracotta)}
+    .send-list{display:flex;flex-direction:column;gap:.55rem;margin-top:.4rem}
+    .send-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:.5rem .7rem}
+    .send-row .nm{font-weight:800}
+    .send-row .em{font-size:.75rem;color:var(--muted);font-weight:700}
+    @media (max-width:520px){ .time-row{grid-template-columns:1fr} }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="page-head">
+      <div><h1 data-i18n="a.today.title">Today</h1><p data-i18n="a.today.sub">Mark arrival &amp; leaving times, note what each student did, then send the day's report.</p></div>
+      <div class="row">
+        <label class="muted" style="font-weight:800;font-size:.85rem" for="dateInp" data-i18n="a.today.date">Date</label>
+        <input id="dateInp" type="date" style="font-family:inherit;padding:.5rem .6rem;border-radius:10px;border:2px solid var(--peach-deep);background:var(--cream)" />
+        <button class="btn btn--primary" id="endDayBtn" data-i18n="a.today.endDay">📤 End of day — send reports</button>
+      </div>
+    </div>
+    <div id="list"><div class="card"><div class="empty">…</div></div></div>
+  </div>
+
+  <!-- Send-on-WhatsApp modal -->
+  <div class="modal" id="sendModal">
+    <div class="modal__box">
+      <h2 data-i18n="a.today.sendTitle">Send today's WhatsApp reports</h2>
+      <p class="muted" id="sendDesc" data-i18n="a.today.sendDesc">Emails have been sent. Tap each parent to send their WhatsApp report.</p>
+      <div id="emailWarn" class="hidden" style="background:#fbe4dd;color:#b3402b;font-weight:700;border-radius:10px;padding:.6rem .8rem;margin-bottom:.6rem" data-i18n="a.today.emailOff">⚠️ Email isn't connected yet.</div>
+      <div class="send-list" id="sendList"></div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--ghost" onclick="closeModal('sendModal')" data-i18n="a.today.close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/assets/admin.js"></script>
+  <script>
+    let curDate;
+    function fmt(hhmm) {
+      if (!hhmm) return "—";
+      const [h, m] = hhmm.split(":").map(Number);
+      const ap = h >= 12 ? "PM" : "AM"; const h12 = ((h + 11) % 12) + 1;
+      return `${h12}:${String(m).padStart(2, "0")} ${ap}`;
+    }
+    function waNumber(raw) {
+      let d = (raw || "").replace(/\D/g, "");
+      if (!d) return "";
+      if (d.length === 10) d = "91" + d;
+      else if (d.length === 11 && d[0] === "0") d = "91" + d.slice(1);
+      return d;
+    }
+
+    async function save(id, patch) {
+      try { await api(`/api/daily/${id}`, { method: "PUT", body: { date: curDate, ...patch } }); toast(tr("a.today.saved")); }
+      catch (ex) { toast(ex.error || "Could not save", true); }
+    }
+    async function stamp(id, action) {
+      try {
+        const r = await api(`/api/daily/${id}/${action}`, { method: "POST", body: { date: curDate } });
+        // update just this card's inputs from the response
+        const card = document.querySelector(`[data-sid="${id}"]`);
+        if (card) {
+          if (r.arrived != null) card.querySelector(".t-arrived").value = r.arrived;
+          if (r.left != null) card.querySelector(".t-left").value = r.left;
+          if (r.reachedHome != null) { card.querySelector(".t-home").value = r.reachedHome; updHomeNote(card, r.reachedHome, r.reachedHomeBy); }
+        }
+        toast(tr("a.today.saved"));
+      } catch (ex) { toast(ex.error || "Could not save", true); }
+    }
+    function updHomeNote(card, home, by) {
+      const note = card.querySelector(".rh-note");
+      if (!note) return;
+      if (home) { note.classList.remove("wait"); note.textContent = by === "Parent" ? tr("a.today.byParent") : tr("a.today.byTeacher"); }
+      else { note.classList.add("wait"); note.textContent = tr("a.today.waiting"); }
+    }
+
+    function card(s) {
+      const el = document.createElement("div");
+      el.className = "day-card"; el.dataset.sid = s.id;
+      el.innerHTML = `
+        <h3>${escapeHtml(s.name)}</h3>
+        <div class="cls">${escapeHtml(s.className) || ""}</div>
+        <div class="time-row">
+          <div class="time-box">
+            <label>${tr("a.th.arrived")}</label>
+            <input type="time" class="t-arrived" value="${s.arrived || ""}" />
+            <button class="btn btn--sage btn--sm stamp" data-act="arrive">${tr("a.today.in")}</button>
+          </div>
+          <div class="time-box">
+            <label>${tr("a.th.left")}</label>
+            <input type="time" class="t-left" value="${s.left || ""}" />
+            <button class="btn btn--sage btn--sm stamp" data-act="leave">${tr("a.today.out")}</button>
+          </div>
+          <div class="time-box">
+            <label>${tr("a.th.reachedHome")}</label>
+            <input type="time" class="t-home" value="${s.reachedHome || ""}" />
+            <div class="rh-note ${s.reachedHome ? "" : "wait"}">${s.reachedHome ? (s.reachedHomeBy === "Parent" ? tr("a.today.byParent") : tr("a.today.byTeacher")) : tr("a.today.waiting")}</div>
+          </div>
+        </div>
+        <div class="field-note">${tr("a.th.activity")}</div>
+        <textarea class="t-activity" rows="2" placeholder="${tr("a.today.activityPh")}">${escapeHtml(s.activity)}</textarea>
+        <div class="field-note">${tr("a.th.homework")}</div>
+        <input class="hw t-homework" value="${escapeHtml(s.homework)}" placeholder="${tr("a.today.homeworkPh")}" />`;
+
+      el.querySelector(".t-arrived").addEventListener("change", e => save(s.id, { arrived: e.target.value }));
+      el.querySelector(".t-left").addEventListener("change", e => save(s.id, { left: e.target.value }));
+      el.querySelector(".t-home").addEventListener("change", e => { save(s.id, { reachedHome: e.target.value }); updHomeNote(el, e.target.value, "Teacher"); });
+      el.querySelector(".t-activity").addEventListener("change", e => save(s.id, { activity: e.target.value }));
+      el.querySelector(".t-homework").addEventListener("change", e => save(s.id, { homework: e.target.value }));
+      el.querySelectorAll(".stamp").forEach(b => b.addEventListener("click", () => stamp(s.id, b.dataset.act)));
+      return el;
+    }
+
+    async function load() {
+      const data = await api(`/api/daily?date=${curDate}`);
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      if (!data.students.length) { list.innerHTML = `<div class="card"><div class="empty">${tr("a.today.none")}</div></div>`; return; }
+      data.students.forEach(s => list.appendChild(card(s)));
+    }
+
+    document.getElementById("dateInp").addEventListener("change", e => { curDate = e.target.value; load(); });
+
+    document.getElementById("endDayBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("endDayBtn");
+      const old = btn.textContent; btn.disabled = true; btn.textContent = tr("a.today.sending");
+      try {
+        const r = await api("/api/daily/send-all", { method: "POST", body: { date: curDate } });
+        const list = document.getElementById("sendList");
+        document.getElementById("emailWarn").classList.toggle("hidden", r.emailConfigured);
+        if (!r.wa.length && !r.emailed.length) { toast(tr("a.today.nothing"), true); return; }
+        list.innerHTML = "";
+        const emailedSet = new Set(r.emailed);
+        r.wa.forEach(w => {
+          const num = waNumber(w.phone);
+          const row = document.createElement("div");
+          row.className = "send-row";
+          row.innerHTML = `<div><div class="nm">${escapeHtml(w.name)}</div>
+            <div class="em">${emailedSet.has(w.name) ? "✅ " + tr("a.today.emailedNote") : ""}</div></div>`;
+          const a = document.createElement("a");
+          a.className = "btn btn--whatsapp btn--sm";
+          a.textContent = `${tr("a.today.sendWa")} ${w.name.split(" ")[0]}`;
+          a.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(w.text);
+          a.target = "_blank"; a.rel = "noopener";
+          if (!num) { a.classList.add("btn--ghost"); a.removeAttribute("href"); a.style.opacity = ".5"; }
+          row.appendChild(a);
+          list.appendChild(row);
+        });
+        // students that were emailed but have no phone — show as emailed rows
+        r.emailed.filter(n => !r.wa.some(w => w.name === n)).forEach(n => {
+          const row = document.createElement("div"); row.className = "send-row";
+          row.innerHTML = `<div class="nm">${escapeHtml(n)}</div><div class="em">✅ ${tr("a.today.emailedNote")}</div>`;
+          list.appendChild(row);
+        });
+        openModal("sendModal");
+      } catch (ex) { toast(ex.error || "Could not send", true); }
+      finally { btn.disabled = false; btn.textContent = old; }
+    });
+
+    (async () => {
+      if (!(await initShell("/admin/today"))) return;
+      const data = await api(`/api/daily`);          // default = today (server IST)
+      curDate = data.date;
+      document.getElementById("dateInp").value = curDate;
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+      if (!data.students.length) { list.innerHTML = `<div class="card"><div class="empty">${tr("a.today.none")}</div></div>`; return; }
+      data.students.forEach(s => list.appendChild(card(s)));
+    })().catch(e => toast(e.error || (aLang() === "te" ? "ఏదో తప్పు జరిగింది" : "Something went wrong"), true));
+  </script>
+</body>
+</html>

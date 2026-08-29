@@ -14,12 +14,14 @@ public class AppDbContext : DbContext
     public DbSet<Mark> Marks => Set<Mark>();
     public DbSet<EmailConfig> EmailConfigs => Set<EmailConfig>();
     public DbSet<Parent> Parents => Set<Parent>();
+    public DbSet<DailyLog> DailyLogs => Set<DailyLog>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
         b.Entity<Teacher>().HasIndex(t => t.Email).IsUnique();
         b.Entity<Parent>().HasIndex(p => p.Email).IsUnique();
         b.Entity<Mark>().HasIndex(m => new { m.StudentId, m.TestId }).IsUnique();
+        b.Entity<DailyLog>().HasIndex(d => new { d.StudentId, d.Date }).IsUnique();
 
         // Keep data tidy when a teacher/test/student is removed.
         b.Entity<Student>().HasOne(s => s.Teacher).WithMany(t => t.Students)
@@ -30,6 +32,8 @@ public class AppDbContext : DbContext
             .HasForeignKey(m => m.StudentId).OnDelete(DeleteBehavior.Cascade);
         b.Entity<Mark>().HasOne(m => m.Test).WithMany(t => t.Marks)
             .HasForeignKey(m => m.TestId).OnDelete(DeleteBehavior.Cascade);
+        b.Entity<DailyLog>().HasOne(d => d.Student).WithMany()
+            .HasForeignKey(d => d.StudentId).OnDelete(DeleteBehavior.Cascade);
     }
 
     // Creates the database (if needed) and seeds the two starter teachers.
@@ -53,6 +57,20 @@ public class AppDbContext : DbContext
                 ""PasswordHash"" TEXT NOT NULL,
                 ""CreatedAt"" TEXT NOT NULL);
               CREATE UNIQUE INDEX IF NOT EXISTS ""IX_Parents_Email"" ON ""Parents"" (""Email"");");
+        db.Database.ExecuteSqlRaw(
+            @"CREATE TABLE IF NOT EXISTS ""DailyLogs"" (
+                ""Id"" INTEGER NOT NULL CONSTRAINT ""PK_DailyLogs"" PRIMARY KEY AUTOINCREMENT,
+                ""StudentId"" INTEGER NOT NULL,
+                ""Date"" TEXT NOT NULL,
+                ""ArrivedAt"" TEXT NULL,
+                ""LeftAt"" TEXT NULL,
+                ""ReachedHomeAt"" TEXT NULL,
+                ""ReachedHomeSource"" TEXT NOT NULL,
+                ""Activity"" TEXT NOT NULL,
+                ""Homework"" TEXT NOT NULL,
+                ""ReportEmailedAt"" TEXT NULL,
+                CONSTRAINT ""FK_DailyLogs_Students_StudentId"" FOREIGN KEY (""StudentId"") REFERENCES ""Students"" (""Id"") ON DELETE CASCADE);
+              CREATE UNIQUE INDEX IF NOT EXISTS ""IX_DailyLogs_StudentId_Date"" ON ""DailyLogs"" (""StudentId"",""Date"");");
         if (!db.Teachers.Any())
         {
             db.Teachers.Add(

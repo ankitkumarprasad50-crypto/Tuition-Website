@@ -31,6 +31,9 @@ window.PI18N = {
     "p.tourTableT": "Every test", "p.tourTableB": "The full list of tests with exact marks — read-only.",
     "p.tourHelpT": "Need help?", "p.tourHelpB": "Tap How to use to replay this, or open the full guide.",
     "p.tourOutT": "Log out", "p.tourOutB": "Tap here when you're done. Questions about the marks? Contact the tuition.",
+    "p.todayTitle": "Today at tuition", "p.arrived": "Reached tuition", "p.leftT": "Left tuition", "p.reachedHome": "Reached home",
+    "p.activityToday": "What they did today", "p.homeworkT": "Homework", "p.notRecorded": "Not recorded yet",
+    "p.confirmHome": "✅ Confirm reached home", "p.homeThanks": "Saved — thank you!", "p.nothingToday": "Nothing has been recorded for today yet.",
   },
   te: {
     "p.loginTitle": "తల్లిదండ్రుల పోర్టల్", "p.loginSub": "మీ పిల్ల మార్కులు & ప్రగతి చూడండి",
@@ -48,6 +51,9 @@ window.PI18N = {
     "p.tourTableT": "ప్రతి పరీక్ష", "p.tourTableB": "ఖచ్చితమైన మార్కులతో అన్ని పరీక్షల జాబితా — చదవడానికి మాత్రమే.",
     "p.tourHelpT": "సహాయం కావాలా?", "p.tourHelpB": "ఇది మళ్లీ చూడటానికి 'ఎలా వాడాలి' నొక్కండి, లేదా పూర్తి గైడ్ తెరవండి.",
     "p.tourOutT": "లాగ్ అవుట్", "p.tourOutB": "పూర్తయ్యాక ఇక్కడ నొక్కండి. మార్కుల గురించి ప్రశ్నలా? ట్యూషన్‌ను సంప్రదించండి.",
+    "p.todayTitle": "ఈ రోజు ట్యూషన్‌లో", "p.arrived": "ట్యూషన్‌కి చేరారు", "p.leftT": "ట్యూషన్ నుండి వెళ్ళారు", "p.reachedHome": "ఇంటికి చేరారు",
+    "p.activityToday": "ఈ రోజు ఏం చేశారు", "p.homeworkT": "ఇంటి పని", "p.notRecorded": "ఇంకా నమోదు కాలేదు",
+    "p.confirmHome": "✅ ఇంటికి చేరారని నిర్ధారించండి", "p.homeThanks": "సేవ్ అయింది — ధన్యవాదాలు!", "p.nothingToday": "ఈ రోజుకి ఇంకా ఏమీ నమోదు కాలేదు.",
   },
 };
 function pLang() { try { return localStorage.getItem("lang") === "te" ? "te" : "en"; } catch { return "en"; } }

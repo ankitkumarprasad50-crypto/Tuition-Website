@@ -235,6 +235,7 @@ publicApi.MapPost("enroll", async (EnrollmentRequest request, ILogger<Program> l
 // ---------------------------------------------------------------------------
 app.MapAdminApi();
 app.MapParentApi();
+app.MapDailyApi();
 
 app.MapDefaultEndpoints();
 
