@@ -25,9 +25,15 @@
     .day-card textarea,.day-card .hw{width:100%;font-family:inherit;font-size:.95rem;padding:.55rem .7rem;border:2px solid var(--peach-deep);border-radius:10px;background:var(--cream);color:var(--ink);resize:vertical}
     .day-card textarea:focus,.day-card .hw:focus{outline:none;border-color:var(--terracotta)}
     .send-list{display:flex;flex-direction:column;gap:.55rem;margin-top:.4rem}
-    .send-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:.5rem .7rem}
+    .send-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:.55rem .7rem}
     .send-row .nm{font-weight:800}
-    .send-row .em{font-size:.75rem;color:var(--muted);font-weight:700}
+    .send-row .em{font-size:.72rem;color:var(--muted);font-weight:700}
+    .sr-actions{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+    .lang-pick{display:inline-flex;border:2px solid var(--peach-deep);border-radius:999px;overflow:hidden}
+    .lang-pick .lp{border:none;background:#fff;font-family:inherit;font-weight:800;font-size:.78rem;padding:.32rem .62rem;cursor:pointer;color:var(--muted)}
+    .lang-pick .lp.on{background:var(--terracotta);color:#fff}
+    .sendbar{display:flex;align-items:center;justify-content:space-between;gap:.6rem;flex-wrap:wrap;margin:.4rem 0 .7rem}
+    .sendbar .setall{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
     @media (max-width:520px){ .time-row{grid-template-columns:1fr} }
   </style>
 </head>
@@ -47,9 +53,17 @@
   <!-- Send-on-WhatsApp modal -->
   <div class="modal" id="sendModal">
     <div class="modal__box">
-      <h2 data-i18n="a.today.sendTitle">Send today's WhatsApp reports</h2>
-      <p class="muted" id="sendDesc" data-i18n="a.today.sendDesc">Emails have been sent. Tap each parent to send their WhatsApp report.</p>
+      <h2 data-i18n="a.today.sendTitle">Send today's reports</h2>
+      <p class="muted" id="sendDesc" data-i18n="a.today.sendDesc">Choose each parent's language, then send.</p>
       <div id="emailWarn" class="hidden" style="background:#fbe4dd;color:#b3402b;font-weight:700;border-radius:10px;padding:.6rem .8rem;margin-bottom:.6rem" data-i18n="a.today.emailOff">⚠️ Email isn't connected yet.</div>
+      <div class="sendbar">
+        <div class="setall">
+          <span class="muted" style="font-weight:800;font-size:.82rem" data-i18n="a.today.langAll">Set all to:</span>
+          <button type="button" class="btn btn--ghost btn--sm" data-setall="en">English</button>
+          <button type="button" class="btn btn--ghost btn--sm" data-setall="te">తెలుగు</button>
+        </div>
+        <button type="button" class="btn btn--primary btn--sm" id="emailAllBtn" data-i18n="a.today.emailAll">✉️ Email all</button>
+      </div>
       <div class="send-list" id="sendList"></div>
       <div class="modal__actions">
         <button type="button" class="btn btn--ghost" onclick="closeModal('sendModal')" data-i18n="a.today.close">Close</button>
@@ -145,37 +159,69 @@
 
     document.getElementById("dateInp").addEventListener("change", e => { curDate = e.target.value; load(); });
 
+    // ---- End of day: pick a language per parent, then send ----
+    let sendRows = [];
+    function waLink(row) {
+      const num = waNumber(row.phone);
+      if (!num) return null;
+      const text = row.lang === "te" ? row.textTe : row.textEn;
+      return "https://wa.me/" + num + "?text=" + encodeURIComponent(text);
+    }
+    function renderSend() {
+      const list = document.getElementById("sendList");
+      list.innerHTML = "";
+      sendRows.forEach((row, i) => {
+        const link = waLink(row);
+        const note = row.emailedNow ? "✅ " + tr("a.today.sentEmail") : (row.hasEmail ? "" : tr("a.today.noEmailNote"));
+        const el = document.createElement("div");
+        el.className = "send-row";
+        el.innerHTML = `
+          <div class="sr-main"><div class="nm">${escapeHtml(row.name)}</div><div class="em">${note}</div></div>
+          <div class="sr-actions">
+            <div class="lang-pick">
+              <button type="button" class="lp ${row.lang === "en" ? "on" : ""}" data-i="${i}" data-l="en">EN</button>
+              <button type="button" class="lp ${row.lang === "te" ? "on" : ""}" data-i="${i}" data-l="te">తె</button>
+            </div>
+            ${link ? `<a class="btn btn--whatsapp btn--sm" target="_blank" rel="noopener" href="${link}">${tr("a.today.waBtn")}</a>` : ""}
+            <button type="button" class="btn btn--sage btn--sm em-btn" data-i="${i}" ${row.hasEmail ? "" : "disabled"}>${tr("a.today.emailBtn")}</button>
+          </div>`;
+        list.appendChild(el);
+      });
+      list.querySelectorAll(".lp").forEach(b => b.addEventListener("click", () => { sendRows[+b.dataset.i].lang = b.dataset.l; renderSend(); }));
+      list.querySelectorAll(".em-btn").forEach(b => b.addEventListener("click", () => emailOne(+b.dataset.i, b)));
+    }
+    async function emailOne(i, btn) {
+      const row = sendRows[i]; if (!row.hasEmail) return;
+      const old = btn.textContent; btn.disabled = true; btn.textContent = tr("a.today.emailing");
+      try {
+        await api(`/api/daily/${row.studentId}/email`, { method: "POST", body: { date: curDate, lang: row.lang } });
+        row.emailedNow = true; toast(tr("a.today.saved")); renderSend();
+      } catch (ex) { toast(ex.error || "Could not send", true); btn.disabled = false; btn.textContent = old; }
+    }
+    document.querySelectorAll("[data-setall]").forEach(b => b.addEventListener("click", () => {
+      sendRows.forEach(r => r.lang = b.dataset.setall); renderSend();
+    }));
+    document.getElementById("emailAllBtn").addEventListener("click", async (e) => {
+      const btn = e.currentTarget; const old = btn.textContent; btn.disabled = true; btn.textContent = tr("a.today.emailing");
+      for (const row of sendRows) {
+        if (!row.hasEmail || row.emailedNow) continue;
+        try { await api(`/api/daily/${row.studentId}/email`, { method: "POST", body: { date: curDate, lang: row.lang } }); row.emailedNow = true; }
+        catch { /* keep going; per-row button can retry */ }
+      }
+      renderSend(); btn.disabled = false; btn.textContent = old; toast(tr("a.today.saved"));
+    });
+
     document.getElementById("endDayBtn").addEventListener("click", async () => {
       const btn = document.getElementById("endDayBtn");
       const old = btn.textContent; btn.disabled = true; btn.textContent = tr("a.today.sending");
       try {
-        const r = await api("/api/daily/send-all", { method: "POST", body: { date: curDate } });
-        const list = document.getElementById("sendList");
+        const r = await api("/api/daily/report-list", { method: "POST", body: { date: curDate } });
         document.getElementById("emailWarn").classList.toggle("hidden", r.emailConfigured);
-        if (!r.wa.length && !r.emailed.length) { toast(tr("a.today.nothing"), true); return; }
-        list.innerHTML = "";
-        const emailedSet = new Set(r.emailed);
-        r.wa.forEach(w => {
-          const num = waNumber(w.phone);
-          const row = document.createElement("div");
-          row.className = "send-row";
-          row.innerHTML = `<div><div class="nm">${escapeHtml(w.name)}</div>
-            <div class="em">${emailedSet.has(w.name) ? "✅ " + tr("a.today.emailedNote") : ""}</div></div>`;
-          const a = document.createElement("a");
-          a.className = "btn btn--whatsapp btn--sm";
-          a.textContent = `${tr("a.today.sendWa")} ${w.name.split(" ")[0]}`;
-          a.href = "https://wa.me/" + num + "?text=" + encodeURIComponent(w.text);
-          a.target = "_blank"; a.rel = "noopener";
-          if (!num) { a.classList.add("btn--ghost"); a.removeAttribute("href"); a.style.opacity = ".5"; }
-          row.appendChild(a);
-          list.appendChild(row);
-        });
-        // students that were emailed but have no phone — show as emailed rows
-        r.emailed.filter(n => !r.wa.some(w => w.name === n)).forEach(n => {
-          const row = document.createElement("div"); row.className = "send-row";
-          row.innerHTML = `<div class="nm">${escapeHtml(n)}</div><div class="em">✅ ${tr("a.today.emailedNote")}</div>`;
-          list.appendChild(row);
-        });
+        document.getElementById("emailAllBtn").disabled = !r.emailConfigured;
+        if (!r.students.length) { toast(tr("a.today.nothing"), true); return; }
+        const def = aLang();
+        sendRows = r.students.map(s => Object.assign({}, s, { lang: def, emailedNow: s.emailed }));
+        renderSend();
         openModal("sendModal");
       } catch (ex) { toast(ex.error || "Could not send", true); }
       finally { btn.disabled = false; btn.textContent = old; }

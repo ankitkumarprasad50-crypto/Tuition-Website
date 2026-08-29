@@ -149,9 +149,10 @@ public static class DailyLogEndpoints
             return Results.Ok(View(log));
         });
 
-        // "End of day": email every present student's parent (auto/mandatory) and
-        // return one-tap WhatsApp links for parents who have a phone number.
-        t.MapPost("send-all", async (DayRef req, HttpContext http, AppDbContext db, EmailSender email, IDataProtectionProvider dp) =>
+        // "End of day": list every present student's parent with both-language
+        // WhatsApp texts ready. Nothing is sent here — the teacher picks the
+        // language per parent and then sends WhatsApp / email from the browser.
+        t.MapPost("report-list", async (DayRef req, HttpContext http, AppDbContext db, EmailSender email, IDataProtectionProvider dp) =>
         {
             var tid = CurrentTeacherId(http)!.Value;
             var teacherName = http.User.FindFirstValue(ClaimTypes.Name) ?? "";
@@ -161,47 +162,53 @@ public static class DailyLogEndpoints
             var logs = await db.DailyLogs.Include(l => l.Student)
                 .Where(l => l.Date == d && l.Student!.TeacherId == tid).ToListAsync();
 
-            var emailed = new List<string>();
-            var noEmail = new List<string>();
-            var wa = new List<object>();
-            var emailErrors = new List<string>();
-
-            foreach (var log in logs.OrderBy(l => l.Student!.Name))
+            var rows = logs.OrderBy(l => l.Student!.Name).Select(log =>
             {
                 var s = log.Student!;
                 var link = ConfirmLink(http, dp, s.Id, d);
-
-                if (!string.IsNullOrWhiteSpace(s.ParentEmail) && email.IsConfigured)
+                return new
                 {
-                    try
-                    {
-                        await email.SendAsync(s.ParentEmail, s.ParentName,
-                            $"{s.Name} — Daily Report · Vidya Vriksh Tuition",
-                            ReportBuilder.BuildDailyEmailHtml(s, log, teacherName, link));
-                        log.ReportEmailedAt = DateTimeOffset.UtcNow;
-                        emailed.Add(s.Name);
-                    }
-                    catch (Exception ex) { emailErrors.Add($"{s.Name}: {ex.Message}"); }
-                }
-                else noEmail.Add(s.Name);
+                    studentId = s.Id,
+                    name = s.Name,
+                    hasEmail = !string.IsNullOrWhiteSpace(s.ParentEmail),
+                    phone = s.ParentPhone,
+                    emailed = log.ReportEmailedAt != null,
+                    textEn = ReportBuilder.BuildDailyWaText(s, log, teacherName, link, "en"),
+                    textTe = ReportBuilder.BuildDailyWaText(s, log, teacherName, link, "te"),
+                };
+            }).ToList();
 
-                if (!string.IsNullOrWhiteSpace(s.ParentPhone))
-                    wa.Add(new
-                    {
-                        studentId = s.Id,
-                        name = s.Name,
-                        phone = s.ParentPhone,
-                        text = ReportBuilder.BuildDailyWaText(s, log, teacherName, link),
-                    });
-            }
-            await db.SaveChangesAsync();
-            return Results.Ok(new
+            return Results.Ok(new { date = d.ToString("yyyy-MM-dd"), emailConfigured = email.IsConfigured, students = rows });
+        });
+
+        // Email one student's daily report to their parent in the chosen language.
+        t.MapPost("{studentId:int}/email", async (int studentId, DailyEmailRequest req, HttpContext http, AppDbContext db, EmailSender email, IDataProtectionProvider dp) =>
+        {
+            var tid = CurrentTeacherId(http)!.Value;
+            var teacherName = http.User.FindFirstValue(ClaimTypes.Name) ?? "";
+            var d = ParseDate(req.Date);
+            var s = await db.Students.FirstOrDefaultAsync(x => x.Id == studentId && x.TeacherId == tid);
+            if (s is null) return Results.NotFound();
+            if (string.IsNullOrWhiteSpace(s.ParentEmail))
+                return Results.BadRequest(new { error = "This student has no parent email address." });
+            if (!email.IsConfigured)
+                return Results.BadRequest(new { error = "Email isn't connected yet — set it up in Settings first." });
+
+            var log = await db.DailyLogs.FirstOrDefaultAsync(l => l.StudentId == studentId && l.Date == d)
+                      ?? new DailyLog { StudentId = studentId, Date = d };
+            var link = ConfirmLink(http, dp, s.Id, d);
+            var html = ReportBuilder.BuildDailyEmailHtml(s, log, teacherName, link, req.Lang ?? "en");
+            try
             {
-                emailed, noEmail, wa,
-                emailConfigured = email.IsConfigured,
-                emailErrors,
-                count = logs.Count,
-            });
+                await email.SendAsync(s.ParentEmail, s.ParentName,
+                    $"{s.Name} — Daily Report · Vidya Vriksh Tuition", html);
+                if (log.Id != 0) { log.ReportEmailedAt = DateTimeOffset.UtcNow; await db.SaveChangesAsync(); }
+                return Results.Ok(new { sent = true, to = s.ParentEmail });
+            }
+            catch (Exception ex)
+            {
+                return Results.Json(new { error = "Could not send email: " + ex.Message }, statusCode: 502);
+            }
         });
 
         // ---- Parent: read today's log + confirm reached-home --------------
@@ -277,4 +284,5 @@ public static class DailyLogEndpoints
 
 public record DayRef(string? Date);
 public record DailyEditRequest(string? Date, string? Activity, string? Homework, string? Arrived, string? Left, string? ReachedHome);
+public record DailyEmailRequest(string? Date, string? Lang);
 public record ConfirmHomeRequest(string? T);
